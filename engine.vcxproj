@@ -1,0 +1,488 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{868AF2C9-7476-48E3-9246-DF9A9B731A29}</ProjectGuid>
+    <RootNamespace>engine</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>..\mbedtls\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>..\mbedtls\build\library\Debug;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>..\mbedtls\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>..\mbedtls\build\library\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>./inc/;./src/;./sec/;./res/;./fmod/;../standard/inc/;../standard/zlib/;../standard/lpng121/;../standard/jpeglib/;../standard/;../standard/freetype2/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>C4ENGINE;USE_DIRECTX;USE_FMOD;_WIN32;VC_EXTRALEAN;C4CHECKMEMLEAKS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>C4Include.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>C4Include.h</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;ws2_32.lib;d3d9.lib;fmodvc.lib;mbedtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>./fmod/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>./inc/;./src/;./sec/;./res/;./fmod/;../standard/inc/;../standard/zlib/;../standard/lpng121/;../standard/jpeglib/;../standard/;../standard/freetype2/;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>C4ENGINE;USE_DIRECTX;USE_FMOD;_WIN32;VC_EXTRALEAN;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>C4Include.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>C4Include.h</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;ws2_32.lib;d3d9.lib;fmodvc.lib;mbedtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>./fmod/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="res\Brush.h" />
+    <ClInclude Include="res\Cursor.h" />
+    <ClInclude Include="res\Dynamic.h" />
+    <ClInclude Include="res\Exact.h" />
+    <ClInclude Include="res\Fill.h" />
+    <ClInclude Include="res\Halt.h" />
+    <ClInclude Include="res\Ift.h" />
+    <ClInclude Include="res\Line.h" />
+    <ClInclude Include="res\Mouse.h" />
+    <ClInclude Include="res\NoIft.h" />
+    <ClInclude Include="res\Picker.h" />
+    <ClInclude Include="res\Play.h" />
+    <ClInclude Include="res\Rect.h" />
+    <ClInclude Include="res\resource.h" />
+    <ClInclude Include="res\Static.h" />
+    <ClInclude Include="src\C4AList.h" />
+    <ClInclude Include="src\C4Components.h" />
+    <ClInclude Include="src\C4Console.h" />
+    <ClInclude Include="src\C4DevmodeDlg.h" />
+    <ClInclude Include="src\C4EditCursor.h" />
+    <ClInclude Include="src\C4FileClasses.h" />
+    <ClInclude Include="src\C4FogOfWar.h" />
+    <ClInclude Include="src\C4Fonts.h" />
+    <ClInclude Include="src\c4group\C4ComponentHost.h" />
+    <ClInclude Include="src\c4group\C4Extra.h" />
+    <ClInclude Include="src\c4group\C4Group.h" />
+    <ClInclude Include="src\c4group\C4GroupSet.h" />
+    <ClInclude Include="src\c4group\C4LangStringTable.h" />
+    <ClInclude Include="src\c4group\C4Language.h" />
+    <ClInclude Include="src\c4group\C4Update.h" />
+    <ClInclude Include="src\C4Include.h" />
+    <ClInclude Include="src\C4InputValidation.h" />
+    <ClInclude Include="src\C4Log.h" />
+    <ClInclude Include="src\C4LogBuf.h" />
+    <ClInclude Include="src\C4NameList.h" />
+    <ClInclude Include="src\C4Network2HTTPClient.h" />
+    <ClInclude Include="src\C4ObjectList.h" />
+    <ClInclude Include="src\C4ObjectListDlg.h" />
+    <ClInclude Include="src\C4PropertyDlg.h" />
+    <ClInclude Include="src\C4Prototypes.h" />
+    <ClInclude Include="src\C4Random.h" />
+    <ClInclude Include="src\C4Region.h" />
+    <ClInclude Include="src\C4RTF.H" />
+    <ClInclude Include="src\C4Stat.h" />
+    <ClInclude Include="src\C4ToolsDlg.h" />
+    <ClInclude Include="src\C4UserMessages.h" />
+    <ClInclude Include="src\C4ValueList.h" />
+    <ClInclude Include="src\C4ValueMap.h" />
+    <ClInclude Include="src\C4Version.h" />
+    <ClInclude Include="src\C4VideoPlayback.h" />
+    <ClInclude Include="src\C4Wrappers.h" />
+    <ClInclude Include="src\config\C4Config.h" />
+    <ClInclude Include="src\config\C4Constants.h" />
+    <ClInclude Include="src\control\C4Control.h" />
+    <ClInclude Include="src\control\C4GameControl.h" />
+    <ClInclude Include="src\control\C4GameParameters.h" />
+    <ClInclude Include="src\control\C4GameSave.h" />
+    <ClInclude Include="src\control\C4PlayerInfo.h" />
+    <ClInclude Include="src\control\C4Record.h" />
+    <ClInclude Include="src\control\C4RoundResults.h" />
+    <ClInclude Include="src\control\C4Teams.h" />
+    <ClInclude Include="src\gamescript\C4Effects.h" />
+    <ClInclude Include="src\gamescript\C4FindObject.h" />
+    <ClInclude Include="src\gamescript\C4TransferZone.h" />
+    <ClInclude Include="src\game\C4Application.h" />
+    <ClInclude Include="src\game\C4FullScreen.h" />
+    <ClInclude Include="src\game\C4Game.h" />
+    <ClInclude Include="src\game\C4GameVersion.h" />
+    <ClInclude Include="src\game\C4GraphicsSystem.h" />
+    <ClInclude Include="src\game\C4Physics.h" />
+    <ClInclude Include="src\game\C4Viewport.h" />
+    <ClInclude Include="src\graphics\C4Facet.h" />
+    <ClInclude Include="src\graphics\C4FacetEx.h" />
+    <ClInclude Include="src\graphics\C4GraphicsResource.h" />
+    <ClInclude Include="src\graphics\C4Surface.h" />
+    <ClInclude Include="src\graphics\C4SurfaceFile.h" />
+    <ClInclude Include="src\gui\C4ChatDlg.h" />
+    <ClInclude Include="src\gui\C4DownloadDlg.h" />
+    <ClInclude Include="src\gui\C4FileSelDlg.h" />
+    <ClInclude Include="src\gui\C4Folder.h" />
+    <ClInclude Include="src\gui\C4GameDialogs.h" />
+    <ClInclude Include="src\gui\C4GameLobby.h" />
+    <ClInclude Include="src\gui\C4GameMessage.h" />
+    <ClInclude Include="src\gui\C4GameOptions.h" />
+    <ClInclude Include="src\gui\C4GameOverDlg.h" />
+    <ClInclude Include="src\gui\C4Gui.h" />
+    <ClInclude Include="src\gui\C4KeyboardInput.h" />
+    <ClInclude Include="src\gui\C4LoaderScreen.h" />
+    <ClInclude Include="src\gui\C4MainMenu.h" />
+    <ClInclude Include="src\gui\C4Menu.h" />
+    <ClInclude Include="src\gui\C4MessageBoard.h" />
+    <ClInclude Include="src\gui\C4MessageInput.h" />
+    <ClInclude Include="src\gui\C4MouseControl.h" />
+    <ClInclude Include="src\gui\C4PlayerInfoListBox.h" />
+    <ClInclude Include="src\gui\C4Scoreboard.h" />
+    <ClInclude Include="src\gui\C4Startup.h" />
+    <ClInclude Include="src\gui\C4StartupAboutDlg.h" />
+    <ClInclude Include="src\gui\C4StartupMainDlg.h" />
+    <ClInclude Include="src\gui\C4StartupNetDlg.h" />
+    <ClInclude Include="src\gui\C4StartupOptionsDlg.h" />
+    <ClInclude Include="src\gui\C4StartupPlrSelDlg.h" />
+    <ClInclude Include="src\gui\C4StartupScenSelDlg.h" />
+    <ClInclude Include="src\gui\C4UpdateDlg.h" />
+    <ClInclude Include="src\gui\C4UpperBoard.h" />
+    <ClInclude Include="src\landscape\C4Landscape.h" />
+    <ClInclude Include="src\landscape\C4Map.h" />
+    <ClInclude Include="src\landscape\C4MapCreatorS2.h" />
+    <ClInclude Include="src\landscape\C4MassMover.h" />
+    <ClInclude Include="src\landscape\C4Material.h" />
+    <ClInclude Include="src\landscape\C4MaterialList.h" />
+    <ClInclude Include="src\landscape\C4Particles.h" />
+    <ClInclude Include="src\landscape\C4PathFinder.h" />
+    <ClInclude Include="src\landscape\C4PXS.h" />
+    <ClInclude Include="src\landscape\C4Scenario.h" />
+    <ClInclude Include="src\landscape\C4Sky.h" />
+    <ClInclude Include="src\landscape\C4SolidMask.h" />
+    <ClInclude Include="src\landscape\C4Texture.h" />
+    <ClInclude Include="src\landscape\C4Weather.h" />
+    <ClInclude Include="src\network\C4Client.h" />
+    <ClInclude Include="src\network\C4GameControlNetwork.h" />
+    <ClInclude Include="src\network\C4InteractiveThread.h" />
+    <ClInclude Include="src\network\C4League.h" />
+    <ClInclude Include="src\network\C4NetIO.h" />
+    <ClInclude Include="src\network\C4Network2.h" />
+    <ClInclude Include="src\network\C4Network2Client.h" />
+    <ClInclude Include="src\network\C4Network2Dialogs.h" />
+    <ClInclude Include="src\network\C4Network2Discover.h" />
+    <ClInclude Include="src\network\C4Network2IO.h" />
+    <ClInclude Include="src\network\C4Network2IRC.h" />
+    <ClInclude Include="src\network\C4Network2Players.h" />
+    <ClInclude Include="src\network\C4Network2Reference.h" />
+    <ClInclude Include="src\network\C4Network2Res.h" />
+    <ClInclude Include="src\network\C4Network2Stats.h" />
+    <ClInclude Include="src\network\C4PacketBase.h" />
+    <ClInclude Include="src\object\C4Command.h" />
+    <ClInclude Include="src\object\C4Def.h" />
+    <ClInclude Include="src\object\C4DefGraphics.h" />
+    <ClInclude Include="src\object\C4GameObjects.h" />
+    <ClInclude Include="src\object\C4Id.h" />
+    <ClInclude Include="src\object\C4IDList.h" />
+    <ClInclude Include="src\object\C4InfoCore.h" />
+    <ClInclude Include="src\object\C4Object.h" />
+    <ClInclude Include="src\object\C4ObjectCom.h" />
+    <ClInclude Include="src\object\C4ObjectInfo.h" />
+    <ClInclude Include="src\object\C4ObjectInfoList.h" />
+    <ClInclude Include="src\object\C4ObjectMenu.h" />
+    <ClInclude Include="src\object\C4Sector.h" />
+    <ClInclude Include="src\object\C4Shape.h" />
+    <ClInclude Include="src\platform\C4FileMonitor.h" />
+    <ClInclude Include="src\platform\C4GamePadCon.h" />
+    <ClInclude Include="src\platform\C4MusicFile.h" />
+    <ClInclude Include="src\platform\C4MusicSystem.h" />
+    <ClInclude Include="src\platform\C4SoundSystem.h" />
+    <ClInclude Include="src\platform\C4Video.h" />
+    <ClInclude Include="src\player\C4Player.h" />
+    <ClInclude Include="src\player\C4PlayerList.h" />
+    <ClInclude Include="src\player\C4RankSystem.h" />
+    <ClInclude Include="src\script\C4Aul.h" />
+    <ClInclude Include="src\script\C4Script.h" />
+    <ClInclude Include="src\script\C4ScriptHost.h" />
+    <ClInclude Include="src\script\C4StringTable.h" />
+    <ClInclude Include="src\script\C4Value.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Brush.bmp" />
+    <Image Include="res\brush1.bmp" />
+    <Image Include="res\Brush2.bmp" />
+    <Image Include="res\Brush_Trans.png" />
+    <Image Include="res\c4b.ico" />
+    <Image Include="res\c4d.ico" />
+    <Image Include="res\c4f.ico" />
+    <Image Include="res\c4g.ico" />
+    <Image Include="res\c4i.ico" />
+    <Image Include="res\c4k.ico" />
+    <Image Include="res\c4l.ico" />
+    <Image Include="res\c4m.ico" />
+    <Image Include="res\c4p.ico" />
+    <Image Include="res\c4s.ico" />
+    <Image Include="res\c4u.ico" />
+    <Image Include="res\c4v.ico" />
+    <Image Include="res\c4x.ico" />
+    <Image Include="res\cr.ico" />
+    <Image Include="res\Cursor.bmp" />
+    <Image Include="res\Cursor2.bmp" />
+    <Image Include="res\Cursor_Trans.png" />
+    <Image Include="res\dynamic1.bmp" />
+    <Image Include="res\Dynamic_Trans.png" />
+    <Image Include="res\Exact_Trans.png" />
+    <Image Include="res\Fill.bmp" />
+    <Image Include="res\fill1.bmp" />
+    <Image Include="res\Fill_Trans.png" />
+    <Image Include="res\Grab.bmp" />
+    <Image Include="res\Halt.bmp" />
+    <Image Include="res\Halt2.bmp" />
+    <Image Include="res\Halt_Trans.png" />
+    <Image Include="res\IFT.bmp" />
+    <Image Include="res\ift1.bmp" />
+    <Image Include="res\Ift_Trans.png" />
+    <Image Include="res\Line.bmp" />
+    <Image Include="res\line1.bmp" />
+    <Image Include="res\Line_Trans.png" />
+    <Image Include="res\mouse.bmp" />
+    <Image Include="res\mouse1.bmp" />
+    <Image Include="res\Mouse_Trans.png" />
+    <Image Include="res\NoIFT.bmp" />
+    <Image Include="res\NoIft_Trans.png" />
+    <Image Include="res\picker1.bmp" />
+    <Image Include="res\Picker_Trans.png" />
+    <Image Include="res\Play.bmp" />
+    <Image Include="res\Play2.bmp" />
+    <Image Include="res\Play_Trans.png" />
+    <Image Include="res\rect1.bmp" />
+    <Image Include="res\Rectangle.bmp" />
+    <Image Include="res\Rect_Trans.png" />
+    <Image Include="res\static1.bmp" />
+    <Image Include="res\Static_Trans.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\cr.xpm" />
+    <None Include="res\Game.pal" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="res\engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\standard\standard.vcxproj">
+      <Project>{84cc2ba5-2bbd-4fd9-8f19-0a34d6db06d3}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\C4AList.cpp" />
+    <ClCompile Include="src\C4Console.cpp" />
+    <ClCompile Include="src\C4DevmodeDlg.cpp" />
+    <ClCompile Include="src\C4EditCursor.cpp" />
+    <ClCompile Include="src\C4FileClasses.cpp" />
+    <ClCompile Include="src\C4FogOfWar.cpp" />
+    <ClCompile Include="src\C4Fonts.cpp" />
+    <ClCompile Include="src\c4group\C4ComponentHost.cpp" />
+    <ClCompile Include="src\c4group\C4Extra.cpp" />
+    <ClCompile Include="src\c4group\C4Group.cpp" />
+    <ClCompile Include="src\c4group\C4GroupSet.cpp" />
+    <ClCompile Include="src\c4group\C4LangStringTable.cpp" />
+    <ClCompile Include="src\c4group\C4Language.cpp" />
+    <ClCompile Include="src\c4group\C4Update.cpp" />
+    <ClCompile Include="src\C4Include.cpp" />
+    <ClCompile Include="src\C4InputValidation.cpp" />
+    <ClCompile Include="src\C4Log.cpp" />
+    <ClCompile Include="src\C4LogBuf.cpp" />
+    <ClCompile Include="src\C4NameList.cpp" />
+    <ClCompile Include="src\C4Network2HTTPClient.cpp" />
+    <ClCompile Include="src\C4ObjectList.cpp" />
+    <ClCompile Include="src\C4ObjectListDlg.cpp" />
+    <ClCompile Include="src\C4PropertyDlg.cpp" />
+    <ClCompile Include="src\C4Random.cpp" />
+    <ClCompile Include="src\C4Region.cpp" />
+    <ClCompile Include="src\C4RTF.cpp" />
+    <ClCompile Include="src\C4Stat.cpp" />
+    <ClCompile Include="src\C4ToolsDlg.cpp" />
+    <ClCompile Include="src\C4ValueList.cpp" />
+    <ClCompile Include="src\C4ValueMap.cpp" />
+    <ClCompile Include="src\C4VideoPlayback.cpp" />
+    <ClCompile Include="src\C4WinMain.cpp" />
+    <ClCompile Include="src\C4Wrappers.cpp" />
+    <ClCompile Include="src\config\C4Config.cpp" />
+    <ClCompile Include="src\control\C4Control.cpp" />
+    <ClCompile Include="src\control\C4GameControl.cpp" />
+    <ClCompile Include="src\control\C4GameParameters.cpp" />
+    <ClCompile Include="src\control\C4GameSave.cpp" />
+    <ClCompile Include="src\control\C4PlayerInfo.cpp" />
+    <ClCompile Include="src\control\C4PlayerInfoConflicts.cpp" />
+    <ClCompile Include="src\control\C4Record.cpp" />
+    <ClCompile Include="src\control\C4RoundResults.cpp" />
+    <ClCompile Include="src\control\C4Teams.cpp" />
+    <ClCompile Include="src\gamescript\C4Effect.cpp" />
+    <ClCompile Include="src\gamescript\C4FindObject.cpp" />
+    <ClCompile Include="src\gamescript\C4TransferZone.cpp" />
+    <ClCompile Include="src\game\C4Application.cpp" />
+    <ClCompile Include="src\game\C4FullScreen.cpp" />
+    <ClCompile Include="src\game\C4Game.cpp" />
+    <ClCompile Include="src\game\C4GraphicsSystem.cpp" />
+    <ClCompile Include="src\game\C4Viewport.cpp" />
+    <ClCompile Include="src\graphics\C4Facet.cpp" />
+    <ClCompile Include="src\graphics\C4FacetEx.cpp" />
+    <ClCompile Include="src\graphics\C4GraphicsResource.cpp" />
+    <ClCompile Include="src\graphics\C4Surface.cpp" />
+    <ClCompile Include="src\graphics\C4SurfaceFile.cpp" />
+    <ClCompile Include="src\gui\C4ChatDlg.cpp" />
+    <ClCompile Include="src\gui\C4DownloadDlg.cpp" />
+    <ClCompile Include="src\gui\C4FileSelDlg.cpp" />
+    <ClCompile Include="src\gui\C4Folder.cpp" />
+    <ClCompile Include="src\gui\C4GameDialogs.cpp" />
+    <ClCompile Include="src\gui\C4GameLobby.cpp" />
+    <ClCompile Include="src\gui\C4GameMessage.cpp" />
+    <ClCompile Include="src\gui\C4GameOptions.cpp" />
+    <ClCompile Include="src\gui\C4GameOverDlg.cpp" />
+    <ClCompile Include="src\gui\C4Gui.cpp" />
+    <ClCompile Include="src\gui\C4GuiButton.cpp" />
+    <ClCompile Include="src\gui\C4GuiCheckBox.cpp" />
+    <ClCompile Include="src\gui\C4GuiComboBox.cpp" />
+    <ClCompile Include="src\gui\C4GuiContainers.cpp" />
+    <ClCompile Include="src\gui\C4GuiDialogs.cpp" />
+    <ClCompile Include="src\gui\C4GuiEdit.cpp" />
+    <ClCompile Include="src\gui\C4GuiLabels.cpp" />
+    <ClCompile Include="src\gui\C4GuiListBox.cpp" />
+    <ClCompile Include="src\gui\C4GuiMenu.cpp" />
+    <ClCompile Include="src\gui\C4GuiTabular.cpp" />
+    <ClCompile Include="src\gui\C4KeyboardInput.cpp" />
+    <ClCompile Include="src\gui\C4LoaderScreen.cpp" />
+    <ClCompile Include="src\gui\C4MainMenu.cpp" />
+    <ClCompile Include="src\gui\C4Menu.cpp" />
+    <ClCompile Include="src\gui\C4MessageBoard.cpp" />
+    <ClCompile Include="src\gui\C4MessageInput.cpp" />
+    <ClCompile Include="src\gui\C4MouseControl.cpp" />
+    <ClCompile Include="src\gui\C4PlayerInfoListBox.cpp" />
+    <ClCompile Include="src\gui\C4Scoreboard.cpp" />
+    <ClCompile Include="src\gui\C4Startup.cpp" />
+    <ClCompile Include="src\gui\C4StartupAboutDlg.cpp" />
+    <ClCompile Include="src\gui\C4StartupMainDlg.cpp" />
+    <ClCompile Include="src\gui\C4StartupNetDlg.cpp" />
+    <ClCompile Include="src\gui\C4StartupOptionsDlg.cpp" />
+    <ClCompile Include="src\gui\C4StartupPlrSelDlg.cpp" />
+    <ClCompile Include="src\gui\C4StartupScenSelDlg.cpp" />
+    <ClCompile Include="src\gui\C4UpdateDlg.cpp" />
+    <ClCompile Include="src\gui\C4UpperBoard.cpp" />
+    <ClCompile Include="src\landscape\C4Landscape.cpp" />
+    <ClCompile Include="src\landscape\C4Map.cpp" />
+    <ClCompile Include="src\landscape\C4MapCreatorS2.cpp" />
+    <ClCompile Include="src\landscape\C4MassMover.cpp" />
+    <ClCompile Include="src\landscape\C4Material.cpp" />
+    <ClCompile Include="src\landscape\C4MaterialList.cpp" />
+    <ClCompile Include="src\landscape\C4Particles.cpp" />
+    <ClCompile Include="src\landscape\C4PathFinder.cpp" />
+    <ClCompile Include="src\landscape\C4PXS.cpp" />
+    <ClCompile Include="src\landscape\C4Scenario.cpp" />
+    <ClCompile Include="src\landscape\C4Sky.cpp" />
+    <ClCompile Include="src\landscape\C4SolidMask.cpp" />
+    <ClCompile Include="src\landscape\C4Texture.cpp" />
+    <ClCompile Include="src\landscape\C4Weather.cpp" />
+    <ClCompile Include="src\network\C4Client.cpp" />
+    <ClCompile Include="src\network\C4GameControlNetwork.cpp" />
+    <ClCompile Include="src\network\C4InteractiveThread.cpp" />
+    <ClCompile Include="src\network\C4League.cpp" />
+    <ClCompile Include="src\network\C4NetIO.cpp" />
+    <ClCompile Include="src\network\C4Network2.cpp" />
+    <ClCompile Include="src\network\C4Network2Client.cpp" />
+    <ClCompile Include="src\network\C4Network2Dialogs.cpp" />
+    <ClCompile Include="src\network\C4Network2Discover.cpp" />
+    <ClCompile Include="src\network\C4Network2IO.cpp" />
+    <ClCompile Include="src\network\C4Network2IRC.cpp" />
+    <ClCompile Include="src\network\C4Network2Players.cpp" />
+    <ClCompile Include="src\network\C4Network2Reference.cpp" />
+    <ClCompile Include="src\network\C4Network2Res.cpp" />
+    <ClCompile Include="src\network\C4Network2ResDlg.cpp" />
+    <ClCompile Include="src\network\C4Network2Stats.cpp" />
+    <ClCompile Include="src\network\C4Packet2.cpp" />
+    <ClCompile Include="src\object\C4Action.cpp" />
+    <ClCompile Include="src\object\C4Command.cpp" />
+    <ClCompile Include="src\object\C4Def.cpp" />
+    <ClCompile Include="src\object\C4DefGraphics.cpp" />
+    <ClCompile Include="src\object\C4GameObjects.cpp" />
+    <ClCompile Include="src\object\C4Id.cpp" />
+    <ClCompile Include="src\object\C4IDList.cpp" />
+    <ClCompile Include="src\object\C4InfoCore.cpp" />
+    <ClCompile Include="src\object\C4Movement.cpp" />
+    <ClCompile Include="src\object\C4Object.cpp" />
+    <ClCompile Include="src\object\C4ObjectCom.cpp" />
+    <ClCompile Include="src\object\C4ObjectInfo.cpp" />
+    <ClCompile Include="src\object\C4ObjectInfoList.cpp" />
+    <ClCompile Include="src\object\C4ObjectMenu.cpp" />
+    <ClCompile Include="src\object\C4Sector.cpp" />
+    <ClCompile Include="src\object\C4Shape.cpp" />
+    <ClCompile Include="src\platform\C4FileMonitor.cpp" />
+    <ClCompile Include="src\platform\C4GamePadCon.cpp" />
+    <ClCompile Include="src\platform\C4MusicFile.cpp" />
+    <ClCompile Include="src\platform\C4MusicSystem.cpp" />
+    <ClCompile Include="src\platform\C4SoundSystem.cpp" />
+    <ClCompile Include="src\platform\C4Video.cpp" />
+    <ClCompile Include="src\player\C4Player.cpp" />
+    <ClCompile Include="src\player\C4PlayerList.cpp" />
+    <ClCompile Include="src\player\C4RankSystem.cpp" />
+    <ClCompile Include="src\script\C4Aul.cpp" />
+    <ClCompile Include="src\script\C4AulExec.cpp" />
+    <ClCompile Include="src\script\C4AulLink.cpp" />
+    <ClCompile Include="src\script\C4AulParse.cpp" />
+    <ClCompile Include="src\script\C4Script.cpp" />
+    <ClCompile Include="src\script\C4ScriptHost.cpp" />
+    <ClCompile Include="src\script\C4StringTable.cpp" />
+    <ClCompile Include="src\script\C4Value.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
