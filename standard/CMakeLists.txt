@@ -1,0 +1,96 @@
+cmake_minimum_required (VERSION 2.8.7)
+project (clonk_rage CXX C)
+
+set(STANDARD_SOURCES
+  src/Bitmap256.cpp
+  src/CStdFile.cpp
+  src/d3dutil.cpp
+  src/DInputX.cpp
+  src/DSoundX.cpp
+  src/dxutil.cpp
+  src/Fixed.cpp
+  src/Midi.cpp
+  src/OpenURL.cpp
+  src/PathFinder.cpp
+  src/Standard.cpp
+  src/StdBase64.cpp
+  src/StdBitmap.cpp
+  src/StdBuf.cpp
+  src/StdCompiler.cpp
+  src/StdConfig.cpp
+  src/StdD3D.cpp
+  src/StdDDraw2.cpp
+  src/StdFile.cpp
+  src/StdFont.cpp
+  src/StdGL.cpp
+  src/StdGLCtx.cpp
+  src/StdGtkWindow.cpp
+  src/StdJoystick.cpp
+  src/StdMarkup.cpp
+  src/StdNoGfx.cpp
+  src/StdPNG.cpp
+  src/StdRegistry.cpp
+  src/StdResStr2.cpp
+  src/StdScheduler.cpp
+  src/StdSDLApp.cpp
+  src/StdSDLWindow.cpp
+  src/StdSurface2.cpp
+  src/StdSurface8.cpp
+  src/StdTApp.cpp
+  src/StdVideo.cpp
+  src/StdWindow.cpp
+  src/StdXApp.cpp
+  src/StdXWindow.cpp
+)
+
+set(STANDARD_HEADERS
+  inc/Bitmap256.h
+  inc/CStdFile.h
+  inc/d3dutil.h
+  inc/DInputX.h
+  inc/DSoundX.h
+  inc/dxutil.h
+  inc/Fixed.h
+  inc/Midi.h
+  inc/PathFinder.h
+  inc/Standard.h
+  inc/StdAdaptors.h
+  inc/StdBase64.h
+  inc/StdBitmap.h
+  inc/StdBuf.h
+  inc/StdColors.h
+  inc/StdCompiler.h
+  inc/StdConfig.h
+  inc/StdD3D.h
+  inc/StdDDraw2.h
+  inc/StdFacet.h
+  inc/StdFile.h
+  inc/StdFont.h
+  inc/StdGL.h
+  inc/StdGtkWindow.h
+  inc/StdJoystick.h
+  inc/StdMarkup.h
+  inc/StdNoGfx.h
+  inc/StdPNG.h
+  inc/StdRandom.h
+  inc/StdRegistry.h
+  inc/StdResStr.h
+  inc/StdResStr2.h
+  inc/StdScheduler.h
+  inc/StdSurface2.h
+  inc/StdSurface8.h
+  inc/StdSync.h
+  inc/StdVideo.h
+  inc/StdWindow.h
+)
+
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/inc
+)
+
+add_library(
+  standard
+  SHARED
+  ${STANDARD_SOURCES}
+  ${STANDARD_HEADERS}
+)
