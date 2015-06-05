@@ -88,6 +88,10 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/inc
 )
 
+if(NOT WIN32)
+  add_definitions(-DHAVE_STDINT_H)
+endif()
+
 add_library(
   standard
   SHARED

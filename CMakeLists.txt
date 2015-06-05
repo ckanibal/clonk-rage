@@ -217,8 +217,14 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET(OperatingSystem "LINUX")
 elseif(WIN32)
   SET(OperatingSystem "WIN32")
+else()
+  SET(OperatingSystem "UKNOWN")
 endif()
+
+add_subdirectory(standard)
 
 add_executable(engine
 	${CLONK_SOURCES}
 )
+
+target_link_libraries(engine standard)
