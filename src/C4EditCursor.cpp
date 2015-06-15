@@ -4,6 +4,7 @@
 
 #include "C4Include.h"
 #include "C4EditCursor.h"
+#include "game/C4Game.h"
 
 #ifndef BIG_C4INCLUDE
 #include "C4Console.h"

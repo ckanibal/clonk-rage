@@ -842,7 +842,7 @@ EntrySortFunc(const void *pEl1, const void *pEl2)
 		if (iDiff) return iDiff;
 	}
 	// otherwise, sort by name
-	return _stricmp(pEntry1->GetName().getData(), pEntry2->GetName().getData());
+	return stricmp(pEntry1->GetName().getData(), pEntry2->GetName().getData());
 	}
 
 uint32_t C4ScenarioListLoader::Folder::GetEntryCount() const

@@ -8,7 +8,7 @@
 #ifdef NETWORK
 // This file is NETWORK-only because ModifyForChecksum is secret
 
-#include <polarssl/sha1.h>
+#include <cryptopp/sha.h>
 
 #include "network/C4Network2Reference.h"
 #include "gui/C4Gui.h"

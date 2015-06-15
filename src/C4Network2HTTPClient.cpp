@@ -62,7 +62,7 @@ size_t C4Network2HTTPClient::UnpackPacket(const StdBuf &rInBuf, const C4NetIO::a
 		ResultString.Copy(getBufPtr<char>(Data), Data.getSize());
 	fBusy = false; fSuccess = true;
 	// Callback
-	OnPacket(C4NetIOPacket(Data, addr), this);
+    OnPacket(C4NetIOPacket(Data, addr), this);
 	// Done
 	Close(addr);
 	return rInBuf.getSize();

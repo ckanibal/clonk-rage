@@ -22,9 +22,9 @@
 #endif
 
 #include <StdPNG.h>
-#include <zlib.h>
+#include "zlib.h"
 #include <fcntl.h>
-#include <polarssl/sha1.h>
+#include <cryptopp/sha.h>
 
 //------------------------------ File Sort Lists -------------------------------------------
 
@@ -477,8 +477,7 @@ bool C4Group_GetFileSHA1(const char *szFilename, BYTE *pSHA1)
 	if(!File.Open(szFilename))
 		return false;
 	// calculcate CRC
-	sha1_context ctx;
-	sha1_starts(&ctx);
+    CryptoPP::SHA hash;
 	for(;;)
 	{
 		// read a chunk of data
@@ -489,12 +488,12 @@ bool C4Group_GetFileSHA1(const char *szFilename, BYTE *pSHA1)
 			}
 		}
 		// update CRC
-		sha1_update(&ctx, szData, iSize);
+		hash.Update(szData, iSize);
 	}
 	// close file
 	File.Close();
 	// finish calculation
-	sha1_finish(&ctx, pSHA1);
+	hash.Final(pSHA1);
 	return true;
   }
 
@@ -767,7 +766,7 @@ bool C4Group::OpenRealGrpFile()
       return Error("OpenRealGrpFile: Cannot add entry");
     }
 
-  return TRUE;
+  return true;
   }
 
 bool C4Group::AddEntry(int status, 
@@ -2556,7 +2555,7 @@ bool C4Group::Sort(const char *szSortList)
 				if (iS1 > iS2) continue;
 				// secondary sort by filename
 				if (iS1 == iS2)
-					if (_stricmp(centry->FileName, next->FileName) <= 0) continue;
+					if (stricmp(centry->FileName, next->FileName) <= 0) continue;
 				// wrong order: Swap!
 				nextnext=next->Next;
 				if (prev) prev->Next=next;

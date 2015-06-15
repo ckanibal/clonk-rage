@@ -229,7 +229,7 @@ C4NetIOPacket::C4NetIOPacket(const void *pnData, size_t inSize, bool fCopy, cons
 {
 }
 
-C4NetIOPacket::C4NetIOPacket(StdBuf &Buf, const C4NetIO::addr_t &naddr)
+C4NetIOPacket::C4NetIOPacket(StdBuf Buf, const C4NetIO::addr_t &naddr)
 	: StdCopyBuf(Buf), addr(naddr)
 {
 }
@@ -2150,7 +2150,7 @@ void C4NetIOUDP::OnPacket(const C4NetIOPacket &Packet, C4NetIO *pNetIO)
 		if ((Packet.getStatus() & 0x7F) == IPID_Ping)
 		{
 			PacketHdr PingPacket = { IPID_Ping | (Packet.getStatus() & 0x80), 0 };
-			SendDirect(C4NetIOPacket(&PingPacket, sizeof(PingPacket), false, Packet.getAddr()));
+			SendDirect(C4NetIOPacket(static_cast<void*>(&PingPacket), sizeof(PingPacket), false, Packet.getAddr()));
 			return;
 		}
 		// conn? create connection (du only!)
@@ -2223,7 +2223,7 @@ C4NetIOUDP::Packet::Packet()
 
 }
 
-C4NetIOUDP::Packet::Packet(C4NetIOPacket &rnData, nr_t inNr)
+C4NetIOUDP::Packet::Packet(C4NetIOPacket rnData, nr_t inNr)
 	: iNr(inNr),
 	Data(rnData),
 	pFragmentGot(NULL)
@@ -2578,7 +2578,7 @@ void C4NetIOUDP::Peer::OnRecv(const C4NetIOPacket &rPacket) // (mt-safe)
 				Pkt.Nr = iOPacketCounter;
 				Pkt.Addr = PeerAddr;
 				Pkt.NewAddr = pPkt->Addr;
-				SendDirect(C4NetIOPacket(&Pkt, sizeof(Pkt), false, addr));
+				SendDirect(C4NetIOPacket(static_cast<void*>(&Pkt), sizeof(Pkt), false, addr));
 				// But do nothing else - don't interfere with this connection
 				break;
 			}
@@ -2624,7 +2624,7 @@ void C4NetIOUDP::Peer::OnRecv(const C4NetIOPacket &rPacket) // (mt-safe)
 		else
 			nPack.MCMode = ConnOKPacket::MCM_NoMC; // du ok
 		// send it
-		SendDirect(C4NetIOPacket(&nPack, sizeof(nPack), false, addr));
+		SendDirect(C4NetIOPacket(static_cast<void*>(&nPack), sizeof(nPack), false, addr));
 	}
 		break;
 
@@ -2750,7 +2750,7 @@ void C4NetIOUDP::Peer::Close(const char *szReason) // (mt-safe)
 	Pkt.StatusByte = IPID_Close;
 	Pkt.Nr = 0;
 	Pkt.Addr = addr;
-	SendDirect(C4NetIOPacket(&Pkt, sizeof(Pkt), false, addr));
+	SendDirect(C4NetIOPacket(static_cast<void*>(&Pkt), sizeof(Pkt), false, addr));
 	// callback
 	OnClose(szReason);
 }
@@ -2787,7 +2787,7 @@ bool C4NetIOUDP::Peer::DoConn(bool fMC) // (mt-safe)
 		Pkt.MCAddr = pParent->C4NetIOSimpleUDP::getMCAddr();
 	else
 		memset(&Pkt.MCAddr, 0, sizeof Pkt.MCAddr);
-	return SendDirect(C4NetIOPacket(&Pkt, sizeof(Pkt), false, addr));
+	return SendDirect(C4NetIOPacket(static_cast<void*>(&Pkt), sizeof(Pkt), false, addr));
 }
 
 bool C4NetIOUDP::Peer::DoCheck(int iAskCnt, int iMCAskCnt, unsigned int *pAskList)
@@ -2814,7 +2814,7 @@ bool C4NetIOUDP::Peer::DoCheck(int iAskCnt, int iMCAskCnt, unsigned int *pAskLis
 	return SendDirect(C4NetIOPacket(Packet, addr));
 }
 
-bool C4NetIOUDP::Peer::SendDirect(const Packet &rPacket, unsigned int iNr)
+bool C4NetIOUDP::Peer::SendDirect(const Packet rPacket, unsigned int iNr)
 {
 	// send one fragment only?
 	if (iNr + 1)
@@ -2826,7 +2826,7 @@ bool C4NetIOUDP::Peer::SendDirect(const Packet &rPacket, unsigned int iNr)
 	return fSuccess;
 }
 
-bool C4NetIOUDP::Peer::SendDirect(C4NetIOPacket &rPacket) // (mt-safe)
+bool C4NetIOUDP::Peer::SendDirect(C4NetIOPacket rPacket) // (mt-safe)
 {
 	// insert correct addr
 	if (!(rPacket.getStatus() & 0x80)) rPacket.SetAddr(addr);
@@ -2953,7 +2953,7 @@ bool C4NetIOUDP::BroadcastDirect(const Packet &rPacket, unsigned int iNr) // (mt
 	return fSuccess;
 }
 
-bool C4NetIOUDP::SendDirect(C4NetIOPacket &rPacket) // (mt-safe)
+bool C4NetIOUDP::SendDirect(C4NetIOPacket rPacket) // (mt-safe)
 {
 	addr_t toaddr = rPacket.getAddr();
 	// packet meant to be broadcasted?

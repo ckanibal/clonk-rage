@@ -19,7 +19,6 @@ set(CLONK_SOURCES
 	src/C4Console.cpp
 	src/C4DevmodeDlg.cpp
 	src/C4EditCursor.cpp
-	src/C4FileClasses.cpp
 	src/C4FogOfWar.cpp
 	src/C4Fonts.cpp
 	src/c4group/C4ComponentHost.cpp
@@ -145,8 +144,6 @@ set(CLONK_SOURCES
 	src/lib/StdFont.cpp
 	src/lib/StdGL.cpp
 	src/lib/StdGLCtx.cpp
-	src/lib/StdGtkWindow.cpp
-	src/lib/StdJoystick.cpp
 	src/lib/StdMarkup.cpp
 	src/lib/StdNoGfx.cpp
 	src/lib/StdResStr2.cpp
@@ -156,9 +153,7 @@ set(CLONK_SOURCES
 	src/lib/StdSurface8.cpp
 	src/lib/StdTApp.cpp
 	src/lib/StdVideo.cpp
-	src/lib/StdWindow.cpp
 	src/lib/StdXApp.cpp
-	src/lib/StdXWindow.cpp
 	src/network/C4Client.cpp
 	src/network/C4GameControlNetwork.cpp
 	src/network/C4InteractiveThread.cpp
@@ -168,7 +163,6 @@ set(CLONK_SOURCES
 	src/network/C4Network2Client.cpp
 	src/network/C4Network2Dialogs.cpp
 	src/network/C4Network2Discover.cpp
-	src/network/C4Network2HTTPSClient.cpp
 	src/network/C4Network2IO.cpp
 	src/network/C4Network2IRC.cpp
 	src/network/C4Network2Players.cpp
@@ -256,6 +250,9 @@ include_directories(
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   SET(OperatingSystem "MAC")
 	add_definitions(-DUSE_SDL_MAINLOOP)
+	add_definitions(-D__APPLE__)
+
+	list(APPEND CLONK_SOURCES ${CMAKE_SOURCE_DIR}/src/lib/MacUtility.mm)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET(OperatingSystem "LINUX")
 elseif(WIN32)
@@ -268,7 +265,12 @@ if(NOT WIN32)
   add_definitions(-DHAVE_STDINT_H)
   add_definitions(-DHAVE_PTHREAD)
   add_definitions(-DHAVE_UNISTD_H)
+	add_definitions(-DHAVE_LOCALE_H)
+	add_definitions(-DHAVE_SYS_SOCKET_H)
+	add_definitions(-DHAVE_SYS_STAT_H)
+	add_definitions(-DHAVE_SYS_SYSCALL_H)
   add_definitions(-DUSE_GL)
+	add_definitions(-DHAVE_FREETYPE)
 endif()
 
 Find_Package(SDL REQUIRED)
@@ -279,9 +281,34 @@ if(NOT USE_CONSOLE)
 	find_package(JPEG REQUIRED)
 endif()
 find_package(PNG REQUIRED)
-find_package(ZLIB REQUIRED)
-include_directories(${JPEG_INCLUDE_DIR} ${PNG_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR})
+find_package(Freetype REQUIRED)
+include_directories(${JPEG_INCLUDE_DIR} ${PNG_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+
+find_package(GLEW REQUIRED)
+if (GLEW_FOUND)
+    include_directories(${GLEW_INCLUDE_DIRS})
+    link_libraries(${GLEW_LIBRARIES})
+endif()
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
+
+add_definitions(-DC4ENGINE)
 
 add_executable(engine
 	${CLONK_SOURCES}
 )
+
+target_link_libraries(engine
+	${FREETYPE_LIBRARIES}
+	${PNG_LIBRARIES}
+	${JPEG_LIBRARIES}
+	${FREETYPE_LIBRARIES}
+	${CMAKE_CURRENT_SOURCE_DIR}/lib/cryptopp/libcryptopp.a
+)
+
+if (SDL_FOUND)
+	target_link_libraries(engine ${SDL_LIBRARY})
+endif()
+
+target_link_libraries(engine ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )

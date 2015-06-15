@@ -983,13 +983,13 @@ int32_t C4Network2Res::OpenFileRead()
 {
   CStdLock FileLock(&FileCSec);
 	if(!GetStandalone(NULL, 0, false, false, true)) return -1;
-	return _open(szStandalone, _O_BINARY | O_RDONLY);
+	return open(szStandalone, _O_BINARY | O_RDONLY);
 }
 
 int32_t C4Network2Res::OpenFileWrite()
 {
   CStdLock FileLock(&FileCSec);
-	return _open(szStandalone, _O_BINARY | O_CREAT | O_WRONLY, S_IREAD | S_IWRITE);
+	return open(szStandalone, _O_BINARY | O_CREAT | O_WRONLY, S_IREAD | S_IWRITE);
 }
 
 void C4Network2Res::StartNewLoads()
@@ -1193,16 +1193,16 @@ bool C4Network2ResChunk::Set(C4Network2Res *pRes, uint32_t inChunk)
 	if(f == -1) { LogF("Network: could not open resource file %s!", pRes->getFile()); return false; }
 	// seek
 	if(iOffset)
-		if(_lseek(f, iOffset, SEEK_SET) != iOffset)
-			{ _close(f); LogF("Network: could not read resource file %s!", pRes->getFile()); return false; }
+		if(lseek(f, iOffset, SEEK_SET) != iOffset)
+			{ close(f); LogF("Network: could not read resource file %s!", pRes->getFile()); return false; }
 	// read chunk of data
 	char *pBuf = new char[iSize];
-	if(_read(f, pBuf, iSize) != iSize)
-		{ delete [] pBuf; _close(f); LogF("Network: could not read resource file %s!", pRes->getFile()); return false; }
+	if(read(f, pBuf, iSize) != iSize)
+		{ delete [] pBuf; close(f); LogF("Network: could not read resource file %s!", pRes->getFile()); return false; }
 	// set
 	Data.Take(pBuf, iSize);
 	// close
-	_close(f);
+	close(f);
 	// ok
 	return true;
 }
@@ -1239,25 +1239,25 @@ bool C4Network2ResChunk::AddTo(C4Network2Res *pRes, C4Network2IO *pIO) const
 		}
 	// seek
 	if(iOffset)
-		if(_lseek(f, iOffset, SEEK_SET) != iOffset)
+		if(lseek(f, iOffset, SEEK_SET) != iOffset)
 			{
 #ifdef C4NET2RES_DEBUG_LOG
 			Application.InteractiveThread.ThreadLogS(FormatString("C4Network2ResChunk(%d)::AddTo(%s [%d]): lseek file error: %s!", (int) iResID, (const char *) Core.getFileName(), (int) pRes->getResID(), strerror(errno)).getData());
 #endif
-			_close(f);
+			close(f);
 			return false;
 			}
 	// write
-	if(_write(f, Data.getData(), Data.getSize()) != int32_t(Data.getSize()))
+	if(write(f, Data.getData(), Data.getSize()) != int32_t(Data.getSize()))
 		{
 #ifdef C4NET2RES_DEBUG_LOG
 		Application.InteractiveThread.ThreadLogS(FormatString("C4Network2ResChunk(%d)::AddTo(%s [%d]): write error: %s!", (int) iResID, (const char *) Core.getFileName(), (int) pRes->getResID(), strerror(errno)).getData());
 #endif
-		_close(f);
+		close(f);
 		return false;
 		}
 	// ok, add chunks
-	_close(f);
+	close(f);
 	pRes->Chunks.AddChunk(iChunk);
 	return true;
 }
@@ -1683,7 +1683,7 @@ bool C4Network2ResList::CreateNetworkFolder()
 	// but make sure that the configured path has one
 	AppendBackslash(Config.Network.WorkPath);
 	// does not exist?
-	if(_access(szNetworkPath, 00))
+	if(access(szNetworkPath, 00))
 	{
 		if(!CreateDirectory(szNetworkPath, 0))
 			{ LogFatal("Network: could not create network path!"); return false; }
@@ -1723,7 +1723,7 @@ bool C4Network2ResList::FindTempResFileName(const char *szFilename, char *pTarge
 	// create temporary file
 	SCopy(Config.AtNetworkPath(GetFilename(szFilename)), pTarget, _MAX_PATH);
 	// file name is free?
-	if(_access(pTarget, F_OK)) return true;
+	if(access(pTarget, F_OK)) return true;
 	// find another file name
 	char szFileMask[_MAX_PATH+1];
 	SCopy(pTarget, szFileMask, GetExtension(pTarget)-1-pTarget);
@@ -1733,7 +1733,7 @@ bool C4Network2ResList::FindTempResFileName(const char *szFilename, char *pTarge
 	{
 		snprintf(pTarget, _MAX_PATH, szFileMask, i);
 		// doesn't exist?
-		if(_access(pTarget, F_OK))
+		if(access(pTarget, F_OK))
 			return true;
 	}
 	// not found

@@ -108,7 +108,7 @@ void C4MainStat::Show()
 					iBestNr = ii;
 					pBestStat = pAkt;
 				}
-				else if(_stricmp(pBestStat->strName, pAkt->strName) > 0)
+				else if(stricmp(pBestStat->strName, pAkt->strName) > 0)
 				{
 					iBestNr = ii;
 					pBestStat = pAkt;

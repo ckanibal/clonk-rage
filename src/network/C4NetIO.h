@@ -27,6 +27,10 @@
 #endif
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#include <netdb.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
 #endif
 
 #ifndef HAVE_CONFIG_H
@@ -129,7 +133,7 @@ public:
 	// construct from memory (copies / references data)
 	C4NetIOPacket(const void *pnData, size_t inSize, bool fCopy = false, const C4NetIO::addr_t &naddr = C4NetIO::addr_t());
 	// construct from buffer (takes data, if possible)
-	explicit C4NetIOPacket(StdBuf &Buf, const C4NetIO::addr_t &naddr = C4NetIO::addr_t());
+	explicit C4NetIOPacket(StdBuf Buf, const C4NetIO::addr_t &naddr = C4NetIO::addr_t());
 	// construct from status byte + buffer (copies data)
 	C4NetIOPacket(uint8_t cStatusByte, const char *pnData, size_t inSize, const C4NetIO::addr_t &naddr = C4NetIO::addr_t()); 
 	
@@ -489,7 +493,7 @@ protected:
 
 		// construction / destruction
 		Packet();
-		Packet(C4NetIOPacket &rnData, nr_t inNr);
+		Packet(C4NetIOPacket rnData, nr_t inNr);
 		~Packet();
 	
 	protected:
@@ -662,8 +666,8 @@ protected:
 		bool DoCheck(int iAskCnt = 0, int iMCAskCnt = 0, unsigned int *pAskList = NULL);
 
 		// sending
-		bool SendDirect(const Packet &rPacket, unsigned int iNr = ~0);
-		bool SendDirect(C4NetIOPacket &rPacket);
+		bool SendDirect(const Packet rPacket, unsigned int iNr = ~0);
+		bool SendDirect(C4NetIOPacket rPacket);
 		
 		// events
 		void OnConn();
@@ -721,7 +725,7 @@ protected:
 
 	// sending
 	bool BroadcastDirect(const Packet &rPacket, unsigned int iNr = ~0u); // (mt-safe)
-	bool SendDirect(C4NetIOPacket &rPacket); // (mt-safe)
+	bool SendDirect(C4NetIOPacket rPacket); // (mt-safe)
 
 	// multicast related
 	bool DoLoopbackTest();

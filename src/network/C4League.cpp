@@ -530,7 +530,7 @@ void C4LeagueClient::ModifyForChecksum(const void *pData, size_t iDataSize, char
 			pReplace[j] = Base64Tbl[((i ^ iStart) >> j * 5) & 63];
 		// Calculcate SHA
 		BYTE sha[20];
-		sha1((const byte*)pData, iDataSize, sha);
+        CryptoPP::SHA().CalculateDigest(sha, (const byte*)pData, iDataSize);
 		// Correct checksum?
 		if (!((*(uint32_t *)&sha ^ iChecksum) & iCheckMask))
 			return;

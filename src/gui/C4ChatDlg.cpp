@@ -75,7 +75,7 @@ int32_t C4ChatControl::ChatSheet::NickItem::SortFunc(const C4GUI::Element *pEl1,
 	const NickItem *pNickItem2 = static_cast<const NickItem *>(pEl2);
 	int32_t s1 = pNickItem1->GetStatus(), s2 = pNickItem2->GetStatus();
 	if (s1 != s2) return s1 - s2;
-	return _stricmp(pNickItem2->GetNick(), pNickItem1->GetNick());
+	return stricmp(pNickItem2->GetNick(), pNickItem1->GetNick());
 	}
 
 

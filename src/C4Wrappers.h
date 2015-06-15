@@ -213,7 +213,7 @@ template <class CompT, class StructT>
 		}
 	}
 template <class CompT, class StructT>
-	bool CompileFromBuf_LogWarn(StructT &TargetStruct, const typename CompT::InT &SrcBuf, const char *szName)
+	bool CompileFromBuf_LogWarn(StructT &&TargetStruct, const typename CompT::InT &SrcBuf, const char *szName)
 	{
 		try
 		{
@@ -234,7 +234,7 @@ template <class CompT, class StructT>
 		}
 	}
 template <class CompT, class StructT>
-	bool DecompileToBuf_Log(StructT &TargetStruct, typename CompT::OutT *pOut, const char *szName)
+	bool DecompileToBuf_Log(StructT TargetStruct, typename CompT::OutT *pOut, const char *szName)
 	{
 		if(!pOut) return false;
 		try

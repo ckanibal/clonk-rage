@@ -51,7 +51,7 @@ BOOL CloseLog()
 int GetLogFD()
 	{
 	if (C4LogFile)
-		return _fileno(C4LogFile);
+		return fileno(C4LogFile);
 	else
 		return -1;
 	}

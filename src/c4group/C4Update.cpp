@@ -18,6 +18,10 @@ C4Config *GetCfg();
 #include <direct.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 // helper
 BOOL C4Group_CopyEntry(C4Group *pFrom, C4Group *pTo, const char *strItemName)
 {
@@ -786,7 +790,7 @@ BOOL C4UpdatePackage::MkUp(C4Group *pGrp1, C4Group *pGrp2, C4GroupEx *pUpGrp, BO
 				// delete group (do not remove groups that existed before!)
 				if(strTempGroupName[0])
 					if(remove(strTempGroupName))
-						if(_rmdir(strTempGroupName))
+						if(rmdir(strTempGroupName))
 						{ WriteLog("Error: could not delete temporary directory\n"); return FALSE; }
 			delete pChildGrp1;
 		}

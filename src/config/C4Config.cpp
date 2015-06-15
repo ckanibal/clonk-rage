@@ -485,7 +485,7 @@ BOOL C4Config::Load(BOOL forceWorkingDirectory, const char *szConfigFile)
 	if (SEqual(Network.LocalName.getData(), "Unknown")) 
 		{
 		char LocalName[25+1]; *LocalName = 0;
-		gethostname(LocalName, 25);
+		gethostbyname2(LocalName, 25);
 		if (*LocalName) Network.LocalName.Copy(LocalName);
 		}
 	#ifdef HAVE_WINSOCK

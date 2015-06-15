@@ -7,6 +7,7 @@
 
 #ifdef HAVE_IO_H
 #include <io.h>
+#include <unistd.h>
 #endif
 #include <CStdFile.h>
 #include <StdBuf.h>
