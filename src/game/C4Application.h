@@ -4,7 +4,7 @@
 #define INC_C4Application
 
 #include <config/C4Config.h>
-#include "C4group/C4Group.h"
+#include "c4group/C4Group.h"
 #include <platform/C4MusicSystem.h>
 #include <platform/C4SoundSystem.h>
 #include "C4Components.h"

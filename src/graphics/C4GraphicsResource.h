@@ -5,8 +5,8 @@
 #ifndef INC_C4GraphicsResource
 #define INC_C4GraphicsResource
 
-#include "C4group/C4Group.h"
-#include "C4group/C4GroupSet.h"
+#include "c4group/C4Group.h"
+#include "c4group/C4GroupSet.h"
 #include "graphics/C4Surface.h"
 #include "graphics/C4FacetEx.h"
 

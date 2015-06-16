@@ -4,7 +4,7 @@
 #ifndef INC_C4Extra
 #define INC_C4Extra
 
-#include "C4group/C4Group.h"
+#include "c4group/C4Group.h"
 
 class C4Extra
 	{
