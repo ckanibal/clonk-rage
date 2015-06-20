@@ -4,10 +4,10 @@
 
 // *** C4Network2IODiscover
 
-struct C4Network2IODiscoverReply 
-{ 
+struct C4Network2IODiscoverReply
+{
 	char c;
-	int16_t Port;
+	uint16_t Port;
 };
 
 void C4Network2IODiscover::OnPacket(const class C4NetIOPacket &rPacket, C4NetIO *pNetIO)

@@ -4,7 +4,7 @@
 
 #include "C4Include.h"
 #include "gui/C4Gui.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "gui/C4LoaderScreen.h"
 #include "game/C4Application.h"
 
@@ -136,7 +136,7 @@ bool Edit::InsertText(const char *szText, bool fUser)
 	if (iSelectionStart != iSelectionEnd) DeleteSelection();
 	// check buffer length
 	int32_t iTextLen = SLen(szText);
-	int32_t iTextEnd = SLen(Text); 
+	int32_t iTextEnd = SLen(Text);
 	bool fBufferOK = (iTextLen + iTextEnd <= (iMaxTextLength-1));
 	if (!fBufferOK) iTextLen -= iTextEnd+iTextLen - (iMaxTextLength-1);
 	if (iTextLen <= 0) return false;
@@ -243,11 +243,11 @@ bool Edit::DoFinishInput(bool fPasting, bool fPastingMore)
 			if (pDlg) pDlg->UserClose(true);
 			break;
 			}
-		
+
 		case IR_CloseEdit: // stop any pastes and remove this control
 			delete this;
 			break;
-		
+
 		case IR_Abort: // do nothing and stop any pastes
 			break;
 		}
@@ -266,20 +266,20 @@ bool Edit::Copy()
 	if (!OpenClipboard(Application.GetWindowHandle())) return false;
 	// must empty the global clipboard, so the application clipboard equals the Windows clipboard
 	EmptyClipboard();
-	// allocate a global memory object for the text. 
+	// allocate a global memory object for the text.
 	int32_t iTextLen = iSelEnd-iSelBegin;
 	HANDLE hglbCopy = GlobalAlloc(GMEM_MOVEABLE, iTextLen+1);
 	if (hglbCopy == NULL) { CloseClipboard(); return false; }
-	// lock the handle and copy the text to the buffer. 
-	char *szCopyChar = (char *) GlobalLock(hglbCopy); 
+	// lock the handle and copy the text to the buffer.
+	char *szCopyChar = (char *) GlobalLock(hglbCopy);
 	if(!cPasswordMask)
 		SCopy(Text+iSelBegin, szCopyChar, iTextLen);
 	else
 		memset(szCopyChar, cPasswordMask, iTextLen);
 	szCopyChar[iTextLen]=0;
-	GlobalUnlock(hglbCopy); 
-	// place the handle on the clipboard. 
-	bool fSuccess = !!SetClipboardData(CF_TEXT, hglbCopy); 
+	GlobalUnlock(hglbCopy);
+	// place the handle on the clipboard.
+	bool fSuccess = !!SetClipboardData(CF_TEXT, hglbCopy);
 	// close clipboard
 	CloseClipboard();
 	// return whether copying was successful
@@ -352,10 +352,10 @@ bool Edit::Paste()
 			if (*szText) fSuccess = fSuccess && InsertText(szText, true);
 			}
 		// unlock mem
-		GlobalUnlock(hglb); 
+		GlobalUnlock(hglb);
 		}
 	// close clipboard
-	CloseClipboard(); 
+	CloseClipboard();
 	// return whether insertion was successful
 #else
 	InsertText(Application.Paste().getData(), true);
@@ -838,4 +838,3 @@ bool LabeledEdit::GetControlSize(int *piWdt, int *piHgt, const char *szForText, 
 	}
 
 }; // end of namespace
-

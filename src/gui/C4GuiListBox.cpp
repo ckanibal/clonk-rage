@@ -4,7 +4,7 @@
 
 #include "C4Include.h"
 #include "gui/C4Gui.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "gui/C4LoaderScreen.h"
 #include "game/C4Application.h"
 
@@ -486,7 +486,7 @@ bool ListBox::AddElement(Element *pChild, int32_t iIndent)
 			rcChildBounds.y = pChild->GetPrev()->GetBounds().y;
 			int32_t col = pChild->GetPrev()->GetBounds().x / iMultiColItemWidth + 1;
 			if (col >= iColCount)
-				{ 
+				{
 				col = 0;
 				int32_t cnt = iColCount;
 				int32_t iPrevLineHgt = 0;
@@ -644,4 +644,3 @@ void ListBox::SortElements(SortFunction SortFunc, void *par)
 	}
 
 }; // end of namespace
-

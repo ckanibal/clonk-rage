@@ -1,5 +1,5 @@
 /* Copyright (C) 1998-2000  Matthes Bender  RedWolf Design */
-/* Linux conversion by Günther Brammer, 2005 */
+/* Linux conversion by Gï¿½nther Brammer, 2005 */
 
 /* Lots of file helpers */
 
@@ -378,7 +378,7 @@ bool WildcardMatch(const char *szWildcard, const char *szString) {
   return !*pWild && !*pPos;
 }
 
-#define SStripChars "!\"§%&/=?+*#:;<>\\."
+#define SStripChars "!\"ï¿½%&/=?+*#:;<>\\."
 // create a valid file name from some title
 void MakeFilenameFromTitle(char *szTitle) {
   // copy all chars but those to be stripped
@@ -839,7 +839,7 @@ DirectoryIterator::~DirectoryIterator() {
 }
 #endif
 const char *DirectoryIterator::operator*() const {
-  return filename[0] ? filename : false;
+  return filename[0] ? filename : NULL;
 }
 void DirectoryIterator::operator++(int) { operator++(); }
 

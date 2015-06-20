@@ -11,7 +11,7 @@
 #include "C4Console.h"
 #include "C4Random.h"
 #include "graphics/C4SurfaceFile.h"
-#include "game/C4Fullscreen.h"
+#include "C4FullScreen.h"
 #include "gui/C4Gui.h"
 #include "gui/C4LoaderScreen.h"
 #include "C4Wrappers.h"
@@ -33,7 +33,7 @@ C4GraphicsSystem::~C4GraphicsSystem()
 	}
 #ifdef _WIN32
 LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	
+
 BOOL C4GraphicsSystem::RegisterViewportClass(HINSTANCE hInst)
 	{
 	// register landscape viewport class
@@ -41,15 +41,15 @@ BOOL C4GraphicsSystem::RegisterViewportClass(HINSTANCE hInst)
 	WndClass.cbSize=sizeof(WNDCLASSEX);
   WndClass.style         = CS_DBLCLKS | CS_BYTEALIGNCLIENT;
   WndClass.lpfnWndProc   = ViewportWinProc;
-  WndClass.cbClsExtra    = 0;		 
-  WndClass.cbWndExtra    = 0;	 
-  WndClass.hInstance     = hInst;              
+  WndClass.cbClsExtra    = 0;
+  WndClass.cbWndExtra    = 0;
+  WndClass.hInstance     = hInst;
   WndClass.hCursor       = LoadCursor (NULL, IDC_ARROW);
   WndClass.hbrBackground = (HBRUSH) COLOR_BACKGROUND;
   WndClass.lpszMenuName  = NULL;
   WndClass.lpszClassName = C4ViewportClassName;
 	WndClass.hIcon         = LoadIcon (hInst, MAKEINTRESOURCE (IDI_01_C4S) );
-  WndClass.hIconSm       = LoadIcon (hInst, MAKEINTRESOURCE (IDI_01_C4S) );  
+  WndClass.hIconSm       = LoadIcon (hInst, MAKEINTRESOURCE (IDI_01_C4S) );
 	if (!RegisterClassEx(&WndClass)) return FALSE;
 	// register GUI dialog class
 	return C4GUI::Dialog::RegisterWindowClass(hInst);
@@ -60,7 +60,7 @@ BOOL C4GraphicsSystem::Init()
 #ifdef _WIN32
 	// Register viewport class
 	if (!fViewportClassRegistered)
-		if (!RegisterViewportClass(Application.hInstance)) 
+		if (!RegisterViewportClass(Application.hInstance))
 			return FALSE;
 	fViewportClassRegistered=TRUE;
 #endif
@@ -81,7 +81,7 @@ void C4GraphicsSystem::Clear()
 	if (pLoaderScreen) { delete pLoaderScreen; pLoaderScreen=NULL; }
 	// Close viewports
 	C4Viewport *next;
-	while (FirstViewport) 
+	while (FirstViewport)
 		{
 		next=FirstViewport->Next;
 		delete FirstViewport;
@@ -146,7 +146,7 @@ void C4GraphicsSystem::Execute()
 
 	// fullscreen GUI?
 	if (Application.isFullScreen && Game.pGUI && C4GUI::IsActive() && (Game.pGUI->HasFullscreenDialog(false) || !Game.IsRunning))
-		{  
+		{
 		if (!fBGDrawn && iRedrawBackground) ClearFullscreenBackground();
 		Game.pGUI->Render(!fBGDrawn);
 		FinishDrawing();
@@ -173,7 +173,7 @@ void C4GraphicsSystem::Execute()
 		SetMouseInGUI(false, false);
 
 	// Viewports
-	for (C4Viewport *cvp=FirstViewport; cvp; cvp=cvp->Next)	
+	for (C4Viewport *cvp=FirstViewport; cvp; cvp=cvp->Next)
 		cvp->Execute();
 
 	if (Application.isFullScreen)
@@ -192,7 +192,7 @@ void C4GraphicsSystem::Execute()
 
 	// InGame-GUI
 	if (Game.pGUI && C4GUI::IsActive())
-		{  
+		{
 		Game.pGUI->Render(false);
 		}
 
@@ -209,7 +209,7 @@ void C4GraphicsSystem::Execute()
 	// Video record & status (fullsrceen)
 	if (Application.isFullScreen)
 		Video.Execute();
-	
+
 	// done
 	FinishDrawing();
 	}
@@ -222,7 +222,7 @@ BOOL C4GraphicsSystem::CloseViewport(C4Viewport * cvp)
 		{
 		next=cvp2->Next;
 		if (cvp2 == cvp)
-			{			
+			{
 			delete cvp;
 			StartSoundEffect("CloseViewport");
 			if (prev) prev->Next=next;
@@ -268,10 +268,10 @@ BOOL C4GraphicsSystem::CreateViewport(int32_t iPlayer, bool fSilent)
 	int32_t iLastCount = GetViewportCount();
 	C4Viewport *nvp = new C4Viewport;
 	BOOL fOkay = FALSE;
-	if (Application.isFullScreen) 
+	if (Application.isFullScreen)
 		fOkay = nvp->Init(iPlayer, false);
-	else 
-		fOkay = nvp->Init(&Console,&Application,iPlayer); 
+	else
+		fOkay = nvp->Init(&Console,&Application,iPlayer);
 	if (!fOkay)	{ delete nvp; return FALSE; }
 	C4Viewport *pLast;
 	for (pLast=FirstViewport; pLast && pLast->Next; pLast=pLast->Next);
@@ -367,10 +367,10 @@ BOOL C4GraphicsSystem::CloseViewport(int32_t iPlayer, bool fSilent)
 		{
 		next=cvp->Next;
 		if (cvp->Player==iPlayer || (iPlayer==NO_OWNER && cvp->fIsNoOwnerViewport))
-			{			
-			delete cvp;	
-			if (prev) prev->Next=next; 
-			else FirstViewport=next;	
+			{
+			delete cvp;
+			if (prev) prev->Next=next;
+			else FirstViewport=next;
 			}
 		else
 			prev=cvp;
@@ -394,7 +394,7 @@ void C4GraphicsSystem::RecalculateViewports()
 
 	// Viewport area
 	int32_t iBorderTop = 0, iBorderBottom = 0;
-	if (Config.Graphics.UpperBoard) 
+	if (Config.Graphics.UpperBoard)
 		iBorderTop = C4UpperBoardHeight;
 	iBorderBottom = MessageBoard.Output.Hgt;
 	ViewportArea.Set(Application.DDraw->lpBack,0,iBorderTop, Config.Graphics.ResX, Config.Graphics.ResY-iBorderTop-iBorderBottom);
@@ -441,7 +441,7 @@ void C4GraphicsSystem::RecalculateViewports()
 				cOffX=(ViewportArea.Wdt-ciViewsX*Min<int32_t>(cViewWdt, GBackWdt+2*ViewportScrollBorder))/2;
 			if (iViewsH*Min<int32_t>(cViewHgt, GBackHgt+2*ViewportScrollBorder)<ViewportArea.Hgt)
 				cOffY=(ViewportArea.Hgt-iViewsH*Min<int32_t>(cViewHgt, GBackHgt+2*ViewportScrollBorder))/2 + ViewportArea.Y;
-			if (Config.Graphics.SplitscreenDividers) 
+			if (Config.Graphics.SplitscreenDividers)
 				{
 				if (cViewX<ciViewsX-1) cOffWdt=4;
 				if (cViewH<iViewsH-1) cOffHgt=4;
@@ -495,7 +495,7 @@ void C4GraphicsSystem::SortViewportsByPlayerControl()
 	do
 		{
 		fSorted = TRUE;
-		for (pPrev=NULL,pView=FirstViewport; pView && (pNext = pView->Next); pView=pNext)	
+		for (pPrev=NULL,pView=FirstViewport; pView && (pNext = pView->Next); pView=pNext)
 			{
 			// Get players
 			pPlr1 = Game.Players.Get(pView->Player);
@@ -522,7 +522,7 @@ void C4GraphicsSystem::SortViewportsByPlayerControl()
 	}
 
 void C4GraphicsSystem::MouseMove(int32_t iButton, int32_t iX, int32_t iY, DWORD dwKeyParam, class C4Viewport *pVP)
-	{	
+	{
 	// pass on to GUI
 	// Special: Don't pass if dragging and button is not upped
 	if (Game.pGUI && Game.pGUI->IsActive() && !Game.MouseControl.IsDragging())
@@ -554,9 +554,9 @@ void C4GraphicsSystem::MouseMoveToViewport(int32_t iButton, int32_t iX, int32_t 
 	// Pass on to mouse controlled viewport
 	for (C4Viewport *cvp=FirstViewport; cvp; cvp=cvp->Next)
 		if (Game.MouseControl.IsViewport(cvp))
-			Game.MouseControl.Move( iButton, 
-															BoundBy<int32_t>(iX-cvp->OutX,0,cvp->ViewWdt-1), 
-															BoundBy<int32_t>(iY-cvp->OutY,0,cvp->ViewHgt-1), 
+			Game.MouseControl.Move( iButton,
+															BoundBy<int32_t>(iX-cvp->OutX,0,cvp->ViewWdt-1),
+															BoundBy<int32_t>(iY-cvp->OutY,0,cvp->ViewHgt-1),
 															dwKeyParam );
 	}
 
@@ -708,7 +708,7 @@ void C4GraphicsSystem::FlashMessage(const char *szMessage)
 	// Calculate message time
 	FlashMessageTime = SLen(FlashMessageText) * 2;
 	// Initial position
-	FlashMessageX = -1; 
+	FlashMessageX = -1;
 	FlashMessageY = 10;
 	// Upper board active: stay below upper board
 	if (Config.Graphics.UpperBoard)
@@ -722,7 +722,7 @@ void C4GraphicsSystem::FlashMessage(const char *szMessage)
 
 void C4GraphicsSystem::FlashMessageOnOff(const char *strWhat, bool fOn)
 	{
-	StdStrBuf strMessage; 
+	StdStrBuf strMessage;
 	strMessage.Format("%s: %s", strWhat, LoadResStr(fOn ? "IDS_CTL_ON" : "IDS_CTL_OFF"));
 	FlashMessage(strMessage.getData());
 	}
@@ -793,7 +793,7 @@ int32_t C4GraphicsSystem::GetAudibility(int32_t iX, int32_t iY, int32_t *iPan, i
 	int32_t iAudible=0; *iPan = 0;
 	for (C4Viewport *cvp=FirstViewport; cvp; cvp=cvp->Next)
     {
-		iAudible = Max( iAudible, 
+		iAudible = Max( iAudible,
 										BoundBy<int32_t>(100-100*Distance(cvp->ViewX+cvp->ViewWdt/2,cvp->ViewY+cvp->ViewHgt/2,iX,iY)/C4AudibilityRadius,0,100) );
     *iPan += (iX-(cvp->ViewX+cvp->ViewWdt/2)) / 5;
     }

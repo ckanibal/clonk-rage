@@ -7,7 +7,7 @@
 
 #ifndef BIG_C4INCLUDE
 #include "C4Components.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "C4Console.h"
 #include "C4Log.h"
 #include "player/C4Player.h"
@@ -91,7 +91,7 @@ BOOL C4PlayerList::PositionTaken(int iPosition) const
   {
 	for (C4Player *pPlr=First; pPlr; pPlr=pPlr->Next)
     if (pPlr->Position==iPosition)
-      return TRUE; 
+      return TRUE;
   return FALSE;
   }
 
@@ -99,7 +99,7 @@ BOOL C4PlayerList::ColorTaken(int iColor) const
   {
   for (C4Player *pPlr=First; pPlr; pPlr=pPlr->Next)
     if (pPlr->Color==iColor)
-      return TRUE; 
+      return TRUE;
   return FALSE;
   }
 
@@ -127,7 +127,7 @@ BOOL C4PlayerList::ControlTaken(int iControl) const
   for (C4Player *pPlr=First; pPlr; pPlr=pPlr->Next)
     if (pPlr->Control==iControl)
 			if (pPlr->LocalControl)
-				return TRUE; 
+				return TRUE;
   return FALSE;
   }
 
@@ -201,7 +201,7 @@ int C4PlayerList::GetCount(C4PlayerType eType) const
 int C4PlayerList::GetFreeNumber() const
 	{
 	int iNumber=-1;
-	BOOL fFree; 
+	BOOL fFree;
 	do
 		{
 		iNumber++; fFree=TRUE;
@@ -256,7 +256,7 @@ BOOL C4PlayerList::Remove(C4Player *pPlr, bool fDisconnect, bool fNoCalls)
 
 	//for (C4Player *pPrev=First; pPrev; pPrev=pPrev->Next)
 	//	if (pPrev->Next==pPlr) break;
-	C4Player *pPrev=First; 
+	C4Player *pPrev=First;
 	while (pPrev && pPrev->Next!=pPlr) pPrev=pPrev->Next;
 	if (pPrev) pPrev->Next=pPlr->Next;
 	else First=pPlr->Next;
@@ -290,7 +290,7 @@ C4Player* C4PlayerList::Join(const char *szFilename, BOOL fScenarioInit, int iAt
 	// safeties
 	if (szFilename && !*szFilename) szFilename = NULL;
 
-	// Log				
+	// Log
 	LogF(LoadResStr(fScenarioInit ? "IDS_PRC_JOINPLR" : "IDS_PRC_RECREATE"),pInfo->GetName());
 
 	// Too many players
@@ -312,9 +312,9 @@ C4Player* C4PlayerList::Join(const char *szFilename, BOOL fScenarioInit, int iAt
 	C4Player *pLast=First;
 	for (; pLast && pLast->Next; pLast=pLast->Next);
 	if (pLast) pLast->Next=pPlr; else First = pPlr;
-	
+
 	// Init
-	if (!pPlr->Init(GetFreeNumber(),iAtClient,szAtClientName,szFilename,fScenarioInit,pInfo)) 
+	if (!pPlr->Init(GetFreeNumber(),iAtClient,szAtClientName,szFilename,fScenarioInit,pInfo))
 		{	Remove(pPlr, false, false); Log(LoadResStr("IDS_PRC_JOINFAIL")); return NULL; }
 
 	// Done
@@ -394,7 +394,7 @@ BOOL C4PlayerList::Save(C4Group &hGroup, bool fStoreTiny, const C4PlayerInfoList
 		if(!PlrGroup.Open(sTempFilename.getData(), !fStoreOnOriginal))
 			return FALSE;
 		// Save player
-		if (!pPlr->Save(PlrGroup, true, fStoreOnOriginal)) return FALSE;		
+		if (!pPlr->Save(PlrGroup, true, fStoreOnOriginal)) return FALSE;
 		PlrGroup.Close();
 		// Add temp file to group
 		if (!hGroup.Move(sTempFilename.getData(), pNfo->GetFilename())) return FALSE;
@@ -406,7 +406,7 @@ BOOL C4PlayerList::Save(bool fSaveLocalOnly)
 	{
 	// do not save in replays
 	if (Game.C4S.Head.Replay) return TRUE;
-	// Save to external player files 
+	// Save to external player files
 	for (C4Player *pPlr=First; pPlr; pPlr=pPlr->Next)
 		if (pPlr->GetType() != C4PT_Script)
 			if (!fSaveLocalOnly || pPlr->LocalControl)
@@ -631,7 +631,7 @@ int C4PlayerList::ControlTakenBy(int iControl) const
   for (C4Player *pPlr=First; pPlr; pPlr=pPlr->Next)
     if (pPlr->Control==iControl)
 			if (pPlr->LocalControl)
-				return pPlr->Number; 
+				return pPlr->Number;
   return NO_OWNER;
 	}
 
@@ -640,7 +640,7 @@ BOOL C4PlayerList::MouseControlTaken() const
   for (C4Player *pPlr=First; pPlr; pPlr=pPlr->Next)
     if (pPlr->MouseControl)
 			if (pPlr->LocalControl)
-				return TRUE; 
+				return TRUE;
   return FALSE;
 	}
 

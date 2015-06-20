@@ -10,7 +10,7 @@
 #include "object/C4Object.h"
 #include "object/C4Command.h"
 #include "game/C4Application.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "C4FogOfWar.h"
 #include "gui/C4Gui.h"
 #include "C4Wrappers.h"
@@ -127,7 +127,7 @@ void C4MouseControl::Execute()
 	if (!Active || !fMouseOwned) return;
 
 	// Scrolling/continuous update
-	if (Scrolling || !Tick5) 
+	if (Scrolling || !Tick5)
 		{
 		WORD wKeyState=0;
 		if (Application.IsControlDown()) wKeyState|=MK_CONTROL;
@@ -138,7 +138,7 @@ void C4MouseControl::Execute()
 
 bool C4MouseControl::Init(int32_t iPlayer)
 	{
-	Clear(); 
+	Clear();
 	Default();
 	Active = TRUE;
 	Player = iPlayer;
@@ -204,14 +204,14 @@ void C4MouseControl::Move(int32_t iButton, int32_t iX, int32_t iY, DWORD dwKeyFl
 	// get view position
 	C4Rect rcViewport = Viewport->GetOutputRect();
 	fctViewport.Set(NULL, rcViewport.x, rcViewport.y, rcViewport.Wdt, rcViewport.Hgt);
-	ViewX=Viewport->ViewX; ViewY=Viewport->ViewY; 
+	ViewX=Viewport->ViewX; ViewY=Viewport->ViewY;
 	// First time viewport attachment: center mouse
 #ifdef _WIN32
-	if (!InitCentered || fCenter) 
-	{ 
-		iX = Viewport->ViewWdt/2; 
-		iY = Viewport->ViewHgt/2; 
-		if (Application.isFullScreen) 
+	if (!InitCentered || fCenter)
+	{
+		iX = Viewport->ViewWdt/2;
+		iY = Viewport->ViewHgt/2;
+		if (Application.isFullScreen)
 			{
 			int32_t iMidX = Viewport->OutX + iX;
 			int32_t iMidY = Viewport->OutY + iY;
@@ -222,28 +222,28 @@ void C4MouseControl::Move(int32_t iButton, int32_t iX, int32_t iY, DWORD dwKeyFl
 				}
 			SetCursorPos(iMidX, iMidY);
 			}
-		InitCentered = true; 
+		InitCentered = true;
 	}
 #else
-	if (!InitCentered || fCenter) 
-	{ 
-		iX = Viewport->ViewWdt/2; 
-		iY = Viewport->ViewHgt/2; 
-		if (Application.isFullScreen) 
+	if (!InitCentered || fCenter)
+	{
+		iX = Viewport->ViewWdt/2;
+		iY = Viewport->ViewHgt/2;
+		if (Application.isFullScreen)
 			{
 			//int32_t iMidX = Viewport->OutX + iX;
 			//int32_t iMidY = Viewport->OutY + iY;
 			//FIXMESetCursorPos(iMidX, iMidY);
 			}
-		InitCentered = true; 
+		InitCentered = true;
 	}
 #endif
 	// passive mode: scrolling and player buttons only
 	if (IsPassive())
 		{
-		if (iButton != C4MC_Button_Wheel)	
+		if (iButton != C4MC_Button_Wheel)
 			{
-			VpX=iX; VpY=iY; X=ViewX+VpX; Y=ViewY+VpY;	
+			VpX=iX; VpY=iY; X=ViewX+VpX; Y=ViewY+VpY;
 			}
 		UpdateTargetRegion();
 		UpdateScrolling();
@@ -253,10 +253,10 @@ void C4MouseControl::Move(int32_t iButton, int32_t iX, int32_t iY, DWORD dwKeyFl
 		return;
 		}
 
-	if (iButton != C4MC_Button_Wheel)	
+	if (iButton != C4MC_Button_Wheel)
 		{
 		// Position
-		VpX=iX; VpY=iY; X=ViewX+VpX; Y=ViewY+VpY;	
+		VpX=iX; VpY=iY; X=ViewX+VpX; Y=ViewY+VpY;
 		// Control state
 		ControlDown=false; if (dwKeyFlags & MK_CONTROL) ControlDown=true;
 		ShiftDown=false; if (dwKeyFlags & MK_SHIFT) ShiftDown=true;
@@ -266,12 +266,12 @@ void C4MouseControl::Move(int32_t iButton, int32_t iX, int32_t iY, DWORD dwKeyFl
 		UpdateScrolling();
 		// Fog of war
 		UpdateFogOfWar();
-	
+
 		// Blocked by fog of war: evaluate button up, dragging and region controls only
-		if (FogOfWar && Drag == C4MC_Drag_None && !TargetRegion) 
+		if (FogOfWar && Drag == C4MC_Drag_None && !TargetRegion)
 			{
 			// Left button up
-			if (iButton==C4MC_Button_LeftUp) 
+			if (iButton==C4MC_Button_LeftUp)
 				{
 				LeftButtonDown=false;
 				// End any drag
@@ -299,7 +299,7 @@ void C4MouseControl::Move(int32_t iButton, int32_t iX, int32_t iY, DWORD dwKeyFl
 				case C4MC_Drag_Selecting: DragSelect(); break;
 				case C4MC_Drag_Moving: DragMoving(); break;
 				case C4MC_Drag_Construct: DragConstruct(); break;
-				}			
+				}
 			break;
 		//------------------------------------------------------------------------------------------
 		case C4MC_Button_LeftDown: LeftDown(); break;
@@ -401,7 +401,7 @@ void C4MouseControl::Draw(C4FacetEx &cgo)
 		//------------------------------------------------------------------------------------------
 		case C4MC_Drag_Selecting:
 			// Draw frame
-			Application.DDraw->DrawFrame( cgo.Surface, 
+			Application.DDraw->DrawFrame( cgo.Surface,
 															cgo.X+VpX,
 															cgo.Y+VpY,
 															DownX+cgo.X-cgo.TargetX,
@@ -438,30 +438,30 @@ void C4MouseControl::Draw(C4FacetEx &cgo)
 void C4MouseControl::UpdateCursorTarget()
 	{
 	int32_t iLastCursor = Cursor;
-  
+
 	// Scrolling: no other target
 	if (Scrolling) { TargetObject=NULL; return; }
 
 	// On target region
-	if (TargetRegion) 
-		{ 
-		TargetObject=NULL; 
+	if (TargetRegion)
+		{
+		TargetObject=NULL;
 		if (Help) Cursor=C4MC_Cursor_Help;
-		return; 
+		return;
 		}
 
 	// Check player cursor
 	C4Object *pPlrCursor = pPlayer ? pPlayer->Cursor : NULL;
-	
+
 	// Target object
   DWORD ocf=OCF_Grab | OCF_Chop | OCF_Container | OCF_Construct | OCF_Living | OCF_Carryable | OCF_Container | OCF_Exclusive;
 	if (Help) ocf|=OCF_All;
   TargetObject=GetTargetObject(X,Y,ocf);
 	if (TargetObject && FogOfWar && !(TargetObject->Category & C4D_IgnoreFoW)) TargetObject = NULL;
-  
+
   // Movement
   if (!FogOfWar && !IsPassive()) Cursor=C4MC_Cursor_Crosshair;
-	
+
 	// Dig
 	if (!FogOfWar && GBackSolid(X,Y) && !IsPassive())
 		{
@@ -477,11 +477,11 @@ void C4MouseControl::UpdateCursorTarget()
 		// get position
 		int32_t iObjX, iObjY; TargetObject->GetViewPos(iObjX, iObjY, ViewX, ViewY, fctViewport);
 		// Enter (containers)
-    if (ocf & OCF_Container) 
+    if (ocf & OCF_Container)
 			if (TargetObject->OCF & OCF_Entrance)
 				Cursor=C4MC_Cursor_Enter;
 		// Grab / Ungrab
-    if (ocf & OCF_Grab) 
+    if (ocf & OCF_Grab)
 			{
 			Cursor=C4MC_Cursor_Grab;
 			if (pPlrCursor)
@@ -490,13 +490,13 @@ void C4MouseControl::UpdateCursorTarget()
 						Cursor=C4MC_Cursor_Ungrab;
 			}
 		// Object
-		if (ocf & OCF_Carryable) 
+		if (ocf & OCF_Carryable)
 			{
 			Cursor=C4MC_Cursor_Object;
 			if (ocf & OCF_InSolid) Cursor=C4MC_Cursor_DigObject;
 			}
 		// Chop (reduced range)
-    if (ocf & OCF_Chop) 
+    if (ocf & OCF_Chop)
 			if (Inside<int32_t>(X-iObjX,-TargetObject->Shape.Wdt/3,+TargetObject->Shape.Wdt/3))
 				if (Inside<int32_t>(Y-iObjY,-TargetObject->Shape.Wdt/2,+TargetObject->Shape.Wdt/3))
 					Cursor=C4MC_Cursor_Chop;
@@ -531,7 +531,7 @@ void C4MouseControl::UpdateCursorTarget()
 					}
 
 	// Help
-	if (Help) 
+	if (Help)
 		Cursor=C4MC_Cursor_Help;
 	// passive cursor
 	else if (IsPassive())
@@ -543,9 +543,9 @@ void C4MouseControl::UpdateCursorTarget()
 		TimeOnTargetObject++;
 		if (TimeOnTargetObject>=C4MC_Time_on_Target)
 			{
-			const char* idCaption = 0; 
-			const char *szName = ""; 
-			bool fDouble = false; 
+			const char* idCaption = 0;
+			const char *szName = "";
+			bool fDouble = false;
 			C4Def *pDef;
 			if (TargetObject) szName=TargetObject->GetName();
 			// Target caption by cursor
@@ -562,8 +562,8 @@ void C4MouseControl::UpdateCursorTarget()
 				case C4MC_Cursor_Enter: idCaption="IDS_CON_ENTER"; fDouble=true; break;
 				case C4MC_Cursor_Attack: idCaption="IDS_CON_ATTACK"; fDouble=true; break;
 				case C4MC_Cursor_Help: idCaption="IDS_CON_NAME"; break;
-				case C4MC_Cursor_DigMaterial: 
-					if (MatValid(GBackMat(X,Y))) 
+				case C4MC_Cursor_DigMaterial:
+					if (MatValid(GBackMat(X,Y)))
 						if (pDef=C4Id2Def(Game.Material.Map[GBackMat(X,Y)].Dig2Object))
 							{ idCaption="IDS_CON_DIGOUT"; fDouble=true; szName=pDef->GetName(); }
 					break;
@@ -622,7 +622,7 @@ int32_t C4MouseControl::UpdateObjectSelection()
 
 int32_t C4MouseControl::UpdateSingleSelection()
 	{
-	
+
 	// Set single crew selection if cursor on crew (clear prior object selection)
 	if (TargetObject && (Cursor==C4MC_Cursor_Select))
 		{	Selection.Clear(); Selection.Add(TargetObject, C4ObjectList::stNone);	}
@@ -645,7 +645,7 @@ void C4MouseControl::UpdateScrolling()
 	// Scrolling on border
 	if (VpX==0)
 		{ Cursor=C4MC_Cursor_Left; ScrollView(-ScrollSpeed,0,Viewport->ViewWdt,Viewport->ViewHgt); Scrolling=true; }
-	if (VpY==0) 
+	if (VpY==0)
 		{ Cursor=C4MC_Cursor_Up; ScrollView(0,-ScrollSpeed,Viewport->ViewWdt,Viewport->ViewHgt); Scrolling=true; }
 	if (VpX==Viewport->ViewWdt-1)
 		{ Cursor=C4MC_Cursor_Right; ScrollView(+ScrollSpeed,0,Viewport->ViewWdt,Viewport->ViewHgt); Scrolling=true; }
@@ -707,7 +707,7 @@ void C4MouseControl::UpdateTargetRegion()
 
 BOOL C4MouseControl::UpdatePutTarget(BOOL fVehicle)
 	{
-	
+
 	// Target object
   DWORD ocf=OCF_Container;
 	StdStrBuf sName;
@@ -732,20 +732,20 @@ BOOL C4MouseControl::UpdatePutTarget(BOOL fVehicle)
 		// Put target found
 		return TRUE;
 		}
-  
+
 	return FALSE;
 	}
 
 void C4MouseControl::LeftDown()
 	{
 	// Set flag
-	LeftButtonDown=true; 
+	LeftButtonDown=true;
 	// Store down values (same MoveRightDown -> use StoreDown)
 	DownX=X; DownY=Y;
 	DownCursor=Cursor;
 	DownTarget=TargetObject;
 	DownRegion.Default();
-	if (TargetRegion) 
+	if (TargetRegion)
 		{
 		DownRegion=(*TargetRegion);
 		DownTarget=TargetRegion->Target;
@@ -799,7 +799,7 @@ void C4MouseControl::LeftUp()
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		case C4MC_Drag_Construct: ButtonUpDragConstruct(); break;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		}			
+		}
 	}
 
 void C4MouseControl::DragMoving()
@@ -839,9 +839,9 @@ void C4MouseControl::DragMoving()
 			// Check throw
 			if (FindThrowingPosition(X,Y,fixThrow*iDir,-fixThrow,iHeight,iX,iY)
 			 || FindThrowingPosition(X,Y,fixThrow*(iDir*=-1),-fixThrow,iHeight,iX,iY))
-				{ 
-				Cursor = (iDir==-1) ? C4MC_Cursor_ThrowLeft : C4MC_Cursor_ThrowRight; 
-				ShowPointX=iX; ShowPointY=iY; 
+				{
+				Cursor = (iDir==-1) ? C4MC_Cursor_ThrowLeft : C4MC_Cursor_ThrowRight;
+				ShowPointX=iX; ShowPointY=iY;
 				return;
 				}
 			}
@@ -861,7 +861,7 @@ void C4MouseControl::DragMoving()
 
 void C4MouseControl::DragNone()
 	{
-	
+
 	// Holding left down
 	if (LeftButtonDown)
 		{
@@ -887,13 +887,13 @@ void C4MouseControl::DragNone()
 			// Drag start selecting in landscape
 			case C4MC_Cursor_Crosshair: case C4MC_Cursor_Dig:
 				Selection.Clear();
-				Drag=C4MC_Drag_Selecting; DragSelecting=C4MC_Selecting_Unknown; 
+				Drag=C4MC_Drag_Selecting; DragSelecting=C4MC_Selecting_Unknown;
 				break;
 			// Drag object from landscape
 			case C4MC_Cursor_Object: case C4MC_Cursor_DigObject:
-				if (DownTarget) 
-					{ 
-					Drag=C4MC_Drag_Moving; 
+				if (DownTarget)
+					{
+					Drag=C4MC_Drag_Moving;
 					// Down target is not part of selection: drag single object
 					if (!Selection.GetLink(DownTarget))
 						{	Selection.Clear(); Selection.Add(DownTarget, C4ObjectList::stNone); }
@@ -901,16 +901,16 @@ void C4MouseControl::DragNone()
 				break;
 			// Drag vehicle from landscape
 			case C4MC_Cursor_Grab: case C4MC_Cursor_Ungrab:
-				if (DownTarget) 
+				if (DownTarget)
 					if (DownTarget->Def->Grab == 1)
 						{ Drag=C4MC_Drag_Moving; Selection.Clear(); Selection.Add(DownTarget, C4ObjectList::stNone); }
 				break;
 			// Drag from region
 			case C4MC_Cursor_Region:
 				// Drag object(s) or vehicle(s)
-				if ( DownRegion.Target 
+				if ( DownRegion.Target
 					&& ((DownRegion.Target->OCF & OCF_Carryable) || (DownRegion.Target->Def->Grab==1)) && !FogOfWar)
-						{ 
+						{
 						Drag=C4MC_Drag_Moving;
 						Selection.Clear();
 						// Multiple object selection from container
@@ -922,8 +922,8 @@ void C4MouseControl::DragNone()
 							}
 						// Single object selection
 						else
-							Selection.Add(DownRegion.Target, C4ObjectList::stNone); 
-						break; 
+							Selection.Add(DownRegion.Target, C4ObjectList::stNone);
+						break;
 						}
 				// Drag id (construction)
 				C4Def *pDef;
@@ -936,7 +936,7 @@ void C4MouseControl::DragNone()
 				break;
 			}
 		}
-	
+
 	// Cursor movement
 	UpdateCursorTarget();
 	// Update selection
@@ -982,11 +982,11 @@ void C4MouseControl::RightDown()
 	DownCursor=Cursor;
 	DownTarget=TargetObject;
 	DownRegion.Default();
-	if (TargetRegion) 
+	if (TargetRegion)
 		{
 		DownRegion=(*TargetRegion);
 		DownTarget=TargetRegion->Target;
-		DownOffsetX=TargetRegion->X-VpX; DownOffsetY=TargetRegion->Y-VpY; 
+		DownOffsetX=TargetRegion->X-VpX; DownOffsetY=TargetRegion->Y-VpY;
 		}
 	}
 
@@ -1006,13 +1006,13 @@ void C4MouseControl::RightUp()
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		case C4MC_Drag_Construct: ButtonUpDragConstruct(); break;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		}			
+		}
 	}
 
 void C4MouseControl::Wheel(DWORD dwFlags)
 {
 	short iDelta = (short)(dwFlags >> 16);
-	
+
 	if(iDelta > 0) Game.LocalPlayerControl(Player, COM_WheelUp);
 	if(iDelta < 0) Game.LocalPlayerControl(Player, COM_WheelDown);
 }
@@ -1020,7 +1020,7 @@ void C4MouseControl::Wheel(DWORD dwFlags)
 BOOL C4MouseControl::IsValidMenu(C4Menu *pMenu)
 	{
 	// Local control fullscreen menu
-	if (pMenu == FullScreen.pMenu) 
+	if (pMenu == FullScreen.pMenu)
 		if (pMenu->IsActive())
 			return TRUE;
 	// Local control player menu
@@ -1101,8 +1101,8 @@ void C4MouseControl::LeftUpDragNone()
 	// Single left click (might be on a target)
 	switch (Cursor)
 		{
-		// Region 
-		case C4MC_Cursor_Region:							
+		// Region
+		case C4MC_Cursor_Region:
 			// Help click on region: ignore
 			if (Help) break;
 			// Region com & data
@@ -1140,7 +1140,7 @@ void C4MouseControl::LeftUpDragNone()
 			break;
 		}
 	// Clear selection
-	Selection.Clear();						
+	Selection.Clear();
 	}
 
 void C4MouseControl::ButtonUpDragSelecting()
@@ -1197,7 +1197,7 @@ void C4MouseControl::ButtonUpDragMoving()
 void C4MouseControl::ButtonUpDragConstruct()
 	{
 	// Finish drag
-	Drag=C4MC_Drag_None; 
+	Drag=C4MC_Drag_None;
 	DragImage.Clear(); DragImage.Default();
 	// Command
 	if (DragImagePhase==0) // if ConstructionCheck was okay (check again?)
@@ -1222,7 +1222,7 @@ void C4MouseControl::SendCommand(int32_t iCommand, int32_t iX, int32_t iY, C4Obj
 
 void C4MouseControl::RightUpDragNone()
 	{
-	
+
 	// Region: send control
 	if (Cursor==C4MC_Cursor_Region)
 		{ SendControl(DownRegion.RightCom); return; }
@@ -1281,13 +1281,13 @@ void C4MouseControl::SendPlayerSelectNext()
 	if (!cLnk)
 		for (cLnk=pPlayer->Crew.First; cLnk; cLnk=cLnk->Next)
 			if (cLnk->Obj->Status && !cLnk->Obj->CrewDisabled) break;
-	if (cLnk) 
+	if (cLnk)
 		{
 		// Crew selection to control queue
 		Selection.Clear(); Selection.Add(cLnk->Obj, C4ObjectList::stNone);
 	  Game.Input.Add(CID_PlrSelect,
       new C4ControlPlayerSelect(Player,Selection));
-		Selection.Clear();						
+		Selection.Clear();
 		}
 	}
 

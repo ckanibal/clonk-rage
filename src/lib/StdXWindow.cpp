@@ -10,7 +10,7 @@
 #include <StdBuf.h>
 
 #ifdef USE_X11
-#include "../../engine/res/cr.xpm"
+#include "../res/cr.xpm"
 #include <X11/Xlib.h>
 #include <X11/xpm.h>
 #include <X11/Xatom.h>
@@ -23,6 +23,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <errno.h>
+#include <unistd.h>
 
 #ifdef WITH_GLIB
 #include <glib/gmain.h>

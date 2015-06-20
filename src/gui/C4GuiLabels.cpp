@@ -4,7 +4,7 @@
 
 #include "C4Include.h"
 #include "gui/C4Gui.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "gui/C4LoaderScreen.h"
 #include "game/C4Application.h"
 
@@ -322,12 +322,12 @@ void ProgressBar::DrawElement(C4FacetEx &cgo)
 
 // --------------------------------------------------
 // Picture
-	
+
 Picture::Picture(const C4Rect &rcBounds, bool fAspect) : fCustomDrawClr(false), fAnimate(false)
 	{
 	// set values
 	this->fAspect = fAspect;
-	this->rcBounds = rcBounds;	
+	this->rcBounds = rcBounds;
 	// no facet yet
 	}
 
@@ -567,4 +567,3 @@ void TextWindow::SetPicture(const C4Facet &rNewPic)
 	}
 
 }; // end of namespace
-

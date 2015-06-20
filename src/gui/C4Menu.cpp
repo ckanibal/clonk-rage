@@ -7,7 +7,7 @@
 
 #ifndef BIG_C4INCLUDE
 #include "object/C4Object.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "object/C4ObjectCom.h"
 #include "game/C4Viewport.h"
 #include "C4Wrappers.h"
@@ -21,8 +21,8 @@ const int32_t 		C4MN_DefInfoWdt     = 270, // default width of info windows
 					C4MN_DlgOptionLineMargin = 3,  // px distance between dialog option items
 					C4MN_DlgPortraitWdt = 64, // size of portrait
 					C4MN_DlgPortraitIndent = 5; // space between portrait and text
-					
-const int32_t C4MN_InfoCaption_Delay = 90;	
+
+const int32_t C4MN_InfoCaption_Delay = 90;
 
 /* Obsolete helper function still used by CreateMenu(iSymbol) */
 
@@ -69,11 +69,11 @@ void DrawMenuSymbol(int32_t iMenu, C4Facet &cgo, int32_t iOwner, C4Object *cObj)
 // -----------------------------------------------------------
 // C4MenuItem
 
-C4MenuItem::C4MenuItem(C4Menu *pMenu, int32_t iIndex, const char *szCaption, 
-	const char *szCommand, int32_t iCount, C4Object *pObject, const char *szInfoCaption, 
+C4MenuItem::C4MenuItem(C4Menu *pMenu, int32_t iIndex, const char *szCaption,
+	const char *szCommand, int32_t iCount, C4Object *pObject, const char *szInfoCaption,
 	C4ID idID, const char *szCommand2, bool fOwnValue, int32_t iValue, int32_t iStyle, bool fIsSelectable)
-: C4GUI::Element(), Count(iCount), id(idID), Object(pObject), fOwnValue(fOwnValue), 
-iValue(iValue), fSelected(false), iStyle(iStyle), pMenu(pMenu), iIndex(iIndex), 
+: C4GUI::Element(), Count(iCount), id(idID), Object(pObject), fOwnValue(fOwnValue),
+iValue(iValue), fSelected(false), iStyle(iStyle), pMenu(pMenu), iIndex(iIndex),
 IsSelectable(fIsSelectable), TextDisplayProgress(-1), dwSymbolClr(0u)
 	{
 	*Caption=*Command=*Command2=*InfoCaption=0;
@@ -164,7 +164,7 @@ void C4MenuItem::DrawElement(C4FacetEx &cgo)
 	Application.DDraw->StorePrimaryClipper(); Application.DDraw->SubPrimaryClipper(cgoItemText.X, cgoItemText.Y, cgoItemText.X+cgoItemText.Wdt-1, cgoItemText.Y+cgoItemText.Hgt-1);
 	switch (iStyle)
 		{
-		case C4MN_Style_Context:	   	
+		case C4MN_Style_Context:
 			Application.DDraw->TextOut(Caption,Game.GraphicsResource.FontRegular, 1.0, cgoItemText.Surface,cgoItemText.X,cgoItemText.Y,CStdDDraw::DEFAULT_MESSAGE_COLOR,ALeft);
 			break;
 		case C4MN_Style_Info:
@@ -198,10 +198,10 @@ void C4MenuItem::DrawElement(C4FacetEx &cgo)
 	if (Count!=C4MN_Item_NoCount)
 		{
 		char szCount[10+1];
-		sprintf(szCount,"%ix",Count); 
+		sprintf(szCount,"%ix",Count);
 		Application.DDraw->TextOut(szCount,Game.GraphicsResource.FontRegular, 1.0, cgoItemText.Surface,cgoItemText.X+cgoItemText.Wdt-1,cgoItemText.Y+cgoItemText.Hgt-1-Game.GraphicsResource.FontRegular.iLineHgt,CStdDDraw::DEFAULT_MESSAGE_COLOR,ARight);
 		}
-	}    	
+	}
 
 void C4MenuItem::MouseInput(C4GUI::CMouse &rMouse, int32_t iButton, int32_t iX, int32_t iY, DWORD dwKeyParam)
 	{
@@ -367,7 +367,7 @@ bool C4Menu::InitMenu(const char *szEmpty, int32_t iExtra, int32_t iExtraData, i
 	return true;
 	}
 
-BOOL C4Menu::AddRefSym(const char *szCaption, const C4FacetEx &fctSymbol, const char *szCommand, 
+BOOL C4Menu::AddRefSym(const char *szCaption, const C4FacetEx &fctSymbol, const char *szCommand,
 								 int32_t iCount, C4Object *pObject, const char *szInfoCaption,
 								 C4ID idID, const char *szCommand2, bool fOwnValue, int32_t iValue, bool fIsSelectable)
 	{
@@ -380,7 +380,7 @@ BOOL C4Menu::AddRefSym(const char *szCaption, const C4FacetEx &fctSymbol, const 
 	return AddItem(pNew, szCaption, szCommand, iCount, pObject, szInfoCaption, idID, szCommand2, fOwnValue, iValue, fIsSelectable);
 	}
 
-BOOL C4Menu::Add(const char *szCaption, C4FacetExSurface &fctSymbol, const char *szCommand, 
+BOOL C4Menu::Add(const char *szCaption, C4FacetExSurface &fctSymbol, const char *szCommand,
 								 int32_t iCount, C4Object *pObject, const char *szInfoCaption,
 								 C4ID idID, const char *szCommand2, bool fOwnValue, int32_t iValue, bool fIsSelectable)
 	{
@@ -451,7 +451,7 @@ BOOL C4Menu::Control(BYTE byCom, int32_t iData)
 					MoveSelection(-1, true, true);
 			/*}*/
 			break;
-		case COM_MenuRight: 
+		case COM_MenuRight:
 			/*// Single column: right => end
 			if (fSingleColumn)
 				MoveSelection(ItemCount - 1 - Selection, true, true);
@@ -463,7 +463,7 @@ BOOL C4Menu::Control(BYTE byCom, int32_t iData)
 				else
 					MoveSelection(+1, true, true);
 			/*}*/
-			break; 
+			break;
 		case COM_MenuUp:
 			iData = -Columns;
 			// Top wrap-around
@@ -480,8 +480,8 @@ BOOL C4Menu::Control(BYTE byCom, int32_t iData)
 					iData-=Columns;
 			MoveSelection(iData, true, true);
 			break;
-		case COM_MenuSelect: 
-			if (ItemCount) 
+		case COM_MenuSelect:
+			if (ItemCount)
 				SetSelection(iData & (~C4MN_AdjustPosition), !!(iData & C4MN_AdjustPosition), true);
 			break;
 		case COM_MenuShowText:
@@ -510,7 +510,7 @@ BOOL C4Menu::Enter(BOOL fRight)
 	if (!IsActive()) return FALSE;
 	if (Style==C4MN_Style_Info) return FALSE;
 	// Get selected item
-	C4MenuItem *pItem = GetSelectedItem(); 
+	C4MenuItem *pItem = GetSelectedItem();
 	if (!pItem)
 		{
 		// okay for dialogs: Just close them
@@ -521,7 +521,7 @@ BOOL C4Menu::Enter(BOOL fRight)
   char szCommand[_MAX_FNAME+30+1];
 	SCopy(pItem->Command,szCommand);
 	if (fRight && pItem->Command2[0]) SCopy(pItem->Command2,szCommand);
-	
+
 	// Close if not permanent
 	if (!Permanent) { Close(TRUE); fActive = false; }
 
@@ -649,12 +649,12 @@ void C4Menu::InitLocation(C4Facet &cgoArea)
 	// Item size by style
 	switch (Style)
 		{
-		case C4MN_Style_Normal: 
-			ItemWidth=ItemHeight=C4SymbolSize; 
+		case C4MN_Style_Normal:
+			ItemWidth=ItemHeight=C4SymbolSize;
 			break;
 		case C4MN_Style_Context:
 			{
-			ItemHeight = Max<int32_t>(C4MN_SymbolSize, Game.GraphicsResource.FontRegular.GetLineHeight()); 
+			ItemHeight = Max<int32_t>(C4MN_SymbolSize, Game.GraphicsResource.FontRegular.GetLineHeight());
 			int32_t iWdt, iHgt;
 			Game.GraphicsResource.FontRegular.GetTextExtent(Caption, ItemWidth, iHgt, true);
 			// FIXME: Blah. This stuff should be calculated correctly by pTitle.
@@ -682,7 +682,7 @@ void C4Menu::InitLocation(C4Facet &cgoArea)
 				{
 				Game.GraphicsResource.FontRegular.BreakMessage(pItem->InfoCaption, ItemWidth, &sText, true);
 				Game.GraphicsResource.FontRegular.GetTextExtent(sText.getData(),iWdt,iHgt, true);
-				assert(iWdt <= ItemWidth); 
+				assert(iWdt <= ItemWidth);
 				ItemWidth=Max(ItemWidth,iWdt); ItemHeight=Max(ItemHeight,iHgt);
 				iLargestTextWdt = Max(iLargestTextWdt, iWdt);
 				}
@@ -714,7 +714,7 @@ void C4Menu::InitLocation(C4Facet &cgoArea)
 				}
 			}
 		}
-	
+
 	int DisplayedItemCount = ItemCount - HasPortrait();
 	if (Style == C4MN_Style_Dialog)
 		Lines = C4MN_DlgLines;
@@ -853,7 +853,7 @@ void C4Menu::DrawElement(C4FacetEx &cgo)
 //	Application.DDraw->SubPrimaryClipper(rcBounds.x, rcBounds.y, rcBounds.x+rcBounds.Wdt-1, rcBounds.y+rcBounds.Hgt-1);
 
 	C4Facet cgoExtra(cgo.Surface, cgo.TargetX+rcBounds.x+1, cgo.TargetY+rcBounds.y+rcBounds.Hgt-C4MN_SymbolSize-1, rcBounds.Wdt-2, C4MN_SymbolSize);
-	
+
 	// Draw bar divider
 	if (Extra || DrawMenuControls)
 		{
@@ -937,7 +937,7 @@ void C4Menu::DrawElement(C4FacetEx &cgo)
 				cgoExtra.X = iOriginalX;
 				pItem->Components.Draw(cgoExtra,-1,Game.Defs,C4D_All,TRUE,C4FCT_Right | C4FCT_Triple | C4FCT_Half);
 				}
-			break;				
+			break;
 		}
 
 	// Restore global clipper
@@ -1009,7 +1009,7 @@ void C4Menu::Execute()
 	{
 	if (!IsActive()) return;
 	// Refill (timer or flag)
-	if (!Game.iTick35 || NeedRefill) 
+	if (!Game.iTick35 || NeedRefill)
 		if (!RefillInternal())
 			Close(false);
 	// text progress
@@ -1078,7 +1078,7 @@ BOOL C4Menu::ConvertCom(int32_t &rCom, int32_t &rData, bool fAsyncConversion)
 	// If text is still progressing, any menu com will complete it first
 	// Note: conversion to COM_MenuShowText is not synchronized because text lengths may vary
 	// between clients. The above switch is used to determine whether the com was a menu com
-	if (fTextProgressing && fAsyncConversion) 
+	if (fTextProgressing && fAsyncConversion)
 		rCom = COM_MenuShowText;
 
 	// Done
@@ -1296,7 +1296,7 @@ void C4Menu::ClearPointers(C4Object *pObj)
 	{
 	C4MenuItem *pItem;
 	for (int32_t i=0; pItem = GetItem(i); ++i)
-		if (pItem->GetObject()==pObj) 
+		if (pItem->GetObject()==pObj)
 			pItem->ClearObject();
 	}
 
