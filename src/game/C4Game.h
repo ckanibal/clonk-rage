@@ -124,8 +124,8 @@ class C4Game {
 #endif
   C4Scoreboard Scoreboard;
   C4VideoPlayer VideoPlayer;
-  class C4Network2Stats
-      *pNetworkStatistics;  // may be NULL if no statistics are recorded
+  class C4Network2Stats *
+      pNetworkStatistics;  // may be NULL if no statistics are recorded
   class C4KeyboardInput &KeyboardInput;
   class C4FileMonitor *pFileMonitor;
   char CurrentScenarioSection[C4MaxName + 1];

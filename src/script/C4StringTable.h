@@ -7,52 +7,49 @@
 
 class C4StringTable;
 
-class C4String
-{
-public:
-	C4String(C4StringTable *pTable);
-	C4String(StdStrBuf strString, C4StringTable *pTable);
-	C4String(const char *strString, C4StringTable *pTable);
-	virtual ~C4String();
+class C4String {
+ public:
+  C4String(C4StringTable *pTable);
+  C4String(StdStrBuf strString, C4StringTable *pTable);
+  C4String(const char *strString, C4StringTable *pTable);
+  virtual ~C4String();
 
-	// increment/decrement reference count on this string
-	void IncRef();
-	void DecRef();
+  // increment/decrement reference count on this string
+  void IncRef();
+  void DecRef();
 
-	StdCopyStrBuf Data; // string data
-	int iRefCnt; // reference count on string (by C4Value)
-	bool Hold;  // string stays hold when RefCnt reaches 0 (for in-script strings)
+  StdCopyStrBuf Data;  // string data
+  int iRefCnt;         // reference count on string (by C4Value)
+  bool Hold;  // string stays hold when RefCnt reaches 0 (for in-script strings)
 
-	int iEnumID;
+  int iEnumID;
 
-	C4String *Next, *Prev; // double-linked list
+  C4String *Next, *Prev;  // double-linked list
 
-	C4StringTable *pTable; // owning table
+  C4StringTable *pTable;  // owning table
 
-	void Reg(C4StringTable *pTable);
-	void UnReg();
-
+  void Reg(C4StringTable *pTable);
+  void UnReg();
 };
 
-class C4StringTable
-{
-public:
-	C4StringTable();
-	virtual ~C4StringTable();
-	
-	void Clear();
+class C4StringTable {
+ public:
+  C4StringTable();
+  virtual ~C4StringTable();
 
-	C4String *RegString(const char *strString);
-	C4String *FindString(const char *strString);
-	C4String *FindString(C4String *pString);
-	C4String *FindString(int iEnumID);
+  void Clear();
 
-	int EnumStrings();
+  C4String *RegString(const char *strString);
+  C4String *FindString(const char *strString);
+  C4String *FindString(C4String *pString);
+  C4String *FindString(int iEnumID);
 
-	bool Load(C4Group& ParentGroup);
-	bool Save(C4Group& ParentGroup);
+  int EnumStrings();
 
-	C4String *First, *Last; // string list
+  bool Load(C4Group &ParentGroup);
+  bool Save(C4Group &ParentGroup);
+
+  C4String *First, *Last;  // string list
 };
 
 #endif

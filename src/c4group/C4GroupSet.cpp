@@ -39,8 +39,7 @@ C4GroupSetNode::C4GroupSetNode(C4GroupSet &rParent, C4GroupSetNode *pPrev,
 
 C4GroupSetNode::~C4GroupSetNode() {
   // remove group
-  if (fGrpOwned)
-    delete pGroup;
+  if (fGrpOwned) delete pGroup;
   // unlink from list
   (pPrev ? pPrev->pNext : pParent->pFirst) = pNext;
   (pNext ? pNext->pPrev : pParent->pLast) = pPrev;
@@ -48,8 +47,7 @@ C4GroupSetNode::~C4GroupSetNode() {
 
 void C4GroupSet::Clear() {
   // clear nodes
-  while (pFirst)
-    delete pFirst;
+  while (pFirst) delete pFirst;
   pFirst = NULL;
 }
 
@@ -86,22 +84,19 @@ bool C4GroupSet::RegisterGroup(C4Group &rGroup, bool fOwnGrp, int32_t Priority,
   // begin at back end and search for higher priority
   C4GroupSetNode *pNode;
   for (pNode = pLast; pNode; pNode = pNode->pPrev)
-    if (pNode->Priority > Priority)
-      break;
+    if (pNode->Priority > Priority) break;
   // create new node
   C4GroupSetNode *pNewNode =
       new C4GroupSetNode(*this, pNode, rGroup, fOwnGrp, ++iIndex);
   // check content
-  if (fCheckContent)
-    Contents = CheckGroupContents(rGroup, Contents);
+  if (fCheckContent) Contents = CheckGroupContents(rGroup, Contents);
   // set priority and contents mask
   pNewNode->Priority = Priority;
   pNewNode->Contents = Contents;
 
 #if defined(C4ENGINE) && !defined(USE_CONSOLE)
   // always add fonts directly
-  if (Contents & C4GSCnt_FontDefs)
-    Game.FontLoader.LoadDefs(rGroup, Config);
+  if (Contents & C4GSCnt_FontDefs) Game.FontLoader.LoadDefs(rGroup, Config);
 // success
 #endif
 
@@ -123,8 +118,7 @@ int32_t C4GroupSet::CheckGroupContents(C4Group &rGroup, int32_t Contents) {
     if (!rGroup.FindEntry(C4CFN_Material))
       Contents = Contents & ~C4GSCnt_Material;
   if (Contents & C4GSCnt_Music)
-    if (!rGroup.FindEntry(C4CFN_Music))
-      Contents = Contents & ~C4GSCnt_Music;
+    if (!rGroup.FindEntry(C4CFN_Music)) Contents = Contents & ~C4GSCnt_Music;
   if (Contents & C4GSCnt_Definitions)
     if (!rGroup.FindEntry(C4CFN_DefFiles))
       Contents = Contents & ~C4GSCnt_Definitions;
@@ -178,8 +172,7 @@ C4Group *C4GroupSet::FindGroup(int32_t Contents, C4Group *pAfter,
     // find next clear flag
     if (pNode->pGroup == pAfter) {
       pAfter = NULL;
-      if (fSamePrio)
-        iPriority = pNode->Priority;
+      if (fSamePrio) iPriority = pNode->Priority;
     }
   }
   // nothing found
@@ -192,10 +185,8 @@ C4Group *C4GroupSet::FindEntry(const char *szWildcard, int32_t *pPriority,
   for (C4GroupSetNode *pNode = pFirst; pNode; pNode = pNode->pNext)
     if (pNode->pGroup->FindEntry(szWildcard)) {
       // assign priority and ID, if ptrs is given
-      if (pPriority)
-        *pPriority = pNode->Priority;
-      if (pID)
-        *pID = pNode->id;
+      if (pPriority) *pPriority = pNode->Priority;
+      if (pID) *pID = pNode->id;
       // return found group
       return pNode->pGroup;
     }
@@ -239,15 +230,13 @@ bool C4GroupSet::CloseFolders() {
 
 int32_t C4GroupSet::GetGroupCount() {
   int32_t iCount = 0;
-  for (C4GroupSetNode *pNode = pFirst; pNode; pNode = pNode->pNext)
-    iCount++;
+  for (C4GroupSetNode *pNode = pFirst; pNode; pNode = pNode->pNext) iCount++;
   return iCount;
 }
 
 C4Group *C4GroupSet::GetGroup(int32_t iIndex) {
   // Invalid index
-  if (iIndex < 0)
-    return NULL;
+  if (iIndex < 0) return NULL;
   // Find indicated group
   for (C4GroupSetNode *pNode = pFirst; pNode; pNode = pNode->pNext)
     if (iIndex == 0)
@@ -260,8 +249,7 @@ C4Group *C4GroupSet::GetGroup(int32_t iIndex) {
 
 bool C4GroupSet::UnregisterGroup(int32_t iIndex) {
   // Invalid index
-  if (iIndex < 0)
-    return false;
+  if (iIndex < 0) return false;
   // Find indicated group
   for (C4GroupSetNode *pNode = pFirst; pNode; pNode = pNode->pNext)
     if (iIndex == 0) {
@@ -297,14 +285,11 @@ C4Group *C4GroupSet::RegisterParentFolders(const char *szScenFilename) {
     int32_t iPos = iOriginalLen - 1;
     while (iPos) {
       // ignore additional zero fields (double-backslashes)
-      while (iPos && !szParentfolder[iPos])
-        --iPos;
+      while (iPos && !szParentfolder[iPos]) --iPos;
       // break if end has been reached
-      if (!iPos)
-        break;
+      if (!iPos) break;
       // trace back until next zero field
-      while (iPos && szParentfolder[iPos])
-        --iPos;
+      while (iPos && szParentfolder[iPos]) --iPos;
       // check extension of this folder
       if (!SEqualNoCase(GetExtension(szParentfolder + iPos + 1), "c4f", 3))
         break;
@@ -315,19 +300,16 @@ C4Group *C4GroupSet::RegisterParentFolders(const char *szScenFilename) {
       szParentfolder[iPos + 1 + SLen(szParentfolder + iPos + 1)] =
           szParentfolder[iPos] = DirectorySeparator;
       while (iPos--)
-        if (!szParentfolder[iPos])
-          szParentfolder[iPos] = DirectorySeparator;
+        if (!szParentfolder[iPos]) szParentfolder[iPos] = DirectorySeparator;
       ++iPos;
     }
     // trace forward again, opening all folders (iPos is 0 again)
     int32_t iGroupIndex = 0;
     while (iPos < iOriginalLen) {
       // ignore additional zero-fields
-      while (iPos < iOriginalLen && !szParentfolder[iPos])
-        ++iPos;
+      while (iPos < iOriginalLen && !szParentfolder[iPos]) ++iPos;
       // break if end has been reached
-      if (iPos >= iOriginalLen)
-        break;
+      if (iPos >= iOriginalLen) break;
       // open this folder
       C4Group *pGroup = new C4Group();
       if (pParentGroup) {

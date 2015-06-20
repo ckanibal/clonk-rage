@@ -1,6 +1,7 @@
 /* Copyright (C) 1998-2000  Matthes Bender  RedWolf Design */
 
-/* Gamepad control - forwards gamepad events of opened gamepads to Game.KeyboardInput */
+/* Gamepad control - forwards gamepad events of opened gamepads to
+ * Game.KeyboardInput */
 
 #ifndef INC_C4GamePadCon
 #define INC_C4GamePadCon
@@ -22,46 +23,46 @@ typedef union SDL_Event SDL_Event;
 
 class C4GamePadControl {
 #ifdef _WIN32
-	private:
-		struct Pad
-			{
-			CStdGamePad *pGamepad;
-			int iRefCount;
-			uint32_t Buttons;
-			CStdGamePad::AxisPos AxisPosis[CStdGamepad_MaxAxis];
-			};
-		Pad Gamepads[CStdGamepad_MaxGamePad];
-		int iNumGamepads;
+ private:
+  struct Pad {
+    CStdGamePad *pGamepad;
+    int iRefCount;
+    uint32_t Buttons;
+    CStdGamePad::AxisPos AxisPosis[CStdGamepad_MaxAxis];
+  };
+  Pad Gamepads[CStdGamepad_MaxGamePad];
+  int iNumGamepads;
 
-	public:
-		void OpenGamepad(int id);  // add gamepad ref
-		void CloseGamepad(int id); // del gamepad ref
-		static C4GamePadControl *pInstance; // singleton
+ public:
+  void OpenGamepad(int id);            // add gamepad ref
+  void CloseGamepad(int id);           // del gamepad ref
+  static C4GamePadControl *pInstance;  // singleton
 #elif defined HAVE_SDL
-	public:
-		void FeedEvent(SDL_Event& e);
-	private:
-		std::set<C4KeyCode> PressedAxis;
+ public:
+  void FeedEvent(SDL_Event& e);
+
+ private:
+  std::set<C4KeyCode> PressedAxis;
 #endif
-	public:
-		C4GamePadControl();
-		~C4GamePadControl();
-		void Clear();
-		int GetGamePadCount();
-		void Execute();
-		static bool AnyButtonDown();
+ public:
+  C4GamePadControl();
+  ~C4GamePadControl();
+  void Clear();
+  int GetGamePadCount();
+  void Execute();
+  static bool AnyButtonDown();
 };
 
 class C4GamePadOpener {
 #ifdef _WIN32
-	int iGamePad;
+  int iGamePad;
 #endif
-	public:
-	C4GamePadOpener(int iGamePad);
-	~C4GamePadOpener();
-	void SetGamePad(int iNewGamePad);
+ public:
+  C4GamePadOpener(int iGamePad);
+  ~C4GamePadOpener();
+  void SetGamePad(int iNewGamePad);
 #ifdef HAVE_SDL
-	SDL_Joystick *Joy;
+  SDL_Joystick *Joy;
 #endif
 };
 

@@ -6,4 +6,4 @@ char *LoadResStr(WORD id);
 #ifdef _WIN32
 void SetStringResource(HINSTANCE hResInst, int iExtended);
 #endif
-void SetResourceStringUnscramble(void (*pResourceStringUnscramble)(char*));
+void SetResourceStringUnscramble(void (*pResourceStringUnscramble)(char *));

@@ -12,4 +12,4 @@ void SetResStrTable(char *pTable);
 void ClearResStrTable();
 bool IsResStrTableLoaded();
 
-#endif // INC_STD_RES_STR_2_H
+#endif  // INC_STD_RES_STR_2_H

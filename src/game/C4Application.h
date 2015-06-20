@@ -17,7 +17,7 @@
 class CStdDDraw;
 
 class C4Sec1Callback {
-public:
+ public:
   virtual void OnSec1Timer() = 0;
   void StartSec1Timer();
   virtual ~C4Sec1Callback() {}
@@ -25,43 +25,43 @@ public:
 
 // callback interface for sec1timers
 class C4Sec1TimerCallbackBase {
-protected:
+ protected:
   C4Sec1TimerCallbackBase *pNext;
   int iRefs;
 
-public:
-  C4Sec1TimerCallbackBase(); // ctor - ref set to 2
+ public:
+  C4Sec1TimerCallbackBase();  // ctor - ref set to 2
   virtual ~C4Sec1TimerCallbackBase() {}
   void Release() {
-    if (!--iRefs)
-      delete this;
-  } // release: destruct in next cycle
+    if (!--iRefs) delete this;
+  }  // release: destruct in next cycle
 
-protected:
+ protected:
   virtual void OnSec1Timer() = 0;
   bool IsReleased() { return iRefs <= 1; }
   friend class C4Application;
 };
 
-template <class T> class C4Sec1TimerCallback : public C4Sec1TimerCallbackBase {
-private:
+template <class T>
+class C4Sec1TimerCallback : public C4Sec1TimerCallbackBase {
+ private:
   T *pCallback;
 
-protected:
+ protected:
   virtual void OnSec1Timer() { pCallback->OnSec1Timer(); }
 
-public:
+ public:
   C4Sec1TimerCallback(T *pCB) : pCallback(pCB) {}
 };
 
 /* Main class to initialize configuration and execute the game */
 
 class C4Application : public CStdApp {
-private:
+ private:
   // if set, this mission will be launched next
   StdCopyStrBuf NextMission;
 
-public:
+ public:
   C4Application();
   ~C4Application();
   // set by ParseCommandLine
@@ -111,7 +111,7 @@ public:
   bool SetResolution(int32_t iNewResX, int32_t iNewResY);
   bool SetGameFont(const char *szFontFace, int32_t iFontSize);
 
-protected:
+ protected:
   enum State {
     C4AS_None,
     C4AS_PreInit,
@@ -121,7 +121,7 @@ protected:
     C4AS_Quit,
   } AppState;
 
-protected:
+ protected:
   virtual bool DoInit();
   bool OpenGame();
   bool PreInit();
@@ -132,11 +132,11 @@ protected:
 
   virtual void OnCommand(const char *szCmd);
 
-public:
+ public:
   virtual void Quit();
-  void QuitGame(); // quit game only, but restart application if in fullscreen
-                   // startup menu mode
-  void Activate(); // activate app to gain full focus in OS
+  void QuitGame();  // quit game only, but restart application if in fullscreen
+                    // startup menu mode
+  void Activate();  // activate app to gain full focus in OS
   void SetNextMission(const char *szMissionFilename);
 };
 

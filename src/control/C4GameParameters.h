@@ -9,140 +9,141 @@
 #include "c4group/C4LangStringTable.h"
 #include "C4Teams.h"
 
-class C4GameRes
-{
-	friend class C4GameResList;
-public:
-	C4GameRes();
-	C4GameRes(const C4GameRes &Res);
-	~C4GameRes();
+class C4GameRes {
+  friend class C4GameResList;
 
-	C4GameRes &operator = (const C4GameRes &Res);
+ public:
+  C4GameRes();
+  C4GameRes(const C4GameRes &Res);
+  ~C4GameRes();
 
-private:
-	C4Network2ResType eType;
-	StdCopyStrBuf File;
-	const C4Network2ResCore *pResCore;
-	C4Network2Res::Ref pNetRes;
+  C4GameRes &operator=(const C4GameRes &Res);
 
-public:
-	C4Network2ResType  getType() const { return eType; }
-	const char			  *getFile() const { return File.getData(); }
-	bool							 isPresent() const { return !! File; }
-	const C4Network2ResCore *getResCore() const { return pResCore; }
-	C4Network2Res::Ref getNetRes() const { return pNetRes; }
+ private:
+  C4Network2ResType eType;
+  StdCopyStrBuf File;
+  const C4Network2ResCore *pResCore;
+  C4Network2Res::Ref pNetRes;
 
-	void SetFile(C4Network2ResType eType, const char *szFile);
-	void SetResCore(C4Network2ResCore *pResCore);
-	void SetNetRes(C4Network2Res::Ref pRes);
+ public:
+  C4Network2ResType getType() const { return eType; }
+  const char *getFile() const { return File.getData(); }
+  bool isPresent() const { return !!File; }
+  const C4Network2ResCore *getResCore() const { return pResCore; }
+  C4Network2Res::Ref getNetRes() const { return pNetRes; }
 
-	bool Publish(C4Network2ResList *pResList);
-	bool Load(C4Network2ResList *pResList);
-	bool InitNetwork(C4Network2ResList *pResList);
+  void SetFile(C4Network2ResType eType, const char *szFile);
+  void SetResCore(C4Network2ResCore *pResCore);
+  void SetNetRes(C4Network2Res::Ref pRes);
 
-	void CalcHash();
+  bool Publish(C4Network2ResList *pResList);
+  bool Load(C4Network2ResList *pResList);
+  bool InitNetwork(C4Network2ResList *pResList);
 
-	void Clear();
+  void CalcHash();
 
-	void CompileFunc(StdCompiler *pComp);
+  void Clear();
+
+  void CompileFunc(StdCompiler *pComp);
 };
 
-class C4GameResList
-{
-private:
-	C4GameRes **pResList;
-	int32_t iResCount, iResCapacity;
+class C4GameResList {
+ private:
+  C4GameRes **pResList;
+  int32_t iResCount, iResCapacity;
 
-public:
-	C4GameResList() : pResList(NULL), iResCount(0), iResCapacity(0) {}
-	~C4GameResList() { Clear(); }
+ public:
+  C4GameResList() : pResList(NULL), iResCount(0), iResCapacity(0) {}
+  ~C4GameResList() { Clear(); }
 
-	C4GameResList &operator = (const C4GameResList &List);
+  C4GameResList &operator=(const C4GameResList &List);
 
-	int32_t getResCount() const { return iResCount; }
+  int32_t getResCount() const { return iResCount; }
 
-	C4GameRes *iterRes(C4GameRes *pLast, C4Network2ResType eType = NRT_Null);
+  C4GameRes *iterRes(C4GameRes *pLast, C4Network2ResType eType = NRT_Null);
 
-	void Clear();
-	bool Load(const char *szDefinitionFilenames); // host: create res cores by definition filenames
+  void Clear();
+  bool Load(const char *szDefinitionFilenames);  // host: create res cores by
+                                                 // definition filenames
 
-	C4GameRes *CreateByFile(C4Network2ResType eType, const char *szFile);
-	C4GameRes *CreateByNetRes(C4Network2Res::Ref pNetRes);
-	bool InitNetwork(C4Network2ResList *pNetResList);
+  C4GameRes *CreateByFile(C4Network2ResType eType, const char *szFile);
+  C4GameRes *CreateByNetRes(C4Network2Res::Ref pNetRes);
+  bool InitNetwork(C4Network2ResList *pNetResList);
 
-	void CalcHashes();
+  void CalcHashes();
 
-	bool RetrieveFiles(); // client: make sure all definition files are loaded
+  bool RetrieveFiles();  // client: make sure all definition files are loaded
 
-	void CompileFunc(StdCompiler *pComp);
+  void CompileFunc(StdCompiler *pComp);
 
-protected:
-	void Add(C4GameRes *pRes);
+ protected:
+  void Add(C4GameRes *pRes);
 };
 
-class C4GameParameters
-{
-public:
-	C4GameParameters();
-	~C4GameParameters();
+class C4GameParameters {
+ public:
+  C4GameParameters();
+  ~C4GameParameters();
 
-	// League (empty if it's not a league game)
-	StdCopyStrBuf League;
-	StdCopyStrBuf LeagueAddress;
-	StdCopyStrBuf StreamAddress;
-	
-	// Random seed
-	int32_t RandomSeed;
+  // League (empty if it's not a league game)
+  StdCopyStrBuf League;
+  StdCopyStrBuf LeagueAddress;
+  StdCopyStrBuf StreamAddress;
 
-	// Maximum player count allowed, count at game start
-	int32_t MaxPlayers, StartupPlayerCount;
+  // Random seed
+  int32_t RandomSeed;
 
-	// Fair crew option
-	bool UseFairCrew;
-	bool FairCrewForced; // true for scenarios in which this setting may not be altered
-	int32_t FairCrewStrength;
+  // Maximum player count allowed, count at game start
+  int32_t MaxPlayers, StartupPlayerCount;
 
-	// Original network game? Also set in replays of network games for sync safety
-	bool IsNetworkGame;
+  // Fair crew option
+  bool UseFairCrew;
+  bool FairCrewForced;  // true for scenarios in which this setting may not be
+                        // altered
+  int32_t FairCrewStrength;
 
-	// Control rate
-	int32_t ControlRate;
+  // Original network game? Also set in replays of network games for sync safety
+  bool IsNetworkGame;
 
-	// Automatic frame skip enabled for this game?
-	bool AutoFrameSkip;
+  // Control rate
+  int32_t ControlRate;
 
-	// Allow debug mode?
-	bool AllowDebug;
+  // Automatic frame skip enabled for this game?
+  bool AutoFrameSkip;
 
-	// Active rules and goals
-	C4IDList Rules;
-	C4IDList Goals;
+  // Allow debug mode?
+  bool AllowDebug;
 
-	// Game resources
-	C4GameRes Scenario;
-	C4GameResList GameRes;
+  // Active rules and goals
+  C4IDList Rules;
+  C4IDList Goals;
 
-	// Clients
-	C4ClientList Clients;
+  // Game resources
+  C4GameRes Scenario;
+  C4GameResList GameRes;
 
-	// Players & Teams
-	C4PlayerInfoList PlayerInfos;
-	C4PlayerInfoList RestorePlayerInfos;
-	C4TeamList Teams;
+  // Clients
+  C4ClientList Clients;
 
-	bool isLeague() const { return !!LeagueAddress.getLength(); }
-	bool doStreaming() const { return !!StreamAddress.getLength(); }
-	const char* getLeague() { return League.getData(); }
-	StdStrBuf GetGameGoalString();
-	void EnforceLeagueRules(class C4Scenario *pScenario);
-	bool CheckLeagueRulesStart(bool fFixIt);
-	
-	void Clear();
-	BOOL Load(C4Group &hGroup, C4Scenario *pDefault, const char *szGameText, C4LangStringTable *pLang, const char *DefinitionFilenames);
-	BOOL InitNetwork(C4Network2ResList *pResList);
-	BOOL Save(C4Group &hGroup, C4Scenario *pDefault);
+  // Players & Teams
+  C4PlayerInfoList PlayerInfos;
+  C4PlayerInfoList RestorePlayerInfos;
+  C4TeamList Teams;
 
-	void CompileFunc(StdCompiler *pComp, C4Scenario *pScenario = NULL);
+  bool isLeague() const { return !!LeagueAddress.getLength(); }
+  bool doStreaming() const { return !!StreamAddress.getLength(); }
+  const char *getLeague() { return League.getData(); }
+  StdStrBuf GetGameGoalString();
+  void EnforceLeagueRules(class C4Scenario *pScenario);
+  bool CheckLeagueRulesStart(bool fFixIt);
+
+  void Clear();
+  BOOL Load(C4Group &hGroup, C4Scenario *pDefault, const char *szGameText,
+            C4LangStringTable *pLang, const char *DefinitionFilenames);
+  BOOL InitNetwork(C4Network2ResList *pResList);
+  BOOL Save(C4Group &hGroup, C4Scenario *pDefault);
+
+  void CompileFunc(StdCompiler *pComp, C4Scenario *pScenario = NULL);
 };
 
-#endif // C4GAMEPARAMETERS_H
+#endif  // C4GAMEPARAMETERS_H

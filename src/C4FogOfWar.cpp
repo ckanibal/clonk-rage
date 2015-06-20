@@ -4,4 +4,3 @@
 
 #include "C4Include.h"
 #include "C4FogOfWar.h"
-

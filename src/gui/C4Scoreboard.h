@@ -7,102 +7,120 @@
 #include "gui/C4Gui.h"
 #include "script/C4StringTable.h"
 
-class C4Scoreboard
-	{
-	public:
-		enum { TitleKey = -1, }; // value used to index the title bars
+class C4Scoreboard {
+ public:
+  enum {
+    TitleKey = -1,
+  };  // value used to index the title bars
 
-	private:
-		struct Entry
-			{
-			StdStrBuf Text;
-			int32_t iVal;
+ private:
+  struct Entry {
+    StdStrBuf Text;
+    int32_t iVal;
 
-			Entry() : Text(), iVal(0) { }
-			void GrabFrom(Entry *pFrom) // grab data w/o copy
-				{ Text.Take(pFrom->Text); iVal = pFrom->iVal; }
-			void SwapWith(Entry *pSwap);
-			};
-	private:
-		// array - row/col zero are row/coloumn headers
-		int32_t iRows,iCols;
-		Entry *pEntries;
+    Entry() : Text(), iVal(0) {}
+    void GrabFrom(Entry *pFrom)  // grab data w/o copy
+    {
+      Text.Take(pFrom->Text);
+      iVal = pFrom->iVal;
+    }
+    void SwapWith(Entry *pSwap);
+  };
 
-		// realloc arrays, copy stuff
-		void AddRow(int32_t iInsertBefore);
-		void AddCol(int32_t iInsertBefore);
-		void DelRow(int32_t iDelIndex);
-		void DelCol(int32_t iDelIndex);
+ private:
+  // array - row/col zero are row/coloumn headers
+  int32_t iRows, iCols;
+  Entry *pEntries;
 
-		// search row/coloumn by key value
-		int32_t GetColByKey(int32_t iKey) const;
-		int32_t GetRowByKey(int32_t iKey) const;
+  // realloc arrays, copy stuff
+  void AddRow(int32_t iInsertBefore);
+  void AddCol(int32_t iInsertBefore);
+  void DelRow(int32_t iDelIndex);
+  void DelCol(int32_t iDelIndex);
 
-		// exchange two rows completely
-		void SwapRows(int32_t iRow1, int32_t iRow2);
+  // search row/coloumn by key value
+  int32_t GetColByKey(int32_t iKey) const;
+  int32_t GetRowByKey(int32_t iKey) const;
 
-		// dialog control
-		void InvalidateRows();// recalculate row sizes
+  // exchange two rows completely
+  void SwapRows(int32_t iRow1, int32_t iRow2);
 
-	protected:
-		// displaying dialog
-		class C4ScoreboardDlg *pDlg; // NO-SAVE
-		int32_t iDlgShow; // ref counter for dialog show
+  // dialog control
+  void InvalidateRows();  // recalculate row sizes
 
-		// not bounds-checked!
-		Entry *GetCell(int32_t iCol, int32_t iRow) const { return pEntries+iRow*iCols+iCol; }
+ protected:
+  // displaying dialog
+  class C4ScoreboardDlg *pDlg;  // NO-SAVE
+  int32_t iDlgShow;             // ref counter for dialog show
 
-		friend class C4ScoreboardDlg;
+  // not bounds-checked!
+  Entry *GetCell(int32_t iCol, int32_t iRow) const {
+    return pEntries + iRow * iCols + iCol;
+  }
 
-	public:
-		C4Scoreboard() : iRows(0), iCols(0), pEntries(NULL), pDlg(NULL), iDlgShow(0) { }
-		~C4Scoreboard() { Clear(); }
+  friend class C4ScoreboardDlg;
 
-		void Clear();
+ public:
+  C4Scoreboard()
+      : iRows(0), iCols(0), pEntries(NULL), pDlg(NULL), iDlgShow(0) {}
+  ~C4Scoreboard() { Clear(); }
 
-		void SetCell(int32_t iColKey, int32_t iRowKey, const char *szValue, int32_t iValue); // change cell value
-		const char *GetCellString(int32_t iColKey, int32_t iRowKey);
-		int32_t GetCellData(int32_t iColKey, int32_t iRowKey);
-		void RemoveCol(int32_t iColKey);
-		void RemoveRow(int32_t iRowKey);
-		bool SortBy(int32_t iColKey, bool fReverse);
+  void Clear();
 
-		void DoDlgShow(int32_t iChange, bool fUserToggle);
-		void HideDlg();
-		bool ShouldBeShown() { return iDlgShow>0 && iRows && iCols; }
-		bool CanBeShown() { return iDlgShow>=0 && iRows && iCols; }
+  void SetCell(int32_t iColKey, int32_t iRowKey, const char *szValue,
+               int32_t iValue);  // change cell value
+  const char *GetCellString(int32_t iColKey, int32_t iRowKey);
+  int32_t GetCellData(int32_t iColKey, int32_t iRowKey);
+  void RemoveCol(int32_t iColKey);
+  void RemoveRow(int32_t iRowKey);
+  bool SortBy(int32_t iColKey, bool fReverse);
 
-		bool KeyUserShow() { DoDlgShow(0, true); return true; }
+  void DoDlgShow(int32_t iChange, bool fUserToggle);
+  void HideDlg();
+  bool ShouldBeShown() { return iDlgShow > 0 && iRows && iCols; }
+  bool CanBeShown() { return iDlgShow >= 0 && iRows && iCols; }
 
-		void CompileFunc(StdCompiler *pComp);
-	};
+  bool KeyUserShow() {
+    DoDlgShow(0, true);
+    return true;
+  }
 
-class C4ScoreboardDlg : public C4GUI::Dialog
-	{
-	private:
-		int32_t *piColWidths;
-		C4Scoreboard *pBrd;
+  void CompileFunc(StdCompiler *pComp);
+};
 
-		enum { XIndent = 4, YIndent = 4, XMargin = 3, YMargin = 3, };
+class C4ScoreboardDlg : public C4GUI::Dialog {
+ private:
+  int32_t *piColWidths;
+  C4Scoreboard *pBrd;
 
-	public:
-		C4ScoreboardDlg(C4Scoreboard *pForScoreboard);
-		~C4ScoreboardDlg();
+  enum {
+    XIndent = 4,
+    YIndent = 4,
+    XMargin = 3,
+    YMargin = 3,
+  };
 
-	protected:
-		void InvalidateRows() { delete [] piColWidths; piColWidths = NULL; }
-		void Update(); // update row widths and own size and caption
+ public:
+  C4ScoreboardDlg(C4Scoreboard *pForScoreboard);
+  ~C4ScoreboardDlg();
 
-		virtual bool DoPlacement(C4GUI::Screen *pOnScreen, const C4Rect &rPreferredDlgRect);
-		virtual void Draw(C4FacetEx &cgo);
-		virtual void DrawElement(C4FacetEx &cgo);
+ protected:
+  void InvalidateRows() {
+    delete[] piColWidths;
+    piColWidths = NULL;
+  }
+  void Update();  // update row widths and own size and caption
 
-		virtual const char *GetID() { return "Scoreboard"; }
+  virtual bool DoPlacement(C4GUI::Screen *pOnScreen,
+                           const C4Rect &rPreferredDlgRect);
+  virtual void Draw(C4FacetEx &cgo);
+  virtual void DrawElement(C4FacetEx &cgo);
 
-		virtual bool IsMouseControlled() { return false; }
+  virtual const char *GetID() { return "Scoreboard"; }
 
-		friend class C4Scoreboard;
-	};
+  virtual bool IsMouseControlled() { return false; }
 
+  friend class C4Scoreboard;
+};
 
-#endif // INC_C4Scoreboard
+#endif  // INC_C4Scoreboard

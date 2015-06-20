@@ -88,7 +88,7 @@ BOOL InitDirectInput(HINSTANCE g_hinst, HWND hwnd, int resx, int resy) {
 
   DIPROPDWORD dipdw = {
       {
-          sizeof(DIPROPDWORD), sizeof(DIPROPHEADER), 0, DIPH_DEVICE,
+       sizeof(DIPROPDWORD), sizeof(DIPROPHEADER), 0, DIPH_DEVICE,
       },
       DINPUT_BUFFERSIZE,
   };
