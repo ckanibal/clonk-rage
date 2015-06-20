@@ -11,7 +11,7 @@
 #include "object/C4Object.h"
 #include "object/C4ObjectInfo.h"
 #include "C4Wrappers.h"
-#include "game/C4Fullscreen.h"
+#include "C4FullScreen.h"
 #include "game/C4Application.h"
 #include "object/C4ObjectCom.h"
 #include "C4FogOfWar.h"
@@ -51,15 +51,15 @@ namespace {
 LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   {
 	// Determine viewport
-	C4Viewport *cvp; 
+	C4Viewport *cvp;
 	if (!(cvp=Game.GraphicsSystem.GetViewport(hwnd)))
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
-	
+
 	// Process message
   switch (uMsg)
     {
     //---------------------------------------------------------------------------------------------------------------------------
-    case WM_KEYDOWN:  
+    case WM_KEYDOWN:
 			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 			switch (wParam)
 				{
@@ -76,7 +76,7 @@ LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 				}
       break;
     //---------------------------------------------------------------------------------------------------------------------------
-    case WM_KEYUP:  
+    case WM_KEYUP:
 			if (Game.DoKeyboardInput(wParam, KEYEV_Up, !!(lParam & 0x20000000), Application.IsControlDown(), Application.IsShiftDown(), false, NULL)) return 0;
 			break;
     //------------------------------------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     //----------------------------------------------------------------------------------------------------------------------------------
 		case WM_DESTROY:
 			sprintf(OSTR,"Viewport%i",cvp->Player+1);
-			StoreWindowPosition(hwnd, OSTR, Config.GetSubkeyPath("Console"));	
+			StoreWindowPosition(hwnd, OSTR, Config.GetSubkeyPath("Console"));
 			break;
     //----------------------------------------------------------------------------------------------------------------------------------
 		case WM_CLOSE:
@@ -158,10 +158,10 @@ LRESULT APIENTRY ViewportWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 			case WM_RBUTTONDBLCLK: Game.GraphicsSystem.MouseMove(C4MC_Button_RightDouble,LOWORD(lParam),HIWORD(lParam),wParam, cvp);	break;
 			//----------------------------------------------------------------------------------------------------------------------------------
 			case WM_MOUSEMOVE:
-				if ( Inside<int32_t>(LOWORD(lParam)-cvp->DrawX,0,cvp->ViewWdt-1) 
+				if ( Inside<int32_t>(LOWORD(lParam)-cvp->DrawX,0,cvp->ViewWdt-1)
 					&& Inside<int32_t>(HIWORD(lParam)-cvp->DrawY,0,cvp->ViewHgt-1) )
 						SetCursor(NULL);
-				Game.GraphicsSystem.MouseMove(C4MC_Button_None,LOWORD(lParam),HIWORD(lParam),wParam, cvp);	
+				Game.GraphicsSystem.MouseMove(C4MC_Button_None,LOWORD(lParam),HIWORD(lParam),wParam, cvp);
 				break;
 			//----------------------------------------------------------------------------------------------------------------------------------
 			case WM_MOUSEWHEEL:
@@ -231,7 +231,7 @@ void UpdateWindowLayout(HWND hwnd)
 	RECT rect;
 	GetWindowRect(hwnd,&rect);
 	MoveWindow(hwnd,rect.left,rect.top,rect.right-rect.left-1,rect.bottom-rect.top,TRUE);
-	MoveWindow(hwnd,rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top,TRUE);	
+	MoveWindow(hwnd,rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top,TRUE);
 	}
 
 BOOL C4Viewport::TogglePlayerLock()
@@ -245,7 +245,7 @@ BOOL C4Viewport::TogglePlayerLock()
 		ScrollBarsByViewPosition();
 		}
 	// Enable player lock
-	else if (ValidPlr(Player)) 
+	else if (ValidPlr(Player))
 		{
 		PlayerLock=TRUE;
 		SetWindowLong(pWindow->hWindow,GWL_STYLE,C4ViewportWindowStyle);
@@ -266,7 +266,7 @@ BOOL C4Viewport::ViewPositionByScrollBars()
 	// Horizontal
 	scroll.fMask=SIF_POS;
 	GetScrollInfo(pWindow->hWindow,SB_HORZ,&scroll);
-	ViewX=scroll.nPos;	
+	ViewX=scroll.nPos;
 	return TRUE;
 	}
 
@@ -360,7 +360,7 @@ GtkWidget* C4ViewportWindow::InitGUI()
 
 	// do not draw the default background
 	gtk_widget_set_double_buffered (drawing_area, FALSE);
-	
+
 	return drawing_area;
 }
 
@@ -426,7 +426,7 @@ void C4ViewportWindow::OnDragDataReceivedStatic(GtkWidget* widget, GdkDragContex
 	{
 		gchar* file = g_filename_from_uri(*uri, NULL, NULL);
 		if(!file) continue;
-	
+
 		Game.DropFile(file, window->cvp->ViewX+x, window->cvp->ViewY+y);
 		g_free(file);
 	}
@@ -583,7 +583,7 @@ gboolean C4ViewportWindow::OnMotionNotifyStatic(GtkWidget* widget, GdkEventMotio
 		Game.GraphicsSystem.MouseMove(C4MC_Button_None, (int32_t)event->x, (int32_t)event->y, event->state, window->cvp);
 	}
 	else
-	{	
+	{
 		Console.EditCursor.Move(window->cvp->ViewX + (int32_t)event->x, window->cvp->ViewY + (int32_t)event->y, event->state);
 	}
 
@@ -861,7 +861,7 @@ void C4Viewport::DrawOverlay(C4FacetEx &cgo)
 
 void C4Viewport::DrawCursorInfo(C4FacetEx &cgo)
 	{
-	C4Facet ccgo,ccgo2; 
+	C4Facet ccgo,ccgo2;
 
 	// Get cursor
 	C4Object *cursor, *realcursor;
@@ -874,7 +874,7 @@ void C4Viewport::DrawCursorInfo(C4FacetEx &cgo)
 
 	// Draw info
 	if (Config.Graphics.ShowPlayerInfoAlways)
-		if (cursor->Info) 
+		if (cursor->Info)
 			{
 			C4ST_STARTNEW(ObjInfStat, "C4Viewport::DrawCursorInfo: Object info")
 			ccgo.Set(cgo.Surface,cgo.X+C4SymbolBorder,cgo.Y+C4SymbolBorder,3*C4SymbolSize,C4SymbolSize);
@@ -915,7 +915,7 @@ void C4Viewport::DrawCursorInfo(C4FacetEx &cgo)
 			ccgo.Set(cgo.Surface,cgo.X+cx,cgo.Y+C4SymbolSize+2*C4SymbolBorder+iYOff,bar_wdt,cgo.Hgt-3*C4SymbolBorder-2*C4SymbolSize-iYOff);
 			cursor->DrawEnergy(ccgo); ccgo.X+=bar_wdt+1;
 			// Magic energy
-			if (cursor->MagicEnergy) 
+			if (cursor->MagicEnergy)
 				{ cursor->DrawMagicEnergy(ccgo); ccgo.X+=bar_wdt+1; }
 			// Breath
 			if (cursor->Breath && (cursor->Breath<cursor->GetPhysical()->Breath))
@@ -941,15 +941,15 @@ void C4Viewport::DrawCursorInfo(C4FacetEx &cgo)
 				}
 
 	}
-		
+
 void C4Viewport::DrawMenu(C4FacetEx &cgo)
 	{
 
 	// Get player
-	C4Player *pPlr = Game.Players.Get(Player); 
+	C4Player *pPlr = Game.Players.Get(Player);
 
 	// Player eliminated
-	if (pPlr && pPlr->Eliminated) 
+	if (pPlr && pPlr->Eliminated)
 		{
 		Application.DDraw->TextOut(FormatString(LoadResStr(pPlr->Surrendered ? "IDS_PLR_SURRENDERED" :	"IDS_PLR_ELIMINATED"),pPlr->GetName()).getData(),
 			Game.GraphicsResource.FontRegular, 1.0, cgo.Surface,cgo.X+cgo.Wdt/2,cgo.Y+2*cgo.Hgt/3,0xfaFF0000,ACenter);
@@ -997,7 +997,7 @@ void C4Viewport::DrawMenu(C4FacetEx &cgo)
 	cgo.X = cgo.TargetX; cgo.Y = cgo.TargetY;
 	cgo.TargetX = iOldTx; cgo.TargetY = iOldTy;
 	}
-		
+
 extern int32_t iLastControlSize,iPacketDelay,ScreenRate;
 extern int32_t ControlQueueSize,ControlQueueDataSize;
 
@@ -1085,9 +1085,9 @@ void C4Viewport::Draw(C4FacetEx &cgo, bool fDrawOverlay)
 
 	// Draw overlay
 	C4ST_STARTNEW(OvrStat, "C4Viewport::Draw: Overlay")
-	
+
 	if (!Application.isFullScreen) Console.EditCursor.Draw(cgo);
-	
+
   if (fDrawOverlay) DrawOverlay(cgo);
 
 	// Netstats
@@ -1096,7 +1096,7 @@ void C4Viewport::Draw(C4FacetEx &cgo, bool fDrawOverlay)
 
 	C4ST_STOP(OvrStat)
 
-	// Remove clippers  
+	// Remove clippers
 	if (fDrawOverlay) Application.DDraw->NoPrimaryClipper();
 
 	}
@@ -1121,7 +1121,7 @@ void C4Viewport::Execute()
 	if (RegionUpdate>=5)
 		{
 		RegionUpdate=0;
-		Regions.Clear(); 
+		Regions.Clear();
 		Regions.SetAdjust(-OutX,-OutY);
 		SetRegions=&Regions;
 		}
@@ -1139,7 +1139,7 @@ void C4Viewport::Execute()
 	// Video record & status (developer mode, first player viewport)
 	if (!Application.isFullScreen)
 		if (Player==0 && (this==Game.GraphicsSystem.GetViewport((int32_t) 0)))
-			Game.GraphicsSystem.Video.Execute();	
+			Game.GraphicsSystem.Video.Execute();
 	// Blit output
 	BlitOutput();
 #ifdef USE_GL
@@ -1280,7 +1280,7 @@ void C4Viewport::Default()
 
 void C4Viewport::DrawPlayerInfo(C4FacetEx &cgo)
 	{
-	C4Facet ccgo; 
+	C4Facet ccgo;
 	if (!ValidPlr(Player)) return;
 
 	// Wealth
@@ -1294,7 +1294,7 @@ void C4Viewport::DrawPlayerInfo(C4FacetEx &cgo)
 						 wdt,hgt);
 		Game.GraphicsResource.fctWealth.DrawValue(ccgo,Game.Players.Get(Player)->Wealth, 0, Config.Graphics.Currency);
 		}
-	
+
 	// Value gain
 	if ( (Game.C4S.Game.ValueGain && Game.Players.Get(Player)->ViewValue)
 		|| Config.Graphics.ShowPlayerInfoAlways)
@@ -1339,7 +1339,7 @@ BOOL C4Viewport::Init(int32_t iPlayer, bool fSetTempOnly)
 	}
 
 BOOL C4Viewport::Init(CStdWindow * pParent, CStdApp * pApp, int32_t iPlayer)
-	{	
+	{
 	// Console viewport initialization
 	// Set Player
 	if (!ValidPlr(iPlayer)) iPlayer = NO_OWNER;
@@ -1366,9 +1366,9 @@ BOOL C4Viewport::Init(CStdWindow * pParent, CStdApp * pApp, int32_t iPlayer)
 	}
 
 StdStrBuf PlrControlKeyName(int32_t iPlayer, int32_t iControl, bool fShort)
-	{	
+	{
 	// determine player
-	C4Player *pPlr = Game.Players.Get(iPlayer);	
+	C4Player *pPlr = Game.Players.Get(iPlayer);
 	// player control
 	if (pPlr)
 		{
@@ -1465,7 +1465,7 @@ void C4Viewport::DrawPlayerStartup(C4FacetEx &cgo)
 		{
 		GfxR->fctKeyboard.Draw(cgo.Surface,
 													 cgo.X+(cgo.Wdt-GfxR->fctKeyboard.Wdt)/2,
-													 cgo.Y+cgo.Hgt * 2/3 + DrawMessageOffset,								
+													 cgo.Y+cgo.Hgt * 2/3 + DrawMessageOffset,
 													 pPlr->Control-C4P_Control_Keyboard1,0);
 		iNameHgtOff=GfxR->fctKeyboard.Hgt;
 		}
@@ -1473,7 +1473,7 @@ void C4Viewport::DrawPlayerStartup(C4FacetEx &cgo)
 		{
 		GfxR->fctGamepad.Draw(cgo.Surface,
 													 cgo.X+(cgo.Wdt-GfxR->fctKeyboard.Wdt)/2,
-													 cgo.Y+cgo.Hgt * 2/3 + DrawMessageOffset,								
+													 cgo.Y+cgo.Hgt * 2/3 + DrawMessageOffset,
 													 pPlr->Control-C4P_Control_GamePad1,0);
 		iNameHgtOff=GfxR->fctGamepad.Hgt;
 		}
@@ -1566,7 +1566,7 @@ bool C4Viewport::IsViewportMenu(class C4Menu *pMenu)
 	{
 	// check all associated menus
 	// Get player
-	C4Player *pPlr = Game.Players.Get(Player); 
+	C4Player *pPlr = Game.Players.Get(Player);
 	// Player eliminated: No menu
 	if (pPlr && pPlr->Eliminated) return false;
 	// Player cursor object menu

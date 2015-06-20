@@ -4,7 +4,7 @@
 
 #include "C4Include.h"
 #include "gui/C4Gui.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "gui/C4LoaderScreen.h"
 #include "game/C4Application.h"
 
@@ -121,7 +121,7 @@ void Button::MouseInput(CMouse &rMouse, int32_t iButton, int32_t iX, int32_t iY,
 	if (fEnabled) switch (iButton)
 		{
 		case C4MC_Button_LeftDown:
-		
+
 			// mark button as being down
 			SetDown();
 			// remember drag target
@@ -321,4 +321,3 @@ void FacetButton::DrawElement(C4FacetEx &cgo)
 
 
 }; // end of namespace
-

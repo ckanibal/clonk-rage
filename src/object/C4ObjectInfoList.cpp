@@ -98,7 +98,7 @@ BOOL C4ObjectInfoList::NameExists(const char *szName)
   for (cinf=First; cinf; cinf=cinf->Next)
     if (SEqualNoCase(szName,cinf->Name))
       return TRUE;
-  return FALSE;	
+  return FALSE;
 	}
 
 C4ObjectInfo* C4ObjectInfoList::GetIdle(C4ID c_id, C4DefList &rDefs)
@@ -107,10 +107,10 @@ C4ObjectInfo* C4ObjectInfoList::GetIdle(C4ID c_id, C4DefList &rDefs)
   C4ObjectInfo *pInfo;
   C4ObjectInfo *pHiExp=NULL;
 
-	// Search list 
+	// Search list
 	for (pInfo=First; pInfo; pInfo=pInfo->Next)
 		// Valid only
-		if (pDef = rDefs.ID2Def(pInfo->id)) 
+		if (pDef = rDefs.ID2Def(pInfo->id))
 			// Use standard crew or matching id
 			if ( (!c_id && !pDef->NativeCrew) || (pInfo->id==c_id) )
 				// Participating and not in action
@@ -121,13 +121,13 @@ C4ObjectInfo* C4ObjectInfoList::GetIdle(C4ID c_id, C4DefList &rDefs)
 						if (!pHiExp || (pInfo->Experience>pHiExp->Experience))
 							// Set this
 							pHiExp=pInfo;
-	
+
 	// Found
 	if (pHiExp)
-    { 
+    {
 		pHiExp->Recruit();
-    return pHiExp; 
-    } 
+    return pHiExp;
+    }
 
   return NULL;
 	}
@@ -141,11 +141,11 @@ C4ObjectInfo* C4ObjectInfoList::New(C4ID n_id, C4DefList *pDefs, const char *cpN
 	if (n_id == C4ID_None) n_id = C4ID_Clonk;
 	// Check type valid and def available
 	C4Def *pDef = NULL;
-	if (pDefs) 
+	if (pDefs)
 		if (!(pDef = pDefs->ID2Def(n_id)))
-			{ delete pInfo; return FALSE; }
+			{ delete pInfo; return NULL; }
 	// Override name source by definition
-	if (pDef->pClonkNames) 
+	if (pDef->pClonkNames)
 		cpNames = pDef->pClonkNames->GetData();
 	// Default by type
   ((C4ObjectInfoCore*)pInfo)->Default(n_id, pDefs, cpNames);
@@ -235,7 +235,7 @@ bool C4ObjectInfoList::IsElement(C4ObjectInfo *pInfo)
 void C4ObjectInfoList::Strip(C4DefList &rDefs)
 	{
   C4ObjectInfo *pInfo, *pPrev;
-	// Search list 
+	// Search list
 	for (pInfo=First, pPrev=NULL; pInfo; )
 		{
 		// Invalid?

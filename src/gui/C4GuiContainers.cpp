@@ -4,7 +4,7 @@
 
 #include "C4Include.h"
 #include "gui/C4Gui.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "gui/C4LoaderScreen.h"
 #include "game/C4Application.h"
 
@@ -728,4 +728,3 @@ void Control::DisableFocus()
 	}
 
 }; // end of namespace
-

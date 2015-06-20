@@ -6,7 +6,7 @@
 #include "gui/C4Gui.h"
 
 #ifndef BIG_C4INCLUDE
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "gui/C4LoaderScreen.h"
 #include "game/C4Application.h"
 #include "game/C4Viewport.h"
@@ -169,7 +169,7 @@ CStdWindow * DialogWindow::Init(CStdApp * pApp, const char * Title, CStdWindow *
 	// create it!
 	if (!Title || !*Title) Title = "???";
 	hWindow = ::CreateWindowEx	(
-          0, 
+          0,
 					ConsoleDlgClassName, Title,
           ConsoleDlgWindowStyle,
           CW_USEDEFAULT,CW_USEDEFAULT,rtSize.right-rtSize.left,rtSize.bottom-rtSize.top,
@@ -181,7 +181,7 @@ CStdWindow * DialogWindow::Init(CStdApp * pApp, const char * Title, CStdWindow *
 			RestoreWindowPosition(hWindow, FormatString("ConsoleGUI_%s", szID).getData(), Config.GetSubkeyPath("Console"), FALSE);
 		// and show
 		::ShowWindow(hWindow, SW_SHOW);
-		}     
+		}
 	return hWindow ? this : 0;
 }
 
@@ -197,11 +197,11 @@ LRESULT APIENTRY DialogWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
   switch (uMsg)
     {
     //---------------------------------------------------------------------------------------------------------------------------
-    case WM_KEYDOWN:  
+    case WM_KEYDOWN:
 			if (Game.DoKeyboardInput(wParam, KEYEV_Down, !!(lParam & 0x20000000), Application.IsControlDown(), Application.IsShiftDown(), !!(lParam & 0x40000000), pDlg)) return 0;
 			break;
     //---------------------------------------------------------------------------------------------------------------------------
-    case WM_KEYUP:  
+    case WM_KEYUP:
 			if (Game.DoKeyboardInput(wParam, KEYEV_Up, !!(lParam & 0x20000000), Application.IsControlDown(), Application.IsShiftDown(), false, pDlg)) return 0;
 			break;
     //------------------------------------------------------------------------------------------------------------
@@ -214,7 +214,7 @@ LRESULT APIENTRY DialogWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			{
 			const char *szID = pDlg->GetID();
 			if (szID && *szID)
-				StoreWindowPosition(hwnd, FormatString("ConsoleGUI_%s", szID).getData(), Config.GetSubkeyPath("Console"), FALSE);	
+				StoreWindowPosition(hwnd, FormatString("ConsoleGUI_%s", szID).getData(), Config.GetSubkeyPath("Console"), FALSE);
 			}
 			break;
     //----------------------------------------------------------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ LRESULT APIENTRY DialogWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 		//----------------------------------------------------------------------------------------------------------------------------------
 		case WM_MOUSEMOVE:
 			//SetCursor(NULL);
-			Game.pGUI->MouseInput(C4MC_Button_None,LOWORD(lParam),HIWORD(lParam),wParam, pDlg, NULL);	
+			Game.pGUI->MouseInput(C4MC_Button_None,LOWORD(lParam),HIWORD(lParam),wParam, pDlg, NULL);
 			break;
 		//----------------------------------------------------------------------------------------------------------------------------------
 		case WM_MOUSEWHEEL:
@@ -265,15 +265,15 @@ bool Dialog::RegisterWindowClass(HINSTANCE hInst)
 	WndClass.cbSize=sizeof(WNDCLASSEX);
   WndClass.style         = CS_DBLCLKS | CS_BYTEALIGNCLIENT;
   WndClass.lpfnWndProc   = DialogWinProc;
-  WndClass.cbClsExtra    = 0;		 
-  WndClass.cbWndExtra    = 0;	 
-  WndClass.hInstance     = hInst;              
+  WndClass.cbClsExtra    = 0;
+  WndClass.cbWndExtra    = 0;
+  WndClass.hInstance     = hInst;
   WndClass.hCursor       = LoadCursor (NULL, IDC_ARROW); // - always use normal hw cursor
   WndClass.hbrBackground = (HBRUSH) COLOR_BACKGROUND;
   WndClass.lpszMenuName  = NULL;
   WndClass.lpszClassName = ConsoleDlgClassName;
 	WndClass.hIcon         = LoadIcon (hInst, MAKEINTRESOURCE (IDI_00_C4X) );
-  WndClass.hIconSm       = LoadIcon (hInst, MAKEINTRESOURCE (IDI_00_C4X) );  
+  WndClass.hIconSm       = LoadIcon (hInst, MAKEINTRESOURCE (IDI_00_C4X) );
 	return !!RegisterClassEx(&WndClass);
 	}
 #else
@@ -983,7 +983,7 @@ MessageDialog::MessageDialog(const char *szMessage, const char *szCaption, DWORD
 			AddElement(pBtnRetry); //pBtnAbort->SetToolTip(LoadResStr("IDS_DLGTIP_CANCEL"));
 			rcBtn.x += C4GUI_DefButton2Wdt+C4GUI_DefButton2HSpace;
 			if (!btnFocus) btnFocus = pBtnRetry;
-			
+
 			}
 		// Cancel
 		if (dwButtons & btnAbort)
@@ -1108,7 +1108,7 @@ ProgressDialog *Screen::ShowProgressDlg(const char *szMessage, const char *szCap
 	// create progress dlg
 	ProgressDialog *pDlg = new ProgressDialog(szMessage, szCaption, iMaxProgress, iInitialProgress, icoIcon);
 	// show it
-	if (!pDlg->Show(this, true)) { delete pDlg; return false; }
+	if (!pDlg->Show(this, true)) { delete pDlg; return NULL; }
 	// do not return invalid pointer if GUI got deleted (whil eshowing the progress bar Dlg; maybe some stupid stuff in OnShow)
 	if (!IsGUIValid()) return NULL;
 	// return dlg pointer
@@ -1220,7 +1220,7 @@ void InputDialog::SetCustomEdit(Edit *pCustomEdit)
 	pEdit->SetBounds(rcEditBounds);
 	if (fChatLayout)
 		{
-		pEdit->SetToolTip(LoadResStr("IDS_DLGTIP_CHAT")); 
+		pEdit->SetToolTip(LoadResStr("IDS_DLGTIP_CHAT"));
 		pChatLbl->SetClickFocusControl(pEdit); // 2do: to all, to allies, etc.
 		}
 	AddElement(pEdit);
@@ -1316,4 +1316,3 @@ void InfoDialog::OnSec1Timer()
 
 
 }; // end of namespace
-

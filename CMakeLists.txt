@@ -1,10 +1,10 @@
 cmake_minimum_required (VERSION 2.8.7)
 project (clonk_rage CXX C)
+set(CMAKE_CXX_STANDARD 11)
 
 # options
 option(PROJECT_FOLDERS "Put source files into subfolders in project file" ON)
-
-set(CMAKE_MODULE_PATH "$(CMAKE_CURRENT_SOURCE_DIR)")
+set(CMAKE_MODULE_PATH "$(CMAKE_CURRENT_SOURCE_DIR)" "${CMAKE_SOURCE_DIR}/cmake/")
 
 if(CMAKE_COMPILER_IS_GNUCXX)
 	list(APPEND OC_CXX_FLAGS "-Wall -Wextra -Wredundant-decls -Wendif-labels -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Winit-self -Wsign-promo -Wno-reorder -Wno-unused-parameter -Wnon-virtual-dtor -Woverloaded-virtual")
@@ -147,8 +147,6 @@ set(CLONK_SOURCES
 	src/lib/StdMarkup.cpp
 	src/lib/StdNoGfx.cpp
 	src/lib/StdResStr2.cpp
-	src/lib/StdSDLApp.cpp
-	src/lib/StdSDLWindow.cpp
 	src/lib/StdSurface2.cpp
 	src/lib/StdSurface8.cpp
 	src/lib/StdTApp.cpp
@@ -252,9 +250,32 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	add_definitions(-DUSE_SDL_MAINLOOP)
 	add_definitions(-D__APPLE__)
 
-	list(APPEND CLONK_SOURCES ${CMAKE_SOURCE_DIR}/src/lib/MacUtility.mm)
+	Find_Package(SDL REQUIRED)
+	include_directories(${SDL_INCLUDE_DIR})
+
+	list(APPEND CLONK_SOURCES
+		src/lib/MacUtility.mm
+		src/lib/StdSDLApp.cpp
+		src/lib/StdSDLWindow.cpp
+	)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET(OperatingSystem "LINUX")
+	add_definitions(-DUSE_X11)
+	FIND_PACKAGE ( X11 REQUIRED )
+	set(ADDITIONAL_LIBRARIES
+		-lGLEW
+		-lGLU
+		-pthread
+		-lrt
+		-lXinerama
+		-lXrandr
+		-lXxf86vm
+		-lXi
+		-lXpm
+		)
+	list(APPEND CLONK_SOURCES
+		src/lib/StdXWindow.cpp
+	)
 elseif(WIN32)
   SET(OperatingSystem "WIN32")
 else()
@@ -273,16 +294,15 @@ if(NOT WIN32)
 	add_definitions(-DHAVE_FREETYPE)
 endif()
 
-Find_Package(SDL REQUIRED)
-include_directories(${SDL_INCLUDE_DIR})
-
 if(NOT USE_CONSOLE)
 	SET(JPEG_NAMES ${JPEG_NAMES} libjpeg jpeg-static)
 	find_package(JPEG REQUIRED)
 endif()
 find_package(PNG REQUIRED)
 find_package(Freetype REQUIRED)
-include_directories(${JPEG_INCLUDE_DIR} ${PNG_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+set(CRYPTOPP_ROOT_DIR ${CMAKE_SOURCE_DIR}/lib/cryptopp/target)
+find_package(CryptoPP REQUIRED)
+include_directories(${JPEG_INCLUDE_DIR} ${PNG_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${CRYPTOPP_INCLUDE_DIRS})
 
 find_package(GLEW REQUIRED)
 if (GLEW_FOUND)
@@ -291,7 +311,7 @@ if (GLEW_FOUND)
 endif()
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
-include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
+include_directories( ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} "lib/zlib" )
 
 add_definitions(-DC4ENGINE)
 
@@ -299,16 +319,26 @@ add_executable(engine
 	${CLONK_SOURCES}
 )
 
+add_subdirectory("lib/zlib" zlib)
+
 target_link_libraries(engine
 	${FREETYPE_LIBRARIES}
 	${PNG_LIBRARIES}
 	${JPEG_LIBRARIES}
 	${FREETYPE_LIBRARIES}
-	${CMAKE_CURRENT_SOURCE_DIR}/lib/cryptopp/libcryptopp.a
+	${CRYPTOPP_LIBRARIES}
+	${ADDITIONAL_LIBRARIES}
+	zlib
 )
 
 if (SDL_FOUND)
 	target_link_libraries(engine ${SDL_LIBRARY})
 endif()
 
-target_link_libraries(engine ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
+if (X11_FOUND)
+	target_link_libraries(engine ${X11_LIBRARIES})
+endif()
+
+if (NOT WIN32)
+	target_link_libraries(engine ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
+endif()

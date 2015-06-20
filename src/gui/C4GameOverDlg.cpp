@@ -6,7 +6,7 @@
 
 #ifndef BIG_C4INCLUDE
 #include "game/C4Game.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "player/C4Player.h"
 #include "control/C4PlayerInfo.h"
 #include "C4PlayerInfoListBox.h"
@@ -26,7 +26,7 @@ C4GoalDisplay::GoalPicture::GoalPicture(const C4Rect &rcBounds, C4ID idGoal, boo
 	/*C4Object *pGoalObj = Game.Objects.FindInternal(idGoal);
 	if (pGoalObj)
 		{
-		pGoalObj->GetInfoString().getData(); 
+		pGoalObj->GetInfoString().getData();
 		}
 	else*/
 		{
@@ -112,7 +112,7 @@ bool C4GameOverDlg::is_shown = false;
 
 C4GameOverDlg::C4GameOverDlg() : C4GUI::Dialog( (C4GUI::GetScreenWdt() < 800) ? (C4GUI::GetScreenWdt()-10) : Min<int32_t>(C4GUI::GetScreenWdt()-150, 800),
 																							  (C4GUI::GetScreenHgt() < 600) ? (C4GUI::GetScreenHgt()-10) : Min<int32_t>(C4GUI::GetScreenHgt()-150, 600),
-																								LoadResStr("IDS_TEXT_EVALUATION"), 
+																								LoadResStr("IDS_TEXT_EVALUATION"),
 																								false), pNetResultLabel(NULL), fIsNetDone(false), fHasNextMissionButton(false)
 	{
 	is_shown = true; // assume dlg will be shown, soon
@@ -290,7 +290,7 @@ void C4GameOverDlg::SetNetResult(const char *szResultString, C4RoundResults::Net
 
 void C4GameOverDlg::OnExitBtn(C4GUI::Control *btn)
 	{
-	// callback: exit button pressed. 
+	// callback: exit button pressed.
 	Close(false);
 	}
 

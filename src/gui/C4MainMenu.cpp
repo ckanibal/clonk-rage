@@ -5,7 +5,7 @@
 #include "C4MainMenu.h"
 
 #ifndef BIG_C4INCLUDE
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "game/C4Viewport.h"
 #include "C4Wrappers.h"
 #include "player/C4Player.h"
@@ -60,7 +60,7 @@ bool C4MainMenu::ActivateNewPlayer(int32_t iPlayer)
 			if (DirectoryExists(szFilename)) continue;
 			if (Game.Players.FileInUse(szFilename)) continue;
 			// Open group
-			C4Group hGroup; 
+			C4Group hGroup;
 			if (!hGroup.Open(szFilename)) continue;
 			// Load player info
 			C4PlayerInfoCore C4P;
@@ -87,7 +87,7 @@ bool C4MainMenu::ActivateNewPlayer(int32_t iPlayer)
 			C4FacetExSurface fctPortraitClr;
 			fctPortraitClr.CreateClrByOwner(fctPortrait.Surface);
 			// Create menu symbol from colored portrait
-			C4FacetExSurface fctSymbol; 
+			C4FacetExSurface fctSymbol;
 			fctSymbol.Create(C4SymbolSize, C4SymbolSize);
 			fctPortraitClr.DrawClr(fctSymbol, TRUE, C4P.PrefColorDw);
 			// Add menu item
@@ -116,7 +116,7 @@ bool C4MainMenu::DoRefillInternal(bool &rfRefilled)
 	// Refill
 	switch (Identification)
 		{
-		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		case C4MN_Hostility:
 			{
 			// Clear items
@@ -153,7 +153,7 @@ bool C4MainMenu::DoRefillInternal(bool &rfRefilled)
 					}
 				break;
 			}
-		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		case C4MN_TeamSelection:
 		case C4MN_TeamSwitch:
 			{
@@ -213,7 +213,7 @@ bool C4MainMenu::DoRefillInternal(bool &rfRefilled)
 				}
 			break;
 			}
-		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		case C4MN_Observer: // observer menu
 			{
 			// Clear items
@@ -255,11 +255,11 @@ bool C4MainMenu::DoRefillInternal(bool &rfRefilled)
 				}
 			}
 			break;
-		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		default:
 			// No internal refill needed
 			return true;
-		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		}
 
 	// Successfull internal refill
@@ -303,7 +303,7 @@ void C4MainMenu::OnUserClose()
 
 bool C4MainMenu::ActivateGoals(int32_t iPlayer, bool fDoActivate)
 	{
-	C4FacetExSurface fctSymbol; 
+	C4FacetExSurface fctSymbol;
 	C4FacetEx fctGF; // goal fulfilled facet
 
 	if (fDoActivate)
@@ -436,15 +436,15 @@ bool C4MainMenu::ActivateSavegame(int32_t iPlayer)
 		pScenNameEnd[1]=0;
 		}
 
-	// New Style 2007: 
+	// New Style 2007:
 	// * scenarios are saved into ScenName.c4f/ScenName123.c4s to keep umlauts out of filenames
 	// * language titles are stored in folders as title component
 	StdStrBuf strFilename, strTitle;
 	strFilename.Format("%s.c4f%c%s%%d.c4s", ScenName, DirectorySeparator, ScenName);
 	strTitle = Game.ScenarioTitle;
-	
+
 	// Create menu items
-	StdStrBuf strFilenameIndexed, strCommand, strCaption, strSavePath; 
+	StdStrBuf strFilenameIndexed, strCommand, strCaption, strSavePath;
 	for (int32_t i = 1; i <= 10; i++)
 		{
 		// Index filename
@@ -462,7 +462,7 @@ bool C4MainMenu::ActivateSavegame(int32_t iPlayer)
 
 	// Go back to options menu on close
 	SetCloseCommand("ActivateMenu:Main");
-	
+
 	return true;
 	}
 
@@ -528,10 +528,10 @@ bool C4MainMenu::ActivateOptions(int32_t iPlayer, int32_t selection)
 	C4Player *pPlr = Game.Players.Get(iPlayer);
 	if (pPlr && !Game.C4S.Head.DisableMouse)
 		{
-		if (pPlr->MouseControl) 
+		if (pPlr->MouseControl)
 			AddRefSym(LoadResStr("IDS_MNU_MOUSECONTROL"), GfxR->fctOptions.GetPhase(11 + 1), "Options:Mouse");
-		else 
-			if (!Game.Players.MouseControlTaken()) 
+		else
+			if (!Game.Players.MouseControlTaken())
 				AddRefSym(LoadResStr("IDS_MNU_MOUSECONTROL"), GfxR->fctOptions.GetPhase(11), "Options:Mouse");
 		}
 	// Music
@@ -618,14 +618,14 @@ bool C4MainMenu::ActivateMain(int32_t iPlayer)
 		AddRefSym(LoadResStr("IDS_MSG_SELTEAM"),fctTeams,"ActivateMenu:TeamSel",C4MN_Item_NoCount,NULL,LoadResStr("IDS_MSG_ALLOWSYOUTOJOINADIFFERENT"));
 		}
 	// Player join
-	if ((Game.Players.GetCount() < Game.Parameters.MaxPlayers) && !Game.Parameters.isLeague()) 
+	if ((Game.Players.GetCount() < Game.Parameters.MaxPlayers) && !Game.Parameters.isLeague())
 		{
 		AddRefSym(LoadResStr("IDS_MENU_CPNEWPLAYER"),GfxR->fctPlayerClr.GetPhase(),"ActivateMenu:NewPlayer",C4MN_Item_NoCount,NULL,LoadResStr("IDS_MENU_CPNEWPLAYERINFO"));
-		}	
+		}
 	// Save game (player menu only - should we allow saving games with no players in it?)
 	if (pPlr && (!Game.Network.isEnabled() || Game.Network.isHost()))
 		{
-		AddRefSym(LoadResStr("IDS_MENU_CPSAVEGAME"),GfxR->fctMenu.GetPhase(0),"ActivateMenu:Save:Game",C4MN_Item_NoCount,NULL,LoadResStr("IDS_MENU_CPSAVEGAMEINFO"));		
+		AddRefSym(LoadResStr("IDS_MENU_CPSAVEGAME"),GfxR->fctMenu.GetPhase(0),"ActivateMenu:Save:Game",C4MN_Item_NoCount,NULL,LoadResStr("IDS_MENU_CPSAVEGAMEINFO"));
 		}
 	// Options
 	AddRefSym(LoadResStr("IDS_MNU_OPTIONS"), GfxR->fctOptions.GetPhase(0), "ActivateMenu:Options",C4MN_Item_NoCount, NULL, LoadResStr("IDS_MNU_OPTIONSINFO"));
@@ -638,7 +638,7 @@ bool C4MainMenu::ActivateMain(int32_t iPlayer)
 		// Client
 		if (!Game.Network.isHost())
 			AddRefSym(LoadResStr("IDS_MENU_DISCONNECT"), C4GUI::Icon::GetIconFacet(C4GUI::Ico_Disconnect), "ActivateMenu:Client", C4MN_Item_NoCount, NULL, LoadResStr("IDS_TEXT_DISCONNECTTHEGAMEFROMTHES"));
-	}		
+	}
 	// Surrender (player menu only)
 	if (pPlr)
 		AddRefSym(LoadResStr("IDS_MENU_CPSURRENDER"), C4GUI::Icon::GetIconFacet(C4GUI::Ico_Surrender), "ActivateMenu:Surrender", C4MN_Item_NoCount, NULL, LoadResStr("IDS_MENU_CPSURRENDERINFO"));
@@ -654,7 +654,7 @@ bool C4MainMenu::ActivateMain(int32_t iPlayer)
 bool C4MainMenu::ActivateHostility(int32_t iPlayer)
 	{
 	// Init menu
-	C4FacetExSurface fctSymbol; 
+	C4FacetExSurface fctSymbol;
 	fctSymbol.Create(C4SymbolSize, C4SymbolSize);
 	GfxR->fctMenu.GetPhase(7).Draw(fctSymbol);
 	Init(fctSymbol, LoadResStr("IDS_MENU_CPATTACK"), iPlayer, C4MN_Extra_None, 0, C4MN_Hostility);
@@ -726,7 +726,7 @@ bool C4MainMenu::MenuCommand(const char *szCommand, bool fIsCloseCommand)
 	// Surrender
 	if (SEqual2(szCommand,"Surrender"))
 		{
-		Game.Control.DoInput(CID_Script, new C4ControlScript(FormatString("SurrenderPlayer(%d)", Player).getData()), CDT_Queue);		
+		Game.Control.DoInput(CID_Script, new C4ControlScript(FormatString("SurrenderPlayer(%d)", Player).getData()), CDT_Queue);
 		return true;
 		}
 	// Save game
@@ -750,7 +750,7 @@ bool C4MainMenu::MenuCommand(const char *szCommand, bool fIsCloseCommand)
 				C4Client *pClient = Game.Clients.getClientByID(iClientID);
 				if (pClient) Game.Clients.CtrlRemove(pClient, LoadResStr("IDS_MSG_KICKBYMENU"));
 				Close(true);
-				}		
+				}
 		return true;
 		}
 	// Part
@@ -770,12 +770,12 @@ bool C4MainMenu::MenuCommand(const char *szCommand, bool fIsCloseCommand)
 	if (SEqual2(szCommand,"Options:"))
 		{
 		// Music
-		if (SEqual(szCommand + 8, "Music")) 
+		if (SEqual(szCommand + 8, "Music"))
 			{
 			Application.MusicSystem.ToggleOnOff();
 			}
 		// Sound
-		if (SEqual(szCommand + 8, "Sound")) 
+		if (SEqual(szCommand + 8, "Sound"))
 			{
 			if (Config.Sound.RXSound)
 				{
@@ -791,7 +791,7 @@ bool C4MainMenu::MenuCommand(const char *szCommand, bool fIsCloseCommand)
 			}
 		// Mouse control
 		if (SEqual(szCommand + 8, "Mouse"))
-			if (pPlr) 
+			if (pPlr)
 				pPlr->ToggleMouseControl();
 		// Reopen with updated options
 		ActivateOptions(Player, GetSelection());
@@ -801,7 +801,7 @@ bool C4MainMenu::MenuCommand(const char *szCommand, bool fIsCloseCommand)
 	if (SEqual2(szCommand,"Display:"))
 		{
 		// Upper board
-		if (SEqual(szCommand + 8, "UpperBoard")) 
+		if (SEqual(szCommand + 8, "UpperBoard"))
 			{
 			Config.Graphics.UpperBoard = !Config.Graphics.UpperBoard;
 			Game.GraphicsSystem.RecalculateViewports();

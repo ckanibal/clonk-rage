@@ -6,7 +6,7 @@
 #include "gui/C4Gui.h"
 #include "graphics/C4FacetEx.h"
 #include "game/C4Game.h"
-#include "game/C4Fullscreen.h"
+#include "game/C4FullScreen.h"
 #include "gui/C4LoaderScreen.h"
 #include "game/C4Application.h"
 
@@ -663,4 +663,3 @@ void Tabular::UpdateSize()
 
 
 }; // end of namespace
-

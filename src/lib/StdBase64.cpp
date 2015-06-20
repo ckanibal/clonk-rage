@@ -17,7 +17,7 @@ const char Base64Tbl[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
                           '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
 // reversed base 64 table
-const unsigned char Base64RTbl[] = {
+const char Base64RTbl[] = {
     '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
     '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
     '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',

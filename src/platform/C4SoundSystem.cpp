@@ -225,7 +225,7 @@ BOOL C4SoundInstance::CheckStart()
   if(timeGetTime() > iStarted + pEffect->Length / 2 && !fLooping)
     return FALSE;
   // do near-instances check
-  int32_t iNearInstances = pObj ? pEffect->GetStartedInstanceCount(pObj->x, pObj->y, C4NearSoundRadius) 
+  int32_t iNearInstances = pObj ? pEffect->GetStartedInstanceCount(pObj->x, pObj->y, C4NearSoundRadius)
                             : pEffect->GetStartedInstanceCount();
   // over maximum?
   if(iNearInstances > iNearInstanceMax) return FALSE;
@@ -369,7 +369,7 @@ void C4SoundInstance::ClearPointers(C4Object *pDelete)
 bool C4SoundInstance::Inside(int32_t iX, int32_t iY, int32_t iRad)
   {
   return pObj &&
-         (pObj->x - iX) * (pObj->x - iX) + (pObj->y - iY) * (pObj->y - iY) <= iRad * iRad;         
+         (pObj->x - iX) * (pObj->x - iX) + (pObj->y - iY) * (pObj->y - iY) <= iRad * iRad;
   }
 
 
@@ -388,7 +388,7 @@ BOOL C4SoundSystem::Init()
 	if(!Application.MusicSystem.MODInitialized &&
 	   !Application.MusicSystem.InitializeMOD())
 		return false;
-	
+
 	// Might be reinitialisation
 	ClearEffects();
 	// Open sound file
@@ -446,7 +446,7 @@ int32_t C4SoundSystem::EffectInBank(const char *szSound)
   C4SoundEffect *pSfx;
   char szName[C4MaxSoundName+4+1];
 	// Compose name (with extension)
-  SCopy(szSound,szName,C4MaxSoundName); 
+  SCopy(szSound,szName,C4MaxSoundName);
 	DefaultExtension(szName,"wav");
 	// Count all matching sounds in bank
   for (pSfx=FirstSound; pSfx; pSfx=pSfx->Next)
@@ -481,7 +481,7 @@ C4SoundEffect* C4SoundSystem::GetEffect(const char *szSndName)
   SCopy(szSndName,szName,C4MaxSoundName);
 	// Default extension
 	DefaultExtension(szName,"wav");
-	// Convert old style '*' wildcard to correct '?' wildcard 
+	// Convert old style '*' wildcard to correct '?' wildcard
 	// For sound effects, '*' is supposed to match single digits only
   SReplaceChar(szName, '*', '?');
 	// Sound with a wildcard: determine number of available matches
@@ -504,7 +504,7 @@ C4SoundEffect* C4SoundSystem::GetEffect(const char *szSndName)
     if (SEqualNoCase(szName,pSfx->Name))
       break;
   // Sound not in bank, try add
-  if (!pSfx) 
+  if (!pSfx)
     if (!(pSfx = AddEffect(szName)))
       return NULL;
   return pSfx;
@@ -513,10 +513,10 @@ C4SoundEffect* C4SoundSystem::GetEffect(const char *szSndName)
 C4SoundInstance *C4SoundSystem::NewEffect(const char *szSndName, bool fLoop, int32_t iVolume, C4Object *pObj, int32_t iCustomFalloffDistance)
 	{
 	// Sound not active
-  if (!Config.Sound.RXSound) return FALSE;
+  if (!Config.Sound.RXSound) return NULL;
 	// Get sound
   C4SoundEffect *csfx;
-  if (!(csfx=GetEffect(szSndName))) return FALSE;
+  if (!(csfx=GetEffect(szSndName))) return NULL;
 	// Play
   return csfx->New(fLoop, iVolume, pObj, iCustomFalloffDistance);
 	}
@@ -580,10 +580,10 @@ int32_t C4SoundSystem::RemoveEffect(const char *szFilename)
 		{
 		pNext=pSfx->Next;
 		if (WildcardMatch(szFilename,pSfx->Name))
-			{			
+			{
 			delete pSfx;
-			if (pPrev) pPrev->Next=pNext; 
-			else FirstSound=pNext;	
+			if (pPrev) pPrev->Next=pNext;
+			else FirstSound=pNext;
 			iResult++;
 			}
 		else
