@@ -41,8 +41,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInstance, LPSTR lpszCmdParam,
   Application.Clear();
 
   // Return exit code
-  if (!Game.GameOver)
-    return C4XRV_Aborted;
+  if (!Game.GameOver) return C4XRV_Aborted;
   return C4XRV_Completed;
 }
 
@@ -51,15 +50,11 @@ int main() {
   char *pCommandLine = GetCommandLine();
   if (*pCommandLine == '"') {
     pCommandLine++;
-    while (*pCommandLine && *pCommandLine != '"')
-      pCommandLine++;
-    if (*pCommandLine == '"')
-      pCommandLine++;
+    while (*pCommandLine && *pCommandLine != '"') pCommandLine++;
+    if (*pCommandLine == '"') pCommandLine++;
   } else
-    while (*pCommandLine && *pCommandLine != ' ')
-      pCommandLine++;
-  while (*pCommandLine == ' ')
-    pCommandLine++;
+    while (*pCommandLine && *pCommandLine != ' ') pCommandLine++;
+  while (*pCommandLine == ' ') pCommandLine++;
   // Call
   return WinMain(GetModuleHandle(NULL), 0, pCommandLine, 0);
 }
@@ -83,38 +78,37 @@ static void crash_handler(int signo) {
     write(logfd, C4VERSION ": Caught signal ",
           sizeof(C4VERSION ": Caught signal ") - 1);
     switch (signo) {
-    case SIGBUS:
-      write(logfd, "SIGBUS", sizeof("SIGBUS") - 1);
-      break;
-    case SIGILL:
-      write(logfd, "SIGILL", sizeof("SIGILL") - 1);
-      break;
-    case SIGSEGV:
-      write(logfd, "SIGSEGV", sizeof("SIGSEGV") - 1);
-      break;
-    case SIGABRT:
-      write(logfd, "SIGABRT", sizeof("SIGABRT") - 1);
-      break;
-    case SIGINT:
-      write(logfd, "SIGINT", sizeof("SIGINT") - 1);
-      break;
-    case SIGQUIT:
-      write(logfd, "SIGQUIT", sizeof("SIGQUIT") - 1);
-      break;
-    case SIGFPE:
-      write(logfd, "SIGFPE", sizeof("SIGFPE") - 1);
-      break;
-    case SIGTERM:
-      write(logfd, "SIGTERM", sizeof("SIGTERM") - 1);
-      break;
+      case SIGBUS:
+        write(logfd, "SIGBUS", sizeof("SIGBUS") - 1);
+        break;
+      case SIGILL:
+        write(logfd, "SIGILL", sizeof("SIGILL") - 1);
+        break;
+      case SIGSEGV:
+        write(logfd, "SIGSEGV", sizeof("SIGSEGV") - 1);
+        break;
+      case SIGABRT:
+        write(logfd, "SIGABRT", sizeof("SIGABRT") - 1);
+        break;
+      case SIGINT:
+        write(logfd, "SIGINT", sizeof("SIGINT") - 1);
+        break;
+      case SIGQUIT:
+        write(logfd, "SIGQUIT", sizeof("SIGQUIT") - 1);
+        break;
+      case SIGFPE:
+        write(logfd, "SIGFPE", sizeof("SIGFPE") - 1);
+        break;
+      case SIGTERM:
+        write(logfd, "SIGTERM", sizeof("SIGTERM") - 1);
+        break;
     }
     write(logfd, "\n", sizeof("\n") - 1);
     if (logfd == STDERR_FILENO)
       logfd = GetLogFD();
     else
       break;
-    if (logfd < 0)
-      break;
+    if (logfd < 0) break;
   }
   // Get the backtrace
   void *stack[100];
@@ -122,21 +116,19 @@ static void crash_handler(int signo) {
   // Print it out
   backtrace_symbols_fd(stack, count, STDERR_FILENO);
   // Also to the log file
-  if (logfd >= 0)
-    backtrace_symbols_fd(stack, count, logfd);
+  if (logfd >= 0) backtrace_symbols_fd(stack, count, logfd);
   // Bye.
   _exit(C4XRV_Failure);
 }
 #endif
 
 #ifdef __APPLE__
-void restart(char *[]); // MacUtility.mm
+void restart(char *[]);  // MacUtility.mm
 #else
 static void restart(char *argv[]) {
   // Close all file descriptors except stdin, stdout, stderr
   int open_max = sysconf(_SC_OPEN_MAX);
-  for (int fd = 4; fd < open_max; fd++)
-    fcntl(fd, F_SETFD, FD_CLOEXEC);
+  for (int fd = 4; fd < open_max; fd++) fcntl(fd, F_SETFD, FD_CLOEXEC);
   // Execute the new engine
   execlp(argv[0], argv[0], static_cast<char *>(0));
 }
@@ -173,11 +165,9 @@ int main(int argc, char *argv[]) {
   Application.Run();
   // free app stuff
   Application.Clear();
-  if (Application.restartAtEnd)
-    restart(argv);
+  if (Application.restartAtEnd) restart(argv);
   // Return exit code
-  if (!Game.GameOver)
-    return C4XRV_Aborted;
+  if (!Game.GameOver) return C4XRV_Aborted;
   return C4XRV_Completed;
 }
 #endif

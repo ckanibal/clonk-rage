@@ -16,15 +16,18 @@ BOOL Log(const char *szMessage);
 BOOL LogSilentF(const char *strMessage, ...) GNUC_FORMAT_ATTRIBUTE;
 BOOL LogF(const char *strMessage, ...) GNUC_FORMAT_ATTRIBUTE;*/
 BOOL DebugLog(const char *strMessage);
-BOOL DebugLogF(const char *strMessage ...) GNUC_FORMAT_ATTRIBUTE;
+BOOL DebugLogF(const char *strMessage...) GNUC_FORMAT_ATTRIBUTE;
 
-bool LogFatal(const char *szMessage); // log message and store it as a fatal error
-void ResetFatalError();               // clear any fatal error message
-const char *GetFatalError();          // return message that was set as fatal error, if any
+bool LogFatal(
+    const char *szMessage);  // log message and store it as a fatal error
+void ResetFatalError();      // clear any fatal error message
+const char *
+GetFatalError();  // return message that was set as fatal error, if any
 
 BOOL CompileError(bool fWarning, StdCompiler::Exception *Exc);
-size_t GetLogPos(); // get current log position;
-bool GetLogSection(size_t iStart, size_t iLength, StdStrBuf &rsOut); // re-read log data from file
+size_t GetLogPos();  // get current log position;
+bool GetLogSection(size_t iStart, size_t iLength,
+                   StdStrBuf &rsOut);  // re-read log data from file
 
 // Used to print a backtrace after a crash
 int GetLogFD();

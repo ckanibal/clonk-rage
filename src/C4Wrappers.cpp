@@ -14,26 +14,21 @@
 //=========================================
 
 int32_t PixCol2MatOld(BYTE pixc) {
-  if (pixc < GBM)
-    return MNone;
-  pixc &= 63; // Substract GBM, ignore IFT
-  if (pixc > Game.Material.Num * C4M_ColsPerMat - 1)
-    return MNone;
+  if (pixc < GBM) return MNone;
+  pixc &= 63;  // Substract GBM, ignore IFT
+  if (pixc > Game.Material.Num * C4M_ColsPerMat - 1) return MNone;
   return pixc / C4M_ColsPerMat;
 }
 
 int32_t PixCol2MatOld2(BYTE pixc) {
   int32_t iMat = ((int32_t)(pixc & 0x7f)) - 1;
   // if above MVehic, don't forget additional vehicle-colors
-  if (iMat <= MVehic)
-    return iMat;
+  if (iMat <= MVehic) return iMat;
   // equals middle vehicle-color
-  if (iMat == MVehic + 1)
-    return MVehic;
+  if (iMat == MVehic + 1) return MVehic;
   // above: range check
   iMat -= 2;
-  if (iMat >= Game.Material.Num)
-    return MNone;
+  if (iMat >= Game.Material.Num) return MNone;
   return iMat;
 }
 
@@ -44,8 +39,7 @@ C4SoundInstance *StartSoundEffect(const char *szSndName, bool fLoop,
                                   int32_t iVolume, C4Object *pObj,
                                   int32_t iCustomFalloffDistance) {
   // Sound check
-  if (!Config.Sound.RXSound)
-    return nullptr;
+  if (!Config.Sound.RXSound) return nullptr;
   // Start new
   return Application.SoundSystem.NewEffect(szSndName, fLoop, iVolume, pObj,
                                            iCustomFalloffDistance);
@@ -54,13 +48,11 @@ C4SoundInstance *StartSoundEffect(const char *szSndName, bool fLoop,
 C4SoundInstance *StartSoundEffectAt(const char *szSndName, int32_t iX,
                                     int32_t iY, bool fLoop, int32_t iVolume) {
   // Sound check
-  if (!Config.Sound.RXSound)
-    return nullptr;
+  if (!Config.Sound.RXSound) return nullptr;
   // Create
   C4SoundInstance *pInst = StartSoundEffect(szSndName, fLoop, iVolume);
   // Set volume by position
-  if (pInst)
-    pInst->SetVolumeByPos(iX, iY);
+  if (pInst) pInst->SetVolumeByPos(iX, iY);
   // Return
   return pInst;
 }
@@ -73,8 +65,7 @@ void StopSoundEffect(const char *szSndName, C4Object *pObj) {
   // Find instance
   C4SoundInstance *pInst =
       Application.SoundSystem.FindInstance(szSndName, pObj);
-  if (!pInst)
-    return;
+  if (!pInst) return;
   // Stop
   pInst->Stop();
 }
@@ -87,10 +78,8 @@ void SoundLevel(const char *szSndName, C4Object *pObj, int32_t iLevel) {
   // Find or create instance
   C4SoundInstance *pInst =
       Application.SoundSystem.FindInstance(szSndName, pObj);
-  if (!pInst)
-    pInst = StartSoundEffect(szSndName, true, iLevel, pObj);
-  if (!pInst)
-    return;
+  if (!pInst) pInst = StartSoundEffect(szSndName, true, iLevel, pObj);
+  if (!pInst) return;
   // Set volume
   pInst->SetVolume(iLevel);
   pInst->Execute();
@@ -99,8 +88,7 @@ void SoundPan(const char *szSndName, C4Object *pObj, int32_t iPan) {
   // Find instance
   C4SoundInstance *pInst =
       Application.SoundSystem.FindInstance(szSndName, pObj);
-  if (!pInst)
-    return;
+  if (!pInst) return;
   // Set pan
   pInst->SetPan(iPan);
   pInst->Execute();

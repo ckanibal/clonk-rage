@@ -14,16 +14,16 @@
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif //HAVE_CONFIG_H
+#endif  // HAVE_CONFIG_H
 
 #ifdef _WIN32
-	#define C4_OS "win32"
+#define C4_OS "win32"
 #elif defined(__linux__)
-	#define C4_OS "linux"
+#define C4_OS "linux"
 #elif defined(__APPLE__)
-	#define C4_OS "mac"
+#define C4_OS "mac"
 #else
-	#define C4_OS "unknown";
+#define C4_OS "unknown";
 #endif
 
 #ifdef C4ENGINE
@@ -35,7 +35,7 @@
 // define directive STAT here to activate statistics
 #undef STAT
 
-#endif // HAVE_CONFIG_H
+#endif  // HAVE_CONFIG_H
 
 #ifdef DEBUGREC
 #define DEBUGREC_SCRIPT
@@ -60,13 +60,13 @@
 // resources
 #include "../res/resource.h"
 #define POINTER_64 __ptr64
-#endif // _WIN32
+#endif  // _WIN32
 
 // Probably not working
 #if defined(HAVE_MIDI_H) && !defined(USE_FMOD)
 #define USE_WINDOWS_MIDI
 #endif
-#endif // C4ENGINE
+#endif  // C4ENGINE
 
 #include <Standard.h>
 #include <CStdFile.h>

@@ -14,7 +14,7 @@
 #include <smpeg/smpeg.h>
 #include <SDL.h>
 #include <SDL_mixer.h>
-#endif // HAVE_LIBSMPEG
+#endif  // HAVE_LIBSMPEG
 
 void C4VideoFile::Clear() {
   if (sFilename.getLength()) {
@@ -32,8 +32,7 @@ bool C4VideoFile::Load(const char *szFilename, bool fTemp) {
   // clear previous
   Clear();
   // some simple sanity check
-  if (!FileExists(szFilename))
-    return false;
+  if (!FileExists(szFilename)) return false;
   // simply link to file
   sFilename.Copy(szFilename);
   fIsTemp = fTemp;
@@ -54,8 +53,7 @@ bool C4VideoFile::Load(class C4Group &hGrp, const char *szFilename) {
   char szTempFn[_MAX_PATH + 1];
   SCopy(Config.AtTempPath(::GetFilename(szFilename)), szTempFn, _MAX_PATH);
   MakeTempFilename(szTempFn);
-  if (!hGrp.ExtractEntry(szFilename, szTempFn))
-    return false;
+  if (!hGrp.ExtractEntry(szFilename, szTempFn)) return false;
   return Load(szTempFn, true);
 }
 
@@ -71,19 +69,17 @@ bool C4VideoShowDialog::LoadVideo(C4VideoFile *pVideoFile) {
   if (!fctBuffer.Create(AVIFile.GetWdt(), AVIFile.GetHgt(), C4FCT_Full,
                         C4FCT_Full))
     return false;
-  iStartFrameTime = 0; // no frame shown yet
+  iStartFrameTime = 0;  // no frame shown yet
   // play audio
   if (Config.Sound.RXSound && AVIFile.OpenAudioStream()) {
     size_t iAudioDataSize = 0;
     BYTE *pAudioData = AVIFile.GetAudioStreamData(&iAudioDataSize);
     if (pAudioData) {
-      if (pAudioTrack)
-        delete pAudioTrack;
+      if (pAudioTrack) delete pAudioTrack;
       pAudioTrack = new C4SoundEffect();
       if (pAudioTrack->Load(pAudioData, iAudioDataSize, FALSE, false)) {
         C4SoundInstance *pSoundInst = pAudioTrack->New();
-        if (pSoundInst)
-          pSoundInst->Start();
+        if (pSoundInst) pSoundInst->Start();
       }
     }
     AVIFile.CloseAudioStream();
@@ -130,15 +126,14 @@ bool C4VideoShowDialog::LoadVideo(C4VideoFile *pVideoFile) {
   // SMPEG_enableaudio(mpeg, 1);
 
   return true;
-#endif // HAVE_LIBSMPEG
-#endif // _WIN32
+#endif  // HAVE_LIBSMPEG
+#endif  // _WIN32
   return false;
 }
 
 C4VideoShowDialog::~C4VideoShowDialog() {
 #ifdef _WIN32
-  if (pAudioTrack)
-    delete pAudioTrack;
+  if (pAudioTrack) delete pAudioTrack;
 #else
 #ifdef HAVE_LIBSMPEG
   // FIXME
@@ -149,14 +144,13 @@ C4VideoShowDialog::~C4VideoShowDialog() {
   Mix_HookMusic(NULL, NULL);
   SDL_FreeSurface(surface);
   delete mpeg_info;
-#endif // HAVE_LIBSMPEG
-#endif // _WIN32
+#endif  // HAVE_LIBSMPEG
+#endif  // _WIN32
 }
 
 void C4VideoShowDialog::VideoDone() {
   // finished playback
-  if (IsShown())
-    Close(true);
+  if (IsShown()) Close(true);
 }
 
 void C4VideoShowDialog::DrawElement(C4FacetEx &cgo) {
@@ -165,8 +159,7 @@ void C4VideoShowDialog::DrawElement(C4FacetEx &cgo) {
   // get frame to be drawn
   time_t iCurrFrameTime = timeGetTime();
   int32_t iGetFrame;
-  if (!iStartFrameTime)
-    iStartFrameTime = iCurrFrameTime;
+  if (!iStartFrameTime) iStartFrameTime = iCurrFrameTime;
   if (!AVIFile.GetFrameByTime(iCurrFrameTime - iStartFrameTime, &iGetFrame)) {
     // no frame available: Video playback done!
     // 2do: This will always show the last frame two gfx frames?
@@ -186,10 +179,9 @@ void C4VideoShowDialog::DrawElement(C4FacetEx &cgo) {
   sfc->CopyBytes((BYTE *)surface->pixels);
   sfc->Unlock();
   fctBuffer.Draw(cgo, FALSE);
-  if (SMPEG_status(mpeg) != SMPEG_PLAYING)
-    VideoDone();
-#endif // HAVE_LIBSMPEG
-#endif // _WIN32
+  if (SMPEG_status(mpeg) != SMPEG_PLAYING) VideoDone();
+#endif  // HAVE_LIBSMPEG
+#endif  // _WIN32
 }
 
 // C4VideoPlayer
@@ -218,14 +210,14 @@ bool C4VideoPlayer::PreloadVideos(class C4Group &rFromGroup) {
     }
     C4VideoFile *pVideoFile = new C4VideoFile();
     if (!pVideoFile->Load(rFromGroup, szFilename)) {
-      LogF("C4VideoPlayer::PreloadVideos: Error preloading video %s from group "
-           "%s.",
-           szFilename, rFromGroup.GetFullName().getData());
+      LogF(
+          "C4VideoPlayer::PreloadVideos: Error preloading video %s from group "
+          "%s.",
+          szFilename, rFromGroup.GetFullName().getData());
       delete pVideoFile;
       continue;
     }
-    if (pFirstVideo)
-      pVideoFile->SetNext(pFirstVideo);
+    if (pFirstVideo) pVideoFile->SetNext(pFirstVideo);
     pFirstVideo = pVideoFile;
     ++iNumLoaded;
   }
@@ -239,8 +231,7 @@ bool C4VideoPlayer::PlayVideo(const char *szVideoFilename) {
   // search video file in loaded list
   C4VideoFile *pVidFile;
   for (pVidFile = pFirstVideo; pVidFile; pVidFile = pVidFile->GetNext())
-    if (ItemIdentical(pVidFile->GetFilename(), szVideoFilename))
-      break;
+    if (ItemIdentical(pVidFile->GetFilename(), szVideoFilename)) break;
   bool fTempLoaded = false;
   if (!pVidFile) {
     // video not found: Try loading it from game root
@@ -274,23 +265,19 @@ bool C4VideoPlayer::PlayVideo(const char *szVideoFilename) {
   // OK, play that video
   bool fSuccess = PlayVideo(pVidFile);
   // cleanup
-  if (fTempLoaded)
-    delete pVidFile;
+  if (fTempLoaded) delete pVidFile;
   return fSuccess;
 }
 
 bool C4VideoPlayer::PlayVideo(C4VideoFile *pVideoFile) {
   // safety
-  if (!pVideoFile)
-    return false;
+  if (!pVideoFile) return false;
   // plays the specified video and returns when finished or skipped by user
   // (blocking call)
   // cannot play in console mode
-  if (!FullScreen.Active)
-    return false;
+  if (!FullScreen.Active) return false;
   // videos are played in a fullscreen GUI dialog
-  if (!Game.pGUI)
-    return false;
+  if (!Game.pGUI) return false;
   C4VideoShowDialog *pVideoDlg = new C4VideoShowDialog();
   if (!pVideoDlg->LoadVideo(pVideoFile)) {
     DebugLogF("Error playing video file: %s", pVideoFile->GetFilename());
@@ -300,7 +287,7 @@ bool C4VideoPlayer::PlayVideo(C4VideoFile *pVideoFile) {
   ++Game.HaltCount;
   Game.pGUI->ShowModalDlg(
       pVideoDlg,
-      true); // ignore result; even an aborted video was shown successfully
+      true);  // ignore result; even an aborted video was shown successfully
   --Game.HaltCount;
   return true;
 }

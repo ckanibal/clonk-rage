@@ -373,7 +373,7 @@ bool StdStrBuf::TrimSpaces() {
   if (!iLength) return false;
   const char *szStr = getData();
   while (iSpaceLeftCount < iLength)
-    if (isspace((unsigned char)(unsigned char)szStr[iSpaceLeftCount]))
+    if (isspace((unsigned char)(unsigned char) szStr[iSpaceLeftCount]))
       ++iSpaceLeftCount;
     else
       break;

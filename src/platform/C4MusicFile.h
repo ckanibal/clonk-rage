@@ -13,102 +13,98 @@
 #endif
 /* Base class */
 
-class C4MusicFile
-{
-public:	
+class C4MusicFile {
+ public:
+  C4MusicFile() : LastPlayed(-1), NoPlay(FALSE), SongExtracted(FALSE) {}
+  virtual ~C4MusicFile() {}
 
-	C4MusicFile() : LastPlayed(-1), NoPlay(FALSE), SongExtracted(FALSE) { }
-	virtual ~C4MusicFile() { }
+  // data
+  char FileName[_MAX_FNAME + 1];
+  C4MusicFile *pNext;
+  int LastPlayed;
+  BOOL NoPlay;
 
-	// data
-	char FileName[_MAX_FNAME +1];
-	C4MusicFile *pNext;
-	int LastPlayed;
-	BOOL NoPlay;
+  virtual BOOL Init(const char *strFile);
+  virtual BOOL Play(BOOL loop = FALSE) = 0;
+  virtual void Stop(int fadeout_ms = 0) = 0;
+  virtual void CheckIfPlaying() = 0;
+  virtual void SetVolume(int) = 0;
 
-	virtual BOOL Init(const char *strFile);
-	virtual BOOL Play(BOOL loop = FALSE) = 0;
-	virtual void Stop(int fadeout_ms = 0) = 0;
-	virtual void CheckIfPlaying() = 0;
-	virtual void SetVolume(int) = 0;
+ protected:
+  // helper: copy data to a (temp) file
+  BOOL ExtractFile();
+  BOOL RemTempFile();  // remove the temp file
 
-protected:
-
-	// helper: copy data to a (temp) file
-	BOOL ExtractFile();
-	BOOL RemTempFile(); // remove the temp file
-
-	BOOL SongExtracted;
-
+  BOOL SongExtracted;
 };
 #if defined(USE_FMOD) || defined(USE_WINDOWS_MIDI)
-class C4MusicFileMID : public C4MusicFile
-	{
-	public:
-	  BOOL Play(BOOL loop = FALSE);
-		BOOL Extract();
-		void Stop(int fadeout_ms = 0);
-		void CheckIfPlaying();
-		//C4MusicFileMID();
-		void SetVolume(int);
+class C4MusicFileMID : public C4MusicFile {
+ public:
+  BOOL Play(BOOL loop = FALSE);
+  BOOL Extract();
+  void Stop(int fadeout_ms = 0);
+  void CheckIfPlaying();
+  // C4MusicFileMID();
+  void SetVolume(int);
 #ifdef USE_FMOD
-	protected:
-		FMUSIC_MODULE *mod;
+ protected:
+  FMUSIC_MODULE *mod;
 #endif
-	};
+};
 #endif
 
 #ifdef USE_FMOD
 /* MOD class */
 
-class C4MusicFileMOD : public C4MusicFile
-{
-public:
-	C4MusicFileMOD();
-	~C4MusicFileMOD();
+class C4MusicFileMOD : public C4MusicFile {
+ public:
+  C4MusicFileMOD();
+  ~C4MusicFileMOD();
   BOOL Play(BOOL loop = FALSE);
-	void Stop(int fadeout_ms = 0);
-	void CheckIfPlaying();
-	void SetVolume(int);
-protected:
-	FMUSIC_MODULE *mod;
-	char *Data;
+  void Stop(int fadeout_ms = 0);
+  void CheckIfPlaying();
+  void SetVolume(int);
+
+ protected:
+  FMUSIC_MODULE *mod;
+  char *Data;
 };
 
 /* MP3 class */
 
-class C4MusicFileMP3 : public C4MusicFile
-{
-public:
-	C4MusicFileMP3();
-	~C4MusicFileMP3();
+class C4MusicFileMP3 : public C4MusicFile {
+ public:
+  C4MusicFileMP3();
+  ~C4MusicFileMP3();
   BOOL Play(BOOL loop = FALSE);
-	void Stop(int fadeout_ms = 0);
-	void CheckIfPlaying();
-	void SetVolume(int);
-protected:
-	FSOUND_STREAM	*stream;
-	char *Data;
-	int Channel;
+  void Stop(int fadeout_ms = 0);
+  void CheckIfPlaying();
+  void SetVolume(int);
+
+ protected:
+  FSOUND_STREAM *stream;
+  char *Data;
+  int Channel;
 };
 
 /* Ogg class */
 
-class C4MusicFileOgg : public C4MusicFile
-{
-public:
-	C4MusicFileOgg();
-	~C4MusicFileOgg();
+class C4MusicFileOgg : public C4MusicFile {
+ public:
+  C4MusicFileOgg();
+  ~C4MusicFileOgg();
   BOOL Play(BOOL loop = FALSE);
-	void Stop(int fadeout_ms = 0);
-	void CheckIfPlaying();
-	void SetVolume(int);
+  void Stop(int fadeout_ms = 0);
+  void CheckIfPlaying();
+  void SetVolume(int);
 
-  static signed char __stdcall OnEnd(FSOUND_STREAM* stream, void* buff, int length, void* param);
-protected:
-	FSOUND_STREAM	*stream;
-	char *Data;
-	int Channel;
+  static signed char __stdcall OnEnd(FSOUND_STREAM *stream, void *buff,
+                                     int length, void *param);
+
+ protected:
+  FSOUND_STREAM *stream;
+  char *Data;
+  int Channel;
 
   BOOL Playing;
 };
@@ -116,19 +112,19 @@ protected:
 
 #ifdef HAVE_LIBSDL_MIXER
 typedef struct _Mix_Music Mix_Music;
-class C4MusicFileSDL : public C4MusicFile
-{
-public:
-	C4MusicFileSDL();
-	~C4MusicFileSDL();
+class C4MusicFileSDL : public C4MusicFile {
+ public:
+  C4MusicFileSDL();
+  ~C4MusicFileSDL();
   BOOL Play(BOOL loop = FALSE);
-	void Stop(int fadeout_ms = 0);
-	void CheckIfPlaying();
-	void SetVolume(int);
-protected:
-	char *Data;
-	Mix_Music * Music;
+  void Stop(int fadeout_ms = 0);
+  void CheckIfPlaying();
+  void SetVolume(int);
+
+ protected:
+  char *Data;
+  Mix_Music *Music;
 };
-#endif // HAVE_LIBSDL_MIXER
+#endif  // HAVE_LIBSDL_MIXER
 
 #endif

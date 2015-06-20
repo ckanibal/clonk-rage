@@ -9,7 +9,7 @@
 #include <StdBuf.h>
 
 #ifdef _WIN32
-const int SEC1_TIMER=1,SEC1_MSEC=1000;
+const int SEC1_TIMER = 1, SEC1_MSEC = 1000;
 #endif
 
 #ifdef HAVE_PTHREAD
@@ -51,14 +51,14 @@ const int SEC1_TIMER=1,SEC1_MSEC=1000;
 #define K_MENU VK_APPS
 #define K_PAGEUP VK_PRIOR
 #define K_PAGEDOWN VK_NEXT
-#define KEY_A ((WORD) 'A') // select all in GUI-editbox
-#define KEY_C ((WORD) 'C') // copy in GUI-editbox
-#define KEY_I ((WORD) 'I') // console mode control key
-#define KEY_M ((WORD) 'M') // console mode control key
-#define KEY_T ((WORD) 'T') // console mode control key
-#define KEY_V ((WORD) 'V') // paste in GUI-editbox
-#define KEY_W ((WORD) 'W') // console mode control key
-#define KEY_X ((WORD) 'X') // cut from GUI-editbox
+#define KEY_A ((WORD)'A')  // select all in GUI-editbox
+#define KEY_C ((WORD)'C')  // copy in GUI-editbox
+#define KEY_I ((WORD)'I')  // console mode control key
+#define KEY_M ((WORD)'M')  // console mode control key
+#define KEY_T ((WORD)'T')  // console mode control key
+#define KEY_V ((WORD)'V')  // paste in GUI-editbox
+#define KEY_W ((WORD)'W')  // console mode control key
+#define KEY_X ((WORD)'X')  // cut from GUI-editbox
 #elif defined(USE_X11)
 #include <X11/keysym.h>
 #include <sys/time.h>
@@ -95,19 +95,19 @@ const int SEC1_TIMER=1,SEC1_MSEC=1000;
 #define K_MENU XK_Menu
 #define K_PAGEUP XK_Page_Up
 #define K_PAGEDOWN XK_Page_Down
-#define KEY_A XK_a // select all in GUI-editbox
-#define KEY_C XK_c // copy in GUI-editbox
-#define KEY_I XK_i // console mode control key
-#define KEY_M XK_m // console mode control key
-#define KEY_T XK_t // console mode control key
-#define KEY_V XK_v // paste in GUI-editbox
-#define KEY_W XK_w // console mode control key
-#define KEY_X XK_x // cut from GUI-editbox
+#define KEY_A XK_a  // select all in GUI-editbox
+#define KEY_C XK_c  // copy in GUI-editbox
+#define KEY_I XK_i  // console mode control key
+#define KEY_M XK_m  // console mode control key
+#define KEY_T XK_t  // console mode control key
+#define KEY_V XK_v  // paste in GUI-editbox
+#define KEY_W XK_w  // console mode control key
+#define KEY_X XK_x  // cut from GUI-editbox
 // from X.h:
 //#define ShiftMask		(1<<0)
 //#define ControlMask		(1<<2)
-#define MK_CONTROL (1<<2)
-#define MK_SHIFT (1<<0)
+#define MK_CONTROL (1 << 2)
+#define MK_SHIFT (1 << 0)
 #elif defined(USE_SDL_MAINLOOP)
 #include <SDL.h>
 #define K_F1 SDLK_F1
@@ -199,15 +199,14 @@ const int SEC1_TIMER=1,SEC1_MSEC=1000;
 #define MK_CONTROL 0
 #else
 #error need window system
-#endif       
+#endif
 
-enum C4AppHandleResult
-	{
-	HR_Timeout,
-	HR_Message,         // handled a message
-	HR_Timer,           // got timer event
-	HR_Failure,         // error, or quit message received
-	};
+enum C4AppHandleResult {
+  HR_Timeout,
+  HR_Message,  // handled a message
+  HR_Timer,    // got timer event
+  HR_Failure,  // error, or quit message received
+};
 
 class CStdApp;
 #ifdef USE_X11
@@ -216,201 +215,211 @@ typedef union _XEvent XEvent;
 typedef struct _XDisplay Display;
 #endif
 
-class CStdWindow
-	{
-public:
-	CStdWindow ();
-	virtual ~CStdWindow ();
-	bool Active;
-	virtual void Clear();
-	// Only when the wm requests a close
-	// For example, when the user clicks the little x in the corner or uses Alt-F4
-	virtual void Close() = 0;
-	// Keypress(es) translated to a char
-	virtual void CharIn(const char * c) { }
-	virtual CStdWindow * Init(CStdApp * pApp);
-#ifndef _WIN32 
-	virtual CStdWindow * Init(CStdApp * pApp, const char * Title, CStdWindow * pParent = 0, bool HideCursor = true);
+class CStdWindow {
+ public:
+  CStdWindow();
+  virtual ~CStdWindow();
+  bool Active;
+  virtual void Clear();
+  // Only when the wm requests a close
+  // For example, when the user clicks the little x in the corner or uses Alt-F4
+  virtual void Close() = 0;
+  // Keypress(es) translated to a char
+  virtual void CharIn(const char *c) {}
+  virtual CStdWindow *Init(CStdApp *pApp);
+#ifndef _WIN32
+  virtual CStdWindow *Init(CStdApp *pApp, const char *Title,
+                           CStdWindow *pParent = 0, bool HideCursor = true);
 #endif
-	bool StorePosition(const char *szWindowName, const char *szSubKey, bool fStoreSize = true);
-	bool RestorePosition(const char *szWindowName, const char *szSubKey, bool fHidden = false);
-	bool GetSize(RECT * pRect);
-	void SetSize(unsigned int cx, unsigned int cy); // resize
-	void SetTitle(const char * Title);
-	void FlashWindow();
-protected:
-	virtual void Sec1Timer() { };
+  bool StorePosition(const char *szWindowName, const char *szSubKey,
+                     bool fStoreSize = true);
+  bool RestorePosition(const char *szWindowName, const char *szSubKey,
+                       bool fHidden = false);
+  bool GetSize(RECT *pRect);
+  void SetSize(unsigned int cx, unsigned int cy);  // resize
+  void SetTitle(const char *Title);
+  void FlashWindow();
+
+ protected:
+  virtual void Sec1Timer(){};
 #ifdef _WIN32
-public:
-	HWND hWindow;
-protected:
-	BOOL RegisterWindowClass(HINSTANCE hInst);
-	virtual bool Win32DialogMessageHandling(MSG * msg) { return false; };
+ public:
+  HWND hWindow;
+
+ protected:
+  BOOL RegisterWindowClass(HINSTANCE hInst);
+  virtual bool Win32DialogMessageHandling(MSG *msg) { return false; };
 #elif defined(USE_X11)
-protected:
-	bool FindInfo();
+ protected:
+  bool FindInfo();
 
-	unsigned long wnd;
-	unsigned long renderwnd;
-	Display * dpy;
-	virtual void HandleMessage (XEvent &);
-	// The currently set window hints
-	void * Hints;
-	bool HasFocus; // To clear urgency hint
-	// The XVisualInfo the window was created with
-	void * Info;
+  unsigned long wnd;
+  unsigned long renderwnd;
+  Display *dpy;
+  virtual void HandleMessage(XEvent &);
+  // The currently set window hints
+  void *Hints;
+  bool HasFocus;  // To clear urgency hint
+  // The XVisualInfo the window was created with
+  void *Info;
 #elif defined(USE_SDL_MAINLOOP)
-private:
-    int width, height;
-protected:
-	bool SetFullScreen(bool fFullscreen, int BPP);
-	int BPP; bool fFullscreen;
-	virtual void HandleMessage(SDL_Event&) {}
+ private:
+  int width, height;
+
+ protected:
+  bool SetFullScreen(bool fFullscreen, int BPP);
+  int BPP;
+  bool fFullscreen;
+  virtual void HandleMessage(SDL_Event &) {}
 #endif
-	friend class CStdDDraw;
-	friend class CStdGL;
-	friend class CStdGLCtx;
-	friend class CStdApp;
-	friend class CStdGtkWindow;
-	};
+  friend class CStdDDraw;
+  friend class CStdGL;
+  friend class CStdGLCtx;
+  friend class CStdApp;
+  friend class CStdGtkWindow;
+};
 
-class CStdApp
-	{
-public:
-	CStdApp ();
-	virtual ~CStdApp ();
+class CStdApp {
+ public:
+  CStdApp();
+  virtual ~CStdApp();
 
-	bool Active;
-	bool MMTimer;
+  bool Active;
+  bool MMTimer;
 
-	virtual void Clear();
-	virtual void Execute();
-	void Run();
-	virtual void Quit();
-	virtual int32_t & ScreenWidth() = 0;
-	virtual int32_t & ScreenHeight() = 0;
-	bool GetIndexedDisplayMode(int32_t iIndex, int32_t *piXRes, int32_t *piYRes, int32_t *piBitDepth, uint32_t iMonitor);
-	bool SetFullScreen(bool fFullScreen, bool fMinimize = true);
-	C4AppHandleResult HandleMessage(unsigned int iTimeout = INFINITE, bool fCheckTimer = true);
-	void ResetTimer(UINT uDelay);
-	CStdWindow * pWindow;
-	bool fQuitMsgReceived; // if true, a quit message has been received and the application should terminate
-	const char *GetCommandLine() { return szCmdLine; }
-	
-	// Copy the text to the clipboard or the primary selection
-	void Copy(const StdStrBuf & text, bool fClipboard = true);
-	// Paste the text from the clipboard or the primary selection
-	StdStrBuf Paste(bool fClipboard = true);
-	// Is there something in the clipboard?
-	bool IsClipboardFull(bool fClipboard = true);
-	// Give up Selection ownership
-	void ClearClipboard(bool fClipboard = true);
-	// a command from stdin
-	virtual void OnCommand(const char *szCmd) = 0; // callback
-	// notify user to get back to the program
-	void NotifyUserIfInactive() 
-	{
-	  #ifdef _WIN32
-	   if (!Active && pWindow) pWindow->FlashWindow();
-	  #elif defined (__APPLE__)
-	   if (pWindow) pWindow->FlashWindow();
-	  #elif defined (USE_X11)
-	   if(pWindow) pWindow->FlashWindow();
-	  #endif
-	}
+  virtual void Clear();
+  virtual void Execute();
+  void Run();
+  virtual void Quit();
+  virtual int32_t &ScreenWidth() = 0;
+  virtual int32_t &ScreenHeight() = 0;
+  bool GetIndexedDisplayMode(int32_t iIndex, int32_t *piXRes, int32_t *piYRes,
+                             int32_t *piBitDepth, uint32_t iMonitor);
+  bool SetFullScreen(bool fFullScreen, bool fMinimize = true);
+  C4AppHandleResult HandleMessage(unsigned int iTimeout = INFINITE,
+                                  bool fCheckTimer = true);
+  void ResetTimer(UINT uDelay);
+  CStdWindow *pWindow;
+  bool fQuitMsgReceived;  // if true, a quit message has been received and the
+                          // application should terminate
+  const char *GetCommandLine() { return szCmdLine; }
+
+  // Copy the text to the clipboard or the primary selection
+  void Copy(const StdStrBuf &text, bool fClipboard = true);
+  // Paste the text from the clipboard or the primary selection
+  StdStrBuf Paste(bool fClipboard = true);
+  // Is there something in the clipboard?
+  bool IsClipboardFull(bool fClipboard = true);
+  // Give up Selection ownership
+  void ClearClipboard(bool fClipboard = true);
+  // a command from stdin
+  virtual void OnCommand(const char *szCmd) = 0;  // callback
+  // notify user to get back to the program
+  void NotifyUserIfInactive() {
 #ifdef _WIN32
-	HINSTANCE hInstance;
-	HANDLE hMainThread; // handle to main thread that initialized the app
-	int iLastExecute, iTimerOffset;
-	HANDLE hTimerEvent, // set periodically by critical timer (C4Engine)
-		hNetworkEvent; // set if a network event occured
-	bool Init(HINSTANCE hInst, int nCmdShow, char *szCmdLine);
-	void NextTick (bool fYield) { SetEvent(hTimerEvent); if(fYield) Sleep(0); }
-	bool IsShiftDown() { return GetKeyState(VK_SHIFT) < 0; }
-	bool IsControlDown() { return GetKeyState(VK_CONTROL) < 0; }
-	bool IsAltDown() { return GetKeyState(VK_MENU) < 0; }
-	HWND GetWindowHandle() { return pWindow ? pWindow->hWindow : NULL; }
-	bool AssertMainThread()
-		{
-#ifdef _DEBUG
-		if (hMainThread && hMainThread != ::GetCurrentThread())
-			{
-			assert(false);
-			return false;
-			}
+    if (!Active && pWindow) pWindow->FlashWindow();
+#elif defined(__APPLE__)
+    if (pWindow) pWindow->FlashWindow();
+#elif defined(USE_X11)
+    if (pWindow) pWindow->FlashWindow();
 #endif
-		return true;
-		}
-	PIXELFORMATDESCRIPTOR &GetPFD() { return pfd; }
-	HMONITOR hMon; // monitor handle of used monitor
-	unsigned int Monitor; // used display device
-	RECT MonitorRect;     // output window rect
-protected:
-	bool SetCriticalTimer();
-	void CloseCriticalTimer();
-	bool fTimePeriod;
-	UINT uCriticalTimerDelay, uCriticalTimerResolution;
-	UINT idCriticalTimer;
-	UINT GetDelay() { return uCriticalTimerDelay; }
-	PIXELFORMATDESCRIPTOR pfd;	// desired pixel format
-	DEVMODE dspMode, OldDspMode;// display mode for fullscreen
+  }
+#ifdef _WIN32
+  HINSTANCE hInstance;
+  HANDLE hMainThread;  // handle to main thread that initialized the app
+  int iLastExecute, iTimerOffset;
+  HANDLE hTimerEvent,  // set periodically by critical timer (C4Engine)
+      hNetworkEvent;   // set if a network event occured
+  bool Init(HINSTANCE hInst, int nCmdShow, char *szCmdLine);
+  void NextTick(bool fYield) {
+    SetEvent(hTimerEvent);
+    if (fYield) Sleep(0);
+  }
+  bool IsShiftDown() { return GetKeyState(VK_SHIFT) < 0; }
+  bool IsControlDown() { return GetKeyState(VK_CONTROL) < 0; }
+  bool IsAltDown() { return GetKeyState(VK_MENU) < 0; }
+  HWND GetWindowHandle() { return pWindow ? pWindow->hWindow : NULL; }
+  bool AssertMainThread() {
+#ifdef _DEBUG
+    if (hMainThread && hMainThread != ::GetCurrentThread()) {
+      assert(false);
+      return false;
+    }
+#endif
+    return true;
+  }
+  PIXELFORMATDESCRIPTOR &GetPFD() { return pfd; }
+  HMONITOR hMon;         // monitor handle of used monitor
+  unsigned int Monitor;  // used display device
+  RECT MonitorRect;      // output window rect
+ protected:
+  bool SetCriticalTimer();
+  void CloseCriticalTimer();
+  bool fTimePeriod;
+  UINT uCriticalTimerDelay, uCriticalTimerResolution;
+  UINT idCriticalTimer;
+  UINT GetDelay() { return uCriticalTimerDelay; }
+  PIXELFORMATDESCRIPTOR pfd;    // desired pixel format
+  DEVMODE dspMode, OldDspMode;  // display mode for fullscreen
 #else
 #if defined(USE_X11)
-	Display * dpy;
-	int xf86vmode_major_version, xf86vmode_minor_version;
+  Display *dpy;
+  int xf86vmode_major_version, xf86vmode_minor_version;
 #endif
 #if defined(USE_SDL_MAINLOOP)
-	void HandleSDLEvent(SDL_Event& event);
+  void HandleSDLEvent(SDL_Event &event);
 #endif
-	const char * Location;
-	pthread_t MainThread;
-	bool Init(int argc, char * argv[]);
-	bool DoNotDelay;
-	void NextTick (bool fYield);
-	bool IsShiftDown() { return KeyMask & MK_SHIFT; }
-	bool IsControlDown() { return KeyMask & MK_CONTROL; }
-	bool IsAltDown() { return KeyMask & (1<<3); }
-	bool SignalNetworkEvent();
-	bool AssertMainThread()
-		{
-		assert(MainThread == pthread_self());
-		return MainThread == pthread_self();
-		}
-	// These must be public to be callable from callback functions from
-	// the glib main loop that are in an anonymous namespace in
-	// StdXApp.cpp.
-	void OnXInput();
-	void OnPipeInput();
-	void OnStdInInput();
-protected:
+  const char *Location;
+  pthread_t MainThread;
+  bool Init(int argc, char *argv[]);
+  bool DoNotDelay;
+  void NextTick(bool fYield);
+  bool IsShiftDown() { return KeyMask & MK_SHIFT; }
+  bool IsControlDown() { return KeyMask & MK_CONTROL; }
+  bool IsAltDown() { return KeyMask & (1 << 3); }
+  bool SignalNetworkEvent();
+  bool AssertMainThread() {
+    assert(MainThread == pthread_self());
+    return MainThread == pthread_self();
+  }
+  // These must be public to be callable from callback functions from
+  // the glib main loop that are in an anonymous namespace in
+  // StdXApp.cpp.
+  void OnXInput();
+  void OnPipeInput();
+  void OnStdInInput();
+
+ protected:
 #if defined(USE_SDL_MAINLOOP)
-	int argc; char ** argv;
-	int Pipe[2];
-	int nextWidth, nextHeight, nextBPP;
+  int argc;
+  char **argv;
+  int Pipe[2];
+  int nextWidth, nextHeight, nextBPP;
 #endif
-	class CStdAppPrivate * Priv;
-	void HandleXMessage();
+  class CStdAppPrivate *Priv;
+  void HandleXMessage();
 
-	unsigned int Delay;
-	timeval LastExecute;
-	unsigned int KeyMask;
+  unsigned int Delay;
+  timeval LastExecute;
+  unsigned int KeyMask;
 #endif
-	const char *szCmdLine;
-	bool InitTimer();
-	bool fDspModeSet;						// true if display mode was changed
-	bool SetOutputAdapter(unsigned int iMonitor);
-	// Selects a suitable mode and saves the default for restoration
-	bool FindDisplayMode(unsigned int iXRes, unsigned int iYRes, unsigned int iColorDepth, unsigned int iMonitor);
-	virtual bool DoInit() = 0;
-	virtual void OnNetworkEvents() = 0;
+  const char *szCmdLine;
+  bool InitTimer();
+  bool fDspModeSet;  // true if display mode was changed
+  bool SetOutputAdapter(unsigned int iMonitor);
+  // Selects a suitable mode and saves the default for restoration
+  bool FindDisplayMode(unsigned int iXRes, unsigned int iYRes,
+                       unsigned int iColorDepth, unsigned int iMonitor);
+  virtual bool DoInit() = 0;
+  virtual void OnNetworkEvents() = 0;
 
-	// commands from stdin (console only)
-	StdCopyStrBuf CmdBuf;
-	bool ReadStdInCommand();
-	
-	friend class CStdGL;
-	friend class CStdWindow;
-	friend class CStdGtkWindow;
-	};
+  // commands from stdin (console only)
+  StdCopyStrBuf CmdBuf;
+  bool ReadStdInCommand();
 
-#endif // INC_STDWINDOW
+  friend class CStdGL;
+  friend class CStdWindow;
+  friend class CStdGtkWindow;
+};
+
+#endif  // INC_STDWINDOW

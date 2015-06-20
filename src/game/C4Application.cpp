@@ -21,7 +21,7 @@
 #include "gui/C4GameLobby.h"
 #endif
 
-#include <StdRegistry.h> // For DDraw emulation warning
+#include <StdRegistry.h>  // For DDraw emulation warning
 
 C4Sec1TimerCallbackBase::C4Sec1TimerCallbackBase() : pNext(NULL), iRefs(2) {
   // register into engine callback stack
@@ -30,16 +30,23 @@ C4Sec1TimerCallbackBase::C4Sec1TimerCallbackBase() : pNext(NULL), iRefs(2) {
 }
 
 C4Application::C4Application()
-    : isFullScreen(true), UseStartupDialog(true), launchEditor(false),
-      restartAtEnd(false), DDraw(NULL), AppState(C4AS_None),
-      pSec1TimerCallback(NULL), iLastGameTick(0), iGameTickDelay(28),
-      iExtraGameTickDelay(0), pGamePadControl(NULL), CheckForUpdates(false),
+    : isFullScreen(true),
+      UseStartupDialog(true),
+      launchEditor(false),
+      restartAtEnd(false),
+      DDraw(NULL),
+      AppState(C4AS_None),
+      pSec1TimerCallback(NULL),
+      iLastGameTick(0),
+      iGameTickDelay(28),
+      iExtraGameTickDelay(0),
+      pGamePadControl(NULL),
+      CheckForUpdates(false),
       NoSplash(false) {}
 
 C4Application::~C4Application() {
   // clear gamepad
-  if (pGamePadControl)
-    delete pGamePadControl;
+  if (pGamePadControl) delete pGamePadControl;
   // Close log
   CloseLog();
   // Launch editor
@@ -95,8 +102,7 @@ bool C4Application::DoInit() {
   C4Group_SetSortList(C4CFN_FLS);
 
   // Open log
-  if (!OpenLog())
-    return false;
+  if (!OpenLog()) return false;
 
   // init system group
   if (!SystemGroup.Open(C4CFN_System)) {
@@ -198,8 +204,7 @@ bool C4Application::DoInit() {
 }
 
 bool C4Application::PreInit() {
-  if (!Game.PreInit())
-    return false;
+  if (!Game.PreInit()) return false;
 
   // startup dialog: Only use if no next mission has been provided
   bool fDoUseStartupDialog = UseStartupDialog && !*Game.ScenarioFilename;
@@ -221,14 +226,12 @@ bool C4Application::PreInit() {
   Game.SetInitProgress(fDoUseStartupDialog ? 10.0f : 1.0f);
 
   // Music
-  if (!MusicSystem.Init("Frontend.*"))
-    Log(LoadResStr("IDS_PRC_NOMUSIC"));
+  if (!MusicSystem.Init("Frontend.*")) Log(LoadResStr("IDS_PRC_NOMUSIC"));
 
   Game.SetInitProgress(fDoUseStartupDialog ? 20.0f : 2.0f);
 
   // Sound
-  if (!SoundSystem.Init())
-    Log(LoadResStr("IDS_PRC_NOSND"));
+  if (!SoundSystem.Init()) Log(LoadResStr("IDS_PRC_NOSND"));
 
   Game.SetInitProgress(fDoUseStartupDialog ? 30.0f : 3.0f);
 
@@ -255,8 +258,8 @@ void C4Application::Clear() {
     delete pSec1Timer;
   }
   // Log
-  if (IsResStrTableLoaded()) // Avoid (double and undefined) message on
-                             // (second?) shutdown...
+  if (IsResStrTableLoaded())  // Avoid (double and undefined) message on
+                              // (second?) shutdown...
     Log(LoadResStr("IDS_PRC_DEINIT"));
   // Clear external language packs and string table
   Languages.Clear();
@@ -304,8 +307,7 @@ void C4Application::Quit() {
   // Participants should not be cleared for usual startup dialog
   // Config.General.Participants[0] = 0;
   // Save config if there was no loading error
-  if (Config.fConfigLoaded)
-    Config.Save();
+  if (Config.fConfigLoaded) Config.Save();
   // quit app
   CStdApp::Quit();
   AppState = C4AS_Quit;
@@ -325,7 +327,7 @@ void C4Application::QuitGame() {
       SCopy(NextMission.getData(), Game.ScenarioFilename, _MAX_PATH);
       SReplaceChar(
           Game.ScenarioFilename, '\\',
-          DirSep[0]); // linux/mac: make sure we are using forward slashes
+          DirSep[0]);  // linux/mac: make sure we are using forward slashes
 #ifdef NETWORK
       Game.fLobby = Game.NetworkActive = fWasNetworkActive;
 #endif
@@ -346,77 +348,74 @@ void C4Application::Execute() {
   // Exec depending on game state
   assert(AppState != C4AS_None);
   switch (AppState) {
-  case C4AS_Quit:
-    // Do nothing, HandleMessage will return HR_Failure soon
-    break;
-  case C4AS_PreInit:
-    if (!PreInit())
-      Quit();
-    break;
-  case C4AS_Startup:
+    case C4AS_Quit:
+      // Do nothing, HandleMessage will return HR_Failure soon
+      break;
+    case C4AS_PreInit:
+      if (!PreInit()) Quit();
+      break;
+    case C4AS_Startup:
 #ifdef USE_CONSOLE
 // Console engines just stay in this state until aborted or new commands arrive
 // on stdin
 #else
-    AppState = C4AS_Game;
-    // if no scenario or direct join has been specified, get game startup
-    // parameters by startup dialog
-    Game.ScenarioTitle.Copy(LoadResStr("IDS_PRC_INITIALIZE"));
-    if (!C4Startup::Execute()) {
-      Quit();
-      --iRecursionCount;
-      return;
-    }
-    AppState = C4AS_StartGame;
-#endif
-    break;
-  case C4AS_StartGame:
-    // immediate progress to next state; OpenGame will enter HandleMessage-loops
-    // in startup and lobby!
-    AppState = C4AS_Game;
-    // first-time game initialization
-    if (!OpenGame()) {
-      // set error flag (unless this was a lobby user abort)
-      if (!C4GameLobby::UserAbort)
-        Game.fQuitWithError = true;
-      // no start: Regular QuitGame; this may reset the engine to startup mode
-      // if desired
-      QuitGame();
-    }
-    break;
-  case C4AS_Game: {
-    uint32_t iThisGameTick = timeGetTime();
-    // Game (do additional timing check)
-    if (Game.IsRunning && iRecursionCount <= 1)
-      if (Game.GameGo || !iExtraGameTickDelay ||
-          (iThisGameTick > iLastGameTick + iExtraGameTickDelay)) {
-        // Execute
-        Game.Execute();
-        // Save back time
-        iLastGameTick = iThisGameTick;
+      AppState = C4AS_Game;
+      // if no scenario or direct join has been specified, get game startup
+      // parameters by startup dialog
+      Game.ScenarioTitle.Copy(LoadResStr("IDS_PRC_INITIALIZE"));
+      if (!C4Startup::Execute()) {
+        Quit();
+        --iRecursionCount;
+        return;
       }
-    // Graphics
-    if (!Game.DoSkipFrame) {
-      uint32_t iPreGfxTime = timeGetTime();
-      // Fullscreen mode
-      if (isFullScreen)
-        FullScreen.Execute(iRecursionCount > 1);
-      // Console mode
-      else
-        Console.Execute();
-      // Automatic frame skip if graphics are slowing down the game (skip max.
-      // every 2nd frame)
-      Game.DoSkipFrame = Game.Parameters.AutoFrameSkip &&
-                         ((iPreGfxTime + iGameTickDelay) < timeGetTime());
-    } else
-      Game.DoSkipFrame = false;
-    // Sound
-    SoundSystem.Execute();
-    // Gamepad
-    if (pGamePadControl)
-      pGamePadControl->Execute();
-    break;
-  }
+      AppState = C4AS_StartGame;
+#endif
+      break;
+    case C4AS_StartGame:
+      // immediate progress to next state; OpenGame will enter
+      // HandleMessage-loops
+      // in startup and lobby!
+      AppState = C4AS_Game;
+      // first-time game initialization
+      if (!OpenGame()) {
+        // set error flag (unless this was a lobby user abort)
+        if (!C4GameLobby::UserAbort) Game.fQuitWithError = true;
+        // no start: Regular QuitGame; this may reset the engine to startup mode
+        // if desired
+        QuitGame();
+      }
+      break;
+    case C4AS_Game: {
+      uint32_t iThisGameTick = timeGetTime();
+      // Game (do additional timing check)
+      if (Game.IsRunning && iRecursionCount <= 1)
+        if (Game.GameGo || !iExtraGameTickDelay ||
+            (iThisGameTick > iLastGameTick + iExtraGameTickDelay)) {
+          // Execute
+          Game.Execute();
+          // Save back time
+          iLastGameTick = iThisGameTick;
+        }
+      // Graphics
+      if (!Game.DoSkipFrame) {
+        uint32_t iPreGfxTime = timeGetTime();
+        // Fullscreen mode
+        if (isFullScreen) FullScreen.Execute(iRecursionCount > 1);
+        // Console mode
+        else
+          Console.Execute();
+        // Automatic frame skip if graphics are slowing down the game (skip max.
+        // every 2nd frame)
+        Game.DoSkipFrame = Game.Parameters.AutoFrameSkip &&
+                           ((iPreGfxTime + iGameTickDelay) < timeGetTime());
+      } else
+        Game.DoSkipFrame = false;
+      // Sound
+      SoundSystem.Execute();
+      // Gamepad
+      if (pGamePadControl) pGamePadControl->Execute();
+      break;
+    }
   }
 
   --iRecursionCount;
@@ -514,8 +513,7 @@ bool C4Application::SetGameFont(const char *szFontFace, int32_t iFontSize) {
 void C4Application::OnCommand(const char *szCmd) {
   // Find parameters
   const char *szPar = strchr(szCmd, ' ');
-  while (szPar && *szPar == ' ')
-    szPar++;
+  while (szPar && *szPar == ' ') szPar++;
 
   if (SEqual(szCmd, "/quit")) {
     Quit();
@@ -523,50 +521,49 @@ void C4Application::OnCommand(const char *szCmd) {
   }
 
   switch (AppState) {
-  case C4AS_Startup:
+    case C4AS_Startup:
 
-    // Open a new game
-    if (SEqual2(szCmd, "/open ")) {
-      // Try to start the game with given parameters
-      AppState = C4AS_Game;
-      Game.ParseCommandLine(szPar);
-      UseStartupDialog = true;
-      if (!Game.Init())
-        AppState = C4AS_Startup;
-    }
-
-    break;
-
-  case C4AS_Game:
-
-    // Clear running game
-    if (SEqual(szCmd, "/close")) {
-      Game.Clear();
-      Game.Default();
-      AppState = C4AS_PreInit;
-      UseStartupDialog = true;
-      return;
-    }
-
-    // Lobby commands
-    if (Game.Network.isLobbyActive()) {
-      if (SEqual2(szCmd, "/start")) {
-        // timeout given?
-        int32_t iTimeout = Config.Lobby.CountdownTime;
-        if (!Game.Network.isHost())
-          Log(LoadResStr("IDS_MSG_CMD_HOSTONLY"));
-        else if (szPar && (!sscanf(szPar, "%d", &iTimeout) || iTimeout < 0))
-          Log(LoadResStr("IDS_MSG_CMD_START_USAGE"));
-        else
-          // start new countdown (aborts previous if necessary)
-          Game.Network.StartLobbyCountdown(iTimeout);
-        break;
+      // Open a new game
+      if (SEqual2(szCmd, "/open ")) {
+        // Try to start the game with given parameters
+        AppState = C4AS_Game;
+        Game.ParseCommandLine(szPar);
+        UseStartupDialog = true;
+        if (!Game.Init()) AppState = C4AS_Startup;
       }
-    }
 
-    // Normal commands
-    Game.MessageInput.ProcessInput(szCmd);
-    break;
+      break;
+
+    case C4AS_Game:
+
+      // Clear running game
+      if (SEqual(szCmd, "/close")) {
+        Game.Clear();
+        Game.Default();
+        AppState = C4AS_PreInit;
+        UseStartupDialog = true;
+        return;
+      }
+
+      // Lobby commands
+      if (Game.Network.isLobbyActive()) {
+        if (SEqual2(szCmd, "/start")) {
+          // timeout given?
+          int32_t iTimeout = Config.Lobby.CountdownTime;
+          if (!Game.Network.isHost())
+            Log(LoadResStr("IDS_MSG_CMD_HOSTONLY"));
+          else if (szPar && (!sscanf(szPar, "%d", &iTimeout) || iTimeout < 0))
+            Log(LoadResStr("IDS_MSG_CMD_START_USAGE"));
+          else
+            // start new countdown (aborts previous if necessary)
+            Game.Network.StartLobbyCountdown(iTimeout);
+          break;
+        }
+      }
+
+      // Normal commands
+      Game.MessageInput.ProcessInput(szCmd);
+      break;
   }
 }
 

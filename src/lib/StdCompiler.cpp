@@ -322,7 +322,7 @@ void StdCompilerINIWrite::WriteEscaped(const char *szString, const char *pEnd) {
   pStart = pPos = szString;
   bool fLastNumEscape = false;  // catch "\1""1", which must become "\1\61"
   for (; pPos < pEnd; pPos++)
-    if (!isprint((unsigned char)(unsigned char)*pPos) || *pPos == '\\' ||
+    if (!isprint((unsigned char)(unsigned char) * pPos) || *pPos == '\\' ||
         *pPos == '"' || (fLastNumEscape && isdigit((unsigned char)*pPos))) {
       // Write everything up to this point
       if (pPos - pStart) Buf.Append(pStart, pPos - pStart);

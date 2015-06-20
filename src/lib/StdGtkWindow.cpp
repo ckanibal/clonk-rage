@@ -79,7 +79,7 @@ CStdWindow *CStdGtkWindow::Init(CStdApp *pApp, const char *Title,
   if (HideCursor) {
     // TODO!
     //		GdkCursor* cursor = gdk_cursor_new_from_pixmap(NULL, NULL, NULL,
-    //NULL,
+    // NULL,
     // 0, 0);
     gdk_window_set_cursor(window->window, NULL);
   }

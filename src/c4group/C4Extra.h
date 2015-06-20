@@ -7,20 +7,20 @@
 #include "c4group/C4Group.h"
 
 class C4Extra {
-public:
-  C4Extra() { Default(); }; // ctor
-  ~C4Extra() { Clear(); };  // dtor
-  void Default();           // zero fields
-  void Clear();             // free class members
+ public:
+  C4Extra() { Default(); };  // ctor
+  ~C4Extra() { Clear(); };   // dtor
+  void Default();            // zero fields
+  void Clear();              // free class members
 
-  bool Init();      // init extra group, using scneario presets
-  bool InitGroup(); // open extra group
+  bool Init();       // init extra group, using scneario presets
+  bool InitGroup();  // open extra group
 
-  C4Group ExtraGrp; // extra.c4g root folder
+  C4Group ExtraGrp;  // extra.c4g root folder
 
-protected:
+ protected:
   bool LoadDef(C4Group &hGroup,
-               const char *szName); // load preset for definition
+               const char *szName);  // load preset for definition
 };
 
 #endif

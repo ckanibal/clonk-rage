@@ -1,8 +1,9 @@
 /* by Sven2, 2001 */
 // the ingame-lobby
 
-// Tab: NickCompletion (2do TODO) - and can't do this here, because tab is used to cycle controls!
-//if (dwKey == VK_TAB) { /*CompleteNick();*/ return TRUE; }
+// Tab: NickCompletion (2do TODO) - and can't do this here, because tab is used
+// to cycle controls!
+// if (dwKey == VK_TAB) { /*CompleteNick();*/ return TRUE; }
 
 #ifndef INC_C4GameLobby
 #define INC_C4GameLobby
@@ -18,157 +19,188 @@ class C4Network2ResDlg;
 class C4GameOptionsList;
 class C4GameOptionButtons;
 
-namespace C4GameLobby
-	{
-	class MainDlg;
+namespace C4GameLobby {
+class MainDlg;
 
-	// countdown time from which the elevator sound starts and team selection becomes unavailable
-	const int32_t AlmostStartCountdownTime = 10; // seconds
-	
-	extern bool UserAbort; 
+// countdown time from which the elevator sound starts and team selection
+// becomes unavailable
+const int32_t AlmostStartCountdownTime = 10;  // seconds
 
-	// * PID_LobbyCountdown
-	// initiates or aborts countdown
-	class C4PacketCountdown : public C4PacketBase
-		{
-		private:
-			int32_t iCountdown; // countdown timer, or zero for abort
-		public:
-			enum { Abort = -1 };
+extern bool UserAbort;
 
-			C4PacketCountdown(int32_t iaCountdown) : iCountdown(iaCountdown) { } // ctor
-			C4PacketCountdown() : iCountdown(Abort) { } // std ctor
+// * PID_LobbyCountdown
+// initiates or aborts countdown
+class C4PacketCountdown : public C4PacketBase {
+ private:
+  int32_t iCountdown;  // countdown timer, or zero for abort
+ public:
+  enum { Abort = -1 };
 
-			bool IsAbort() const { return iCountdown == Abort; }
-			int32_t GetCountdown() const { return iCountdown; }
-			StdStrBuf GetCountdownMsg(bool fInitialMsg=false) const;
+  C4PacketCountdown(int32_t iaCountdown) : iCountdown(iaCountdown) {}  // ctor
+  C4PacketCountdown() : iCountdown(Abort) {}  // std ctor
 
-			virtual void CompileFunc(StdCompiler *pComp);
-		};
+  bool IsAbort() const { return iCountdown == Abort; }
+  int32_t GetCountdown() const { return iCountdown; }
+  StdStrBuf GetCountdownMsg(bool fInitialMsg = false) const;
 
-	// scneario info tab: displays scenario description
-	class ScenDesc : public C4GUI::Window
-		{
-		private:
-			C4GUI::Label *pTitle;            // scenario title or warning label if unloaded
-			C4GUI::TextWindow *pDescBox;     // scenario description box
-			bool fDescFinished;              // if set, scenario resource has been loaded
+  virtual void CompileFunc(StdCompiler *pComp);
+};
 
-			C4Sec1TimerCallback<ScenDesc> *pSec1Timer; // engine timer hook for updates
+// scneario info tab: displays scenario description
+class ScenDesc : public C4GUI::Window {
+ private:
+  C4GUI::Label *pTitle;         // scenario title or warning label if unloaded
+  C4GUI::TextWindow *pDescBox;  // scenario description box
+  bool fDescFinished;           // if set, scenario resource has been loaded
 
-			void Update();
+  C4Sec1TimerCallback<ScenDesc> *pSec1Timer;  // engine timer hook for updates
 
-		public:
-			ScenDesc(const C4Rect &rcBounds, bool fActive); // ctor
-			~ScenDesc() { Deactivate(); }
+  void Update();
 
-			void OnSec1Timer() { Update(); }
-			// activate/deactivate periodic updates
-			void Activate();
-			void Deactivate();
-		};
+ public:
+  ScenDesc(const C4Rect &rcBounds, bool fActive);  // ctor
+  ~ScenDesc() { Deactivate(); }
 
-	class MainDlg : public C4GUI::FullscreenDialog
-		{
-		private:
-			time_t tLastPingUpdate; // time when pings were updated last time
-			C4Sec1TimerCallback<MainDlg> *pSec1Timer; // engine timer hook
-			enum CountdownState { CDS_None=0, CDS_LongCountdown=1, CDS_Countdown=2, CDS_Start=3 } eCountdownState; // nonzero when a packet was received that the game is about to start (starts elevator sound, etc.)
-			int32_t iBackBufferIndex;   // chat message history index
-			C4KeyBinding *pKeyHistoryUp, *pKeyHistoryDown; // keys used to scroll through chat history
+  void OnSec1Timer() { Update(); }
+  // activate/deactivate periodic updates
+  void Activate();
+  void Deactivate();
+};
 
-			enum { SheetIdx_PlayerList = 0, SheetIdx_Res = 1, SheetIdx_Options = 2, SheetIdx_Scenario = 3, };
-			C4PlayerInfoListBox *pPlayerList;
-			C4Network2ResDlg *pResList;
-			C4GameOptionButtons *pGameOptionButtons;
-			C4GameOptionsList *pOptionsList;
-			ScenDesc *pScenarioInfo;
-			C4GUI::TextWindow *pChatBox;
-			C4GUI::Label *pRightTabLbl;
-			C4GUI::Tabular *pRightTab;
-			C4GUI::Edit *pEdt; // chat input
-			C4GUI::CallbackButton<MainDlg> *btnRun; // host only
-			C4GUI::CallbackButton<MainDlg, C4GUI::IconButton> *btnPlayers, *btnResources, *btnTeams, *btnOptions, *btnScenario, *btnChat; // right list sheet selection
+class MainDlg : public C4GUI::FullscreenDialog {
+ private:
+  time_t tLastPingUpdate;  // time when pings were updated last time
+  C4Sec1TimerCallback<MainDlg> *pSec1Timer;  // engine timer hook
+  enum CountdownState {
+    CDS_None = 0,
+    CDS_LongCountdown = 1,
+    CDS_Countdown = 2,
+    CDS_Start = 3
+  } eCountdownState;  // nonzero when a packet was received that the game is
+                      // about to start (starts elevator sound, etc.)
+  int32_t iBackBufferIndex;  // chat message history index
+  C4KeyBinding *pKeyHistoryUp,
+      *pKeyHistoryDown;  // keys used to scroll through chat history
 
-		protected:
-			void OnRunBtn(C4GUI::Control *btn); // callback: run button pressed
-			void OnTestBtn(C4GUI::Control *btn); // callback: test button pressed
-			void OnExitBtn(C4GUI::Control *btn); // callback: exit button pressed
-			bool KeyHistoryUpDown(bool fUp); // key callback
-			C4GUI::Edit::InputResult OnChatInput(C4GUI::Edit *edt, bool fPasting, bool fPastingMore); // callback: chat input performed
+  enum {
+    SheetIdx_PlayerList = 0,
+    SheetIdx_Res = 1,
+    SheetIdx_Options = 2,
+    SheetIdx_Scenario = 3,
+  };
+  C4PlayerInfoListBox *pPlayerList;
+  C4Network2ResDlg *pResList;
+  C4GameOptionButtons *pGameOptionButtons;
+  C4GameOptionsList *pOptionsList;
+  ScenDesc *pScenarioInfo;
+  C4GUI::TextWindow *pChatBox;
+  C4GUI::Label *pRightTabLbl;
+  C4GUI::Tabular *pRightTab;
+  C4GUI::Edit *pEdt;                       // chat input
+  C4GUI::CallbackButton<MainDlg> *btnRun;  // host only
+  C4GUI::CallbackButton<MainDlg, C4GUI::IconButton> *btnPlayers, *btnResources,
+      *btnTeams, *btnOptions, *btnScenario,
+      *btnChat;  // right list sheet selection
 
-			void OnClosed(bool fOK); // callback when dlg is closed
-			void OnSec1Timer();              // timer proc; update pings
+ protected:
+  void OnRunBtn(C4GUI::Control *btn);   // callback: run button pressed
+  void OnTestBtn(C4GUI::Control *btn);  // callback: test button pressed
+  void OnExitBtn(C4GUI::Control *btn);  // callback: exit button pressed
+  bool KeyHistoryUpDown(bool fUp);      // key callback
+  C4GUI::Edit::InputResult OnChatInput(
+      C4GUI::Edit *edt, bool fPasting,
+      bool fPastingMore);  // callback: chat input performed
 
-			C4GUI::ContextMenu *OnRightTabContext(C4GUI::Element *pLabel, int32_t iX, int32_t iY); // open context menu
-			void OnCtxTabPlayers(C4GUI::Element *pListItem) { OnTabPlayers(NULL); }
-			void OnTabPlayers(C4GUI::Control *btn);
-			void OnCtxTabTeams(C4GUI::Element *pListItem) { OnTabTeams(NULL); }
-			void OnTabTeams(C4GUI::Control *btn);
-			void OnCtxTabRes(C4GUI::Element *pListItem) { OnTabRes(NULL); }
-			void OnTabRes(C4GUI::Control *btn);
-			void OnCtxTabOptions(C4GUI::Element *pListItem) { OnTabOptions(NULL); }
-			void OnTabOptions(C4GUI::Control *btn);
-			void OnCtxTabScenario(C4GUI::Element *pListItem) { OnTabScenario(NULL); }
-			void OnTabScenario(C4GUI::Control *btn);
-			void UpdateRightTab(); // update label and tooltips for sheet change
-			void OnBtnChat(C4GUI::Control *btn);
+  void OnClosed(bool fOK);  // callback when dlg is closed
+  void OnSec1Timer();       // timer proc; update pings
 
-			virtual class C4GUI::Control *GetDefaultControl() { return pEdt; } // def focus chat input
+  C4GUI::ContextMenu *OnRightTabContext(C4GUI::Element *pLabel, int32_t iX,
+                                        int32_t iY);  // open context menu
+  void OnCtxTabPlayers(C4GUI::Element *pListItem) { OnTabPlayers(NULL); }
+  void OnTabPlayers(C4GUI::Control *btn);
+  void OnCtxTabTeams(C4GUI::Element *pListItem) { OnTabTeams(NULL); }
+  void OnTabTeams(C4GUI::Control *btn);
+  void OnCtxTabRes(C4GUI::Element *pListItem) { OnTabRes(NULL); }
+  void OnTabRes(C4GUI::Control *btn);
+  void OnCtxTabOptions(C4GUI::Element *pListItem) { OnTabOptions(NULL); }
+  void OnTabOptions(C4GUI::Control *btn);
+  void OnCtxTabScenario(C4GUI::Element *pListItem) { OnTabScenario(NULL); }
+  void OnTabScenario(C4GUI::Control *btn);
+  void UpdateRightTab();  // update label and tooltips for sheet change
+  void OnBtnChat(C4GUI::Control *btn);
 
-		private:
-			void SetCountdownState(CountdownState eToState, int32_t iTimer);
-			void Start(int32_t iCountdownTime); // host only: Do game start with specified countdown time (forwards to network system)
-			int32_t ValidatedCountdownTime(int32_t iTimeout); // correct invalid timeout settings
+  virtual class C4GUI::Control *GetDefaultControl() {
+    return pEdt;
+  }  // def focus chat input
 
-			void UpdatePlayerList();
+ private:
+  void SetCountdownState(CountdownState eToState, int32_t iTimer);
+  void Start(int32_t iCountdownTime);  // host only: Do game start with
+                                       // specified countdown time (forwards to
+                                       // network system)
+  int32_t ValidatedCountdownTime(
+      int32_t iTimeout);  // correct invalid timeout settings
 
-		public:
-			MainDlg(bool fHost); // ctor
-			~MainDlg(); // dtor
+  void UpdatePlayerList();
 
-			// callback by network system
-			void OnClientJoin(C4Client *pNewClient); // called when a new client joined (connection not necessarily ready)
-			void OnClientConnect(C4Client *pClient, C4Network2IOConnection *pConn); // called when new clinet connection is established (notice of lobby status)
-			void OnClientPart(C4Client *pPartClient); // called when a client disconnects
-			bool OnMessage(C4Client *pOfClient, const char *szMessage); // display message in chat window
-			void OnClientSound(C4Client *pOfClient);                    // show that someone played a sound
-			void OnLog(const char *szLogMsg, DWORD dwClr=C4GUI_LogFontClr); // log callback
-			void OnError(const char *szErrMsg); // error sound + log in red
-			void OnPlayersChange() { UpdatePlayerList(); }
-			void OnClientAddPlayer(const char *szFilename, int32_t idClient);
-			// packet callbacks from C4Network2
-			void HandlePacket(char cStatus, const C4PacketBase *pBasePkt, C4Network2Client *pClient);
-			void OnCountdownPacket(const C4PacketCountdown &Pkt); // called when a countdown packet is received: Update countdown state
+ public:
+  MainDlg(bool fHost);  // ctor
+  ~MainDlg();           // dtor
 
-			bool IsCountdown();
-			void UpdateFairCrew();
-			void UpdatePassword();
-			void ClearLog();
+  // callback by network system
+  void OnClientJoin(C4Client *pNewClient);  // called when a new client joined
+                                            // (connection not necessarily
+                                            // ready)
+  void OnClientConnect(C4Client *pClient,
+                       C4Network2IOConnection *pConn);  // called when new
+                                                        // clinet connection is
+                                                        // established (notice
+                                                        // of lobby status)
+  void OnClientPart(C4Client *pPartClient);  // called when a client disconnects
+  bool OnMessage(C4Client *pOfClient,
+                 const char *szMessage);    // display message in chat window
+  void OnClientSound(C4Client *pOfClient);  // show that someone played a sound
+  void OnLog(const char *szLogMsg,
+             DWORD dwClr = C4GUI_LogFontClr);  // log callback
+  void OnError(const char *szErrMsg);          // error sound + log in red
+  void OnPlayersChange() { UpdatePlayerList(); }
+  void OnClientAddPlayer(const char *szFilename, int32_t idClient);
+  // packet callbacks from C4Network2
+  void HandlePacket(char cStatus, const C4PacketBase *pBasePkt,
+                    C4Network2Client *pClient);
+  void OnCountdownPacket(const C4PacketCountdown &Pkt);  // called when a
+                                                         // countdown packet is
+                                                         // received: Update
+                                                         // countdown state
 
-			friend class C4Sec1TimerCallback<MainDlg>;
-		};
+  bool IsCountdown();
+  void UpdateFairCrew();
+  void UpdatePassword();
+  void ClearLog();
 
-	// helper
-	void LobbyError(const char *szErrorMsg);
+  friend class C4Sec1TimerCallback<MainDlg>;
+};
 
-	// lobby countdown: Moves game from lobby to go state. Only created by host.
-	class Countdown
-		{
-		private:
-			C4Sec1TimerCallback<Countdown> *pSec1Timer; // engine timer hook
-			int32_t iStartTimer;        // countdown timer for round start; 0 for not started, -1 for start overdue
+// helper
+void LobbyError(const char *szErrorMsg);
 
-		public:
-			void OnSec1Timer();              // timer proc; count down; send important countdown packets
+// lobby countdown: Moves game from lobby to go state. Only created by host.
+class Countdown {
+ private:
+  C4Sec1TimerCallback<Countdown> *pSec1Timer;  // engine timer hook
+  int32_t iStartTimer;  // countdown timer for round start; 0 for not started,
+                        // -1 for start overdue
 
-		public:
-			Countdown(int32_t iStartTimer); // ctor: Init; sends initial countdown packet
-			~Countdown();
+ public:
+  void
+  OnSec1Timer();  // timer proc; count down; send important countdown packets
 
-			void Abort();
-		};
+ public:
+  Countdown(int32_t iStartTimer);  // ctor: Init; sends initial countdown packet
+  ~Countdown();
 
-	};
+  void Abort();
+};
+};
 
 #endif

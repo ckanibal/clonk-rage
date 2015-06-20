@@ -21,163 +21,156 @@
 #endif
 
 // helper
-inline int MaxTimeout(int iTimeout1, int iTimeout2)
-{
-	return (iTimeout1 == -1 || iTimeout2 == -1) ? -1 : Max(iTimeout1, iTimeout2);
+inline int MaxTimeout(int iTimeout1, int iTimeout2) {
+  return (iTimeout1 == -1 || iTimeout2 == -1) ? -1 : Max(iTimeout1, iTimeout2);
 }
 
 // Abstract class for a process
-class StdSchedulerProc
-{
-public:
-	virtual ~StdSchedulerProc() { }
+class StdSchedulerProc {
+ public:
+  virtual ~StdSchedulerProc() {}
 
-	// Do whatever the process wishes to do. Should not block longer than the timeout value.
-	// Is called whenever the process is signaled or a timeout occurs.
-	virtual bool Execute(int iTimeout = -1) = 0;
+  // Do whatever the process wishes to do. Should not block longer than the
+  // timeout value.
+  // Is called whenever the process is signaled or a timeout occurs.
+  virtual bool Execute(int iTimeout = -1) = 0;
 
-	// As Execute, but won't return until the given timeout value has elapsed or a failure occurs
-	bool ExecuteUntil(int iTimeout = -1);
+  // As Execute, but won't return until the given timeout value has elapsed or a
+  // failure occurs
+  bool ExecuteUntil(int iTimeout = -1);
 
-	// Signal for calling Execute()
+// Signal for calling Execute()
 #ifdef STDSCHEDULER_USE_EVENTS
-	virtual HANDLE GetEvent() { return 0; }
+  virtual HANDLE GetEvent() { return 0; }
 #else
-	virtual void GetFDs(fd_set *pFDs, int *pMaxFD) { }
+  virtual void GetFDs(fd_set *pFDs, int *pMaxFD) {}
 #endif
 
-	// Call Execute() after this time has elapsed (no garantuees regarding accuracy)
-	// -1 means no timeout (infinity).
-	virtual int GetTimeout() { return -1; }
+  // Call Execute() after this time has elapsed (no garantuees regarding
+  // accuracy)
+  // -1 means no timeout (infinity).
+  virtual int GetTimeout() { return -1; }
 
-	// Is the process signal currently set?
-	bool IsSignaled();
-
+  // Is the process signal currently set?
+  bool IsSignaled();
 };
 
 // A simple process scheduler
-class StdScheduler
-{
-public:
-	StdScheduler();
-	virtual ~StdScheduler();
+class StdScheduler {
+ public:
+  StdScheduler();
+  virtual ~StdScheduler();
 
-private:
-	// Process list
-	StdSchedulerProc **ppProcs;
-	int iProcCnt, iProcCapacity;
+ private:
+  // Process list
+  StdSchedulerProc **ppProcs;
+  int iProcCnt, iProcCapacity;
 
-	// Unblocker
+// Unblocker
 #ifdef STDSCHEDULER_USE_EVENTS
-	HANDLE hUnblocker;
+  HANDLE hUnblocker;
 #else
-	int Unblocker[2];
+  int Unblocker[2];
 #endif
 
-	// Dummy lists (preserved to reduce allocs)
+// Dummy lists (preserved to reduce allocs)
 #ifdef STDSCHEDULER_USE_EVENTS
-	HANDLE *pEventHandles;
-	StdSchedulerProc **ppEventProcs;
+  HANDLE *pEventHandles;
+  StdSchedulerProc **ppEventProcs;
 
 #endif
 
-public:
-	int getProcCnt() const { return iProcCnt; }
-	int getProc(StdSchedulerProc *pProc);
-	bool hasProc(StdSchedulerProc *pProc) { return getProc(pProc) >= 0; }
+ public:
+  int getProcCnt() const { return iProcCnt; }
+  int getProc(StdSchedulerProc *pProc);
+  bool hasProc(StdSchedulerProc *pProc) { return getProc(pProc) >= 0; }
 
-	void Clear();
-	void Set(StdSchedulerProc **ppProcs, int iProcCnt);
-	void Add(StdSchedulerProc *pProc);
-	void Remove(StdSchedulerProc *pProc);
+  void Clear();
+  void Set(StdSchedulerProc **ppProcs, int iProcCnt);
+  void Add(StdSchedulerProc *pProc);
+  void Remove(StdSchedulerProc *pProc);
 
-	bool Execute(int iTimeout = -1);
-	void UnBlock();
+  bool Execute(int iTimeout = -1);
+  void UnBlock();
 
-protected:
-	// overridable
-	virtual void OnError(StdSchedulerProc *pProc) { }
+ protected:
+  // overridable
+  virtual void OnError(StdSchedulerProc *pProc) {}
 
-private:
-	void Enlarge(int iBy);
-
+ private:
+  void Enlarge(int iBy);
 };
 
 // A simple process scheduler thread
-class StdSchedulerThread : public StdScheduler
-{
-public:
-	StdSchedulerThread();
-	virtual ~StdSchedulerThread();
+class StdSchedulerThread : public StdScheduler {
+ public:
+  StdSchedulerThread();
+  virtual ~StdSchedulerThread();
 
-private:
+ private:
+  // thread control
+  bool fRunThreadRun, fWait;
 
-	// thread control
-	bool fRunThreadRun, fWait;
-	
-	bool fThread;
+  bool fThread;
 #ifdef HAVE_WINTHREAD
-	unsigned long iThread;
+  unsigned long iThread;
 #elif HAVE_PTHREAD
-	pthread_t Thread;
+  pthread_t Thread;
 #endif
 
-public:
-	void Clear();
-	void Set(StdSchedulerProc **ppProcs, int iProcCnt);
-	void Add(StdSchedulerProc *pProc);
-	void Remove(StdSchedulerProc *pProc);
+ public:
+  void Clear();
+  void Set(StdSchedulerProc **ppProcs, int iProcCnt);
+  void Add(StdSchedulerProc *pProc);
+  void Remove(StdSchedulerProc *pProc);
 
-	bool Start();
-	void Stop();
+  bool Start();
+  void Stop();
 
-private:
-
-	// thread func
+ private:
+// thread func
 #ifdef HAVE_WINTHREAD
-	static void __cdecl _ThreadFunc(void *);
+  static void __cdecl _ThreadFunc(void *);
 #elif defined(HAVE_PTHREAD)
-	static void *_ThreadFunc(void *);
+  static void *_ThreadFunc(void *);
 #endif
-	unsigned int ThreadFunc();
-
+  unsigned int ThreadFunc();
 };
 
-class StdThread
-{
-private:
-	bool fStarted;
-	bool fStopSignaled;
+class StdThread {
+ private:
+  bool fStarted;
+  bool fStopSignaled;
 
 #ifdef HAVE_WINTHREAD
-	unsigned long iThread;
+  unsigned long iThread;
 #elif HAVE_PTHREAD
-	pthread_t Thread;
+  pthread_t Thread;
 #endif
 
-public:
-	StdThread();
-	virtual ~StdThread() { Stop(); }
+ public:
+  StdThread();
+  virtual ~StdThread() { Stop(); }
 
-	bool Start();
-	void SignalStop(); // mark thread to stop but don't wait
-	void Stop();
+  bool Start();
+  void SignalStop();  // mark thread to stop but don't wait
+  void Stop();
 
-	bool IsStarted() { return fStarted; }
+  bool IsStarted() { return fStarted; }
 
-protected:
-	virtual void Execute() = 0;
+ protected:
+  virtual void Execute() = 0;
 
-	bool IsStopSignaled();
+  bool IsStopSignaled();
 
-private:
-	// thread func
+ private:
+// thread func
 #ifdef HAVE_WINTHREAD
-	static void __cdecl _ThreadFunc(void *);
+  static void __cdecl _ThreadFunc(void *);
 #elif defined(HAVE_PTHREAD)
-	static void *_ThreadFunc(void *);
+  static void *_ThreadFunc(void *);
 #endif
-	unsigned int ThreadFunc();
+  unsigned int ThreadFunc();
 };
 
 #endif

@@ -15,23 +15,23 @@ class Resource;
 };
 
 class C4GraphicsResource {
-private:
+ private:
   bool fInitialized;
 
-public:
+ public:
   C4GraphicsResource();
   ~C4GraphicsResource();
 
-protected:
+ protected:
   C4Surface sfcControl;
-  int32_t idSfcControl; // id of source group of control surface
-  int32_t idPalGrp;     // if of source group of pal file
+  int32_t idSfcControl;  // id of source group of control surface
+  int32_t idPalGrp;      // if of source group of pal file
   // ID of last group in main group set that was already registered into the
   // Files-set
   // used to avoid doubled entries by subsequent calls to RegisterMainGroups
   int32_t idRegisteredMainGroupSetFiles;
 
-public:
+ public:
   C4GroupSet Files;
   BYTE GamePalette[256 * 3];
   BYTE AlphaPalette[256 * 3];
@@ -48,8 +48,8 @@ public:
   int32_t idSfcLiquidAnimation;
   C4FacetExID fctCaptain;
   C4FacetExID fctMouseCursor;
-  bool fOldStyleCursor; // if set, offsets need to be applied to some cursor
-                        // facets
+  bool fOldStyleCursor;  // if set, offsets need to be applied to some cursor
+                         // facets
   C4FacetExID fctSelectMark;
   C4FacetExID fctOptions;
   C4FacetExID fctMenu;
@@ -72,38 +72,38 @@ public:
   C4Facet fctCommand;
   C4Facet fctKey;
   C4Facet fctOKCancel;
-  C4FacetExID fctCrewClr;    // ColorByOwner-surface of fctCrew
-  C4FacetExID fctFlagClr;    // ColorByOwner-surface of fctFlag
-  C4FacetExID fctPlayerClr;  // ColorByOwner-surface of fctPlayer
-  C4FacetExID fctPlayerGray; // grayed out version of fctPlayer
+  C4FacetExID fctCrewClr;     // ColorByOwner-surface of fctCrew
+  C4FacetExID fctFlagClr;     // ColorByOwner-surface of fctFlag
+  C4FacetExID fctPlayerClr;   // ColorByOwner-surface of fctPlayer
+  C4FacetExID fctPlayerGray;  // grayed out version of fctPlayer
 
   // fonts
-  CStdFont FontTiny;    // used for logs
-  CStdFont FontRegular; // normal font - just refed from graphics system
-  CStdFont FontCaption; // used for title bars
-  CStdFont FontTitle;   // huge font for titles
-  CStdFont FontTooltip; // normal, non-shadowed font (same as BookFont)
-public:
+  CStdFont FontTiny;     // used for logs
+  CStdFont FontRegular;  // normal font - just refed from graphics system
+  CStdFont FontCaption;  // used for title bars
+  CStdFont FontTitle;    // huge font for titles
+  CStdFont FontTooltip;  // normal, non-shadowed font (same as BookFont)
+ public:
   int32_t GetColorIndex(int32_t iColor, bool fLast = false);
   void Default();
   void Clear();
-  bool InitFonts(); // init fonts only (early init done by loader screen)
+  bool InitFonts();  // init fonts only (early init done by loader screen)
   BOOL Init(bool fInitGUI);
 
   bool IsInitialized() {
     return fInitialized;
-  } // return whether any gfx are loaded (so dlgs can be shown)
+  }  // return whether any gfx are loaded (so dlgs can be shown)
 
   bool
-  RegisterGlobalGraphics();  // register global Graphics.c4g into own group set
-  bool RegisterMainGroups(); // register new groups of Game.GroupSet into own
-                             // group set
-  void CloseFiles();         // free group set
+  RegisterGlobalGraphics();   // register global Graphics.c4g into own group set
+  bool RegisterMainGroups();  // register new groups of Game.GroupSet into own
+                              // group set
+  void CloseFiles();          // free group set
 
-  bool ReloadResolutionDependantFiles(); // reload any files that depend on the
-                                         // current resolution
+  bool ReloadResolutionDependantFiles();  // reload any files that depend on the
+                                          // current resolution
 
-protected:
+ protected:
   bool LoadFile(C4FacetExID &fct, const char *szName, C4GroupSet &rGfxSet,
                 int32_t iWdt = C4FCT_Full, int32_t iHgt = C4FCT_Full,
                 bool fNoWarnIfNotFound = false);
