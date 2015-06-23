@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.7)
+cmake_minimum_required (VERSION 3.1.0)
 project (clonk_rage CXX C)
 set(CMAKE_CXX_STANDARD 11)
 
@@ -7,11 +7,11 @@ option(PROJECT_FOLDERS "Put source files into subfolders in project file" ON)
 set(CMAKE_MODULE_PATH "$(CMAKE_CURRENT_SOURCE_DIR)" "${CMAKE_SOURCE_DIR}/cmake/")
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-	list(APPEND OC_CXX_FLAGS "-Wall -Wextra -Wredundant-decls -Wendif-labels -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Winit-self -Wsign-promo -Wno-reorder -Wno-unused-parameter -Wnon-virtual-dtor -Woverloaded-virtual")
+	list(APPEND CXXFLAGS "-Wall -Wextra -Wredundant-decls -Wendif-labels -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Winit-self -Wsign-promo -Wno-reorder -Wno-unused-parameter -Wnon-virtual-dtor -Woverloaded-virtual")
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-	list(APPEND OC_CXX_FLAGS "-Wall -Wextra -Wextra-tokens -Wpointer-arith -Wno-cast-align -Wno-reorder -Wno-unused-parameter -Wnon-virtual-dtor -Woverloaded-virtual")
+	list(APPEND CXXFLAGS "-Wall -Wextra -Wredundant-decls -Wendif-labels -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Winit-self -Wsign-promo -Wno-reorder -Wno-unused-parameter -Wnon-virtual-dtor -Woverloaded-virtual")
 endif()
 
 set(CLONK_SOURCES
