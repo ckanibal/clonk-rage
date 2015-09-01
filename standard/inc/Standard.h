@@ -80,17 +80,21 @@ typedef __int32 intptr_t;
 #endif
 
 #ifdef __GNUC__
-// Temporary-To-Reference-Fix
-#define ALLOW_TEMP_TO_REF(ClassName) operator ClassName & () { return *this; }
 // Allow checks for correct printf-usage
 #define GNUC_FORMAT_ATTRIBUTE __attribute__ ((format (printf, 1, 2)))
 #define GNUC_FORMAT_ATTRIBUTE_O __attribute__ ((format (printf, 2, 3)))
 #define ALWAYS_INLINE inline __attribute__ ((always_inline))
 #else
-#define ALLOW_TEMP_TO_REF(ClassName)
 #define GNUC_FORMAT_ATTRIBUTE
 #define GNUC_FORMAT_ATTRIBUTE_O
 #define ALWAYS_INLINE __forceinline
+#endif
+
+// Temporary-To-Reference-Fix
+#if !defined(__clang__) && defined(__GNUC__) && ((__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 3))
+#define ALLOW_TEMP_TO_REF(ClassName) operator ClassName & () { return *this; }
+#else
+#define ALLOW_TEMP_TO_REF(ClassName)
 #endif
 
 #if defined(_DEBUG) && defined(_MSC_VER)
@@ -222,7 +226,7 @@ inline void MemCopy(const void *lpMem1, void *lpMem2, size_t dwSize)
 	memmove(lpMem2,lpMem1,dwSize);
 	}
 
-bool ForLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, 
+bool ForLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2,
              bool (*fnCallback)(int32_t, int32_t, int32_t), int32_t iPar=0,
 						 int32_t *lastx=NULL, int32_t *lasty=NULL);
 
@@ -308,31 +312,31 @@ BOOL SWildcardMatchEx(const char *szString, const char *szWildcard);
 #define DirSep "/"
 #endif
 
-void BufferBlit(uint8_t *bypSource, int iSourcePitch, 
+void BufferBlit(uint8_t *bypSource, int iSourcePitch,
                 int iSrcBufHgt, // Positive: Bottom up
                 int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt,
-                uint8_t *bypTarget, int iTargetPitch, 
+                uint8_t *bypTarget, int iTargetPitch,
                 int iTrgBufHgt, // Positive: Bottom up
                 int iTrgX, int iTrgY, int iTrgWdt, int iTrgHgt);
 
-void BufferBlitDw(uint32_t *bypSource, int iSourcePitch, 
+void BufferBlitDw(uint32_t *bypSource, int iSourcePitch,
                 int iSrcBufHgt, // Positive: Bottom up
                 int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt,
-                uint32_t *bypTarget, int iTargetPitch, 
+                uint32_t *bypTarget, int iTargetPitch,
                 int iTrgBufHgt, // Positive: Bottom up
                 int iTrgX, int iTrgY, int iTrgWdt, int iTrgHgt);
 
-void BufferBlitAspect(uint8_t *bypSource, int iSourcePitch, 
+void BufferBlitAspect(uint8_t *bypSource, int iSourcePitch,
                 int iSrcBufHgt, // Positive: Bottom up
                 int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt,
-                uint8_t *bypTarget, int iTargetPitch, 
+                uint8_t *bypTarget, int iTargetPitch,
                 int iTrgBufHgt, // Positive: Bottom up
                 int iTrgX, int iTrgY, int iTrgWdt, int iTrgHgt);
 
-void BufferBlitAspectDw(uint32_t *bypSource, int iSourcePitch, 
+void BufferBlitAspectDw(uint32_t *bypSource, int iSourcePitch,
                 int iSrcBufHgt, // Positive: Bottom up
                 int iSrcX, int iSrcY, int iSrcWdt, int iSrcHgt,
-                uint32_t *bypTarget, int iTargetPitch, 
+                uint32_t *bypTarget, int iTargetPitch,
                 int iTrgBufHgt, // Positive: Bottom up
                 int iTrgX, int iTrgY, int iTrgWdt, int iTrgHgt);
 
@@ -393,4 +397,3 @@ template <typename T>
 bool OpenURL(const char *szURL);
 
 #endif // INC_STANDARD
-
