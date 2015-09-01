@@ -23,6 +23,9 @@ elseif(UNIX)
   MESSAGE( STATUS "Building for UNIX ..." )
 endif()
 
+# include common libraries
+find_package(PNG REQUIRED)
+include_directories(${PNG_INCLUDE_DIR})
 
 # include projects
 subdirs(engine standard)

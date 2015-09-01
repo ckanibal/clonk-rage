@@ -1,4 +1,5 @@
 include_directories(${clonk-rage_SOURCE_DIR}/engine/inc)
+include_directories(${clonk-rage_SOURCE_DIR}/engine/sec)
 include_directories(${clonk-rage_SOURCE_DIR}/standard/inc)
 link_directories(${clonk-rage_SOURCE_DIR}/standard/src)
 
@@ -162,6 +163,13 @@ set(ENGINE_SOURCES
   C4WinMain.cpp
   C4Wrappers.cpp
 )
+
+if(WIN32)
+  list(APPEND ENGINE_SOURCES
+  )
+elseif(APPLE)
+elseif(UNIX)
+endif()
 
 add_executable(engine ${ENGINE_SOURCES})
 target_link_libraries(engine standard)
