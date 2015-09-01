@@ -30,7 +30,6 @@ set(STANDARD_SOURCES
   StdSurface8.cpp
   StdTApp.cpp
   StdVideo.cpp
-  StdWindow.cpp
   StdXApp.cpp
   StdXWindow.cpp
   dxutil.cpp
@@ -38,6 +37,7 @@ set(STANDARD_SOURCES
 if(WIN32)
   list(APPEND STANDARD_SOURCES
     StdJoystick.cpp
+    StdWindow.cpp
   )
 elseif(APPLE)
 

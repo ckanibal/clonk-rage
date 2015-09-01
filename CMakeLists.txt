@@ -6,6 +6,7 @@ elseif(UNIX OR APPLE)
   add_definitions(-DHAVE_STDINT_H)
   add_definitions(-DHAVE_UNISTD_H)
   add_definitions(-DHAVE_PTHREAD)
+  add_definitions(-DUSE_GL)
 endif()
 
 if(WIN32)
