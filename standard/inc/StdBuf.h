@@ -11,6 +11,8 @@
 #include <assert.h>
 #include <stdarg.h>
 
+#include <utility>
+
 // debug memory management
 #if defined(_DEBUG) && defined(_MSC_VER)
 #include <crtdbg.h>
@@ -33,15 +35,34 @@ public:
   {
     if(fCopy)
       Copy(Buf2);
-    else if(!Buf2.isRef()) 
+    else if(!Buf2.isRef())
       Take(Buf2);
     else
       Ref(Buf2);
   }
 
+  StdBuf(const StdBuf & Buf2, bool fCopy = true)
+    : fRef(true), pData(NULL), iSize(0)
+  {
+    if (fCopy)
+      Copy(Buf2);
+    else
+      Ref(Buf2);
+  }
+  StdBuf(StdBuf && Buf2, bool fCopy = false)
+      : fRef(true), pData(NULL), iSize(0)
+  {
+    if (fCopy)
+      Copy(Buf2);
+    else if (!Buf2.isRef())
+      Take(std::move(Buf2));
+    else
+      Ref(Buf2);
+  }
+
   // Set by constant data. Copies data if desired.
-  StdBuf(const void *pData, size_t iSize, bool fCopy = false) 
-    : fRef(true), pData(pData), iSize(iSize) 
+  StdBuf(const void *pData, size_t iSize, bool fCopy = false)
+    : fRef(true), pData(pData), iSize(iSize)
   {
     if(fCopy) Copy();
   }
@@ -59,7 +80,7 @@ protected:
   bool fRef;
   // Data
   union
-  { 
+  {
     const void *pData;
     void *pMData;
 #if defined(_DEBUG)
@@ -77,7 +98,7 @@ public:
   void       *getMData()      { assert(!fRef); return pMData; }
   size_t      getSize() const { return iSize; }
   bool        isRef()   const { return fRef; }
-  
+
   const void *getPtr(size_t i) const { return reinterpret_cast<const char*>(getData()) + i; }
   void       *getMPtr(size_t i)      { return reinterpret_cast<char*>(getMData()) + i; }
 
@@ -101,8 +122,8 @@ public:
   void Take(void *pnData, size_t inSize)
   {
     Clear();
-    if(pnData) 
-    { 
+    if(pnData)
+    {
       fRef = false; pMData = pnData; iSize = inSize;
     }
   }
@@ -205,7 +226,7 @@ public:
     const void *pOldData = getData();
 		size_t iOldSize = iSize;
     New(inSize);
-    Write(pOldData, Min(iOldSize, inSize)); 
+    Write(pOldData, Min(iOldSize, inSize));
   }
   void Copy()
   {
@@ -245,12 +266,16 @@ public:
 		Ref(Buf2.getData(), Buf2.getSize());
 	}
 	// Create a reference to this buffer's contents
-	StdBuf getRef() const 
+	StdBuf getRef() const
 	{
 		return StdBuf(getData(), getSize());
 	}
   // take over another buffer's contents
   void Take(StdBuf &Buf2)
+  {
+    Take(Buf2.GrabPointer(), Buf2.getSize());
+  }
+  void Take(StdBuf && Buf2)
   {
     Take(Buf2.GrabPointer(), Buf2.getSize());
   }
@@ -260,7 +285,7 @@ public:
   bool SaveToFile(const char *szFile) const;
 
   // *** Operators
-  
+
   // Null check
   bool operator ! () const { return isNull(); }
 
@@ -285,9 +310,9 @@ public:
 
   // Set (as constructor: take if possible)
   StdBuf &operator = (StdBuf &Buf2)
-  { 
-    if(Buf2.isRef()) Ref(Buf2); else Take(Buf2); 
-    return *this; 
+  {
+    if(Buf2.isRef()) Ref(Buf2); else Take(Buf2);
+    return *this;
   }
 
   // build a simple hash
@@ -323,13 +348,19 @@ template <class elem_t>
 class StdCopyBuf : public StdBuf
 {
 public:
-  
+
   StdCopyBuf()
   { }
 
   // Set by buffer. Copies data by default.
   StdCopyBuf(const StdBuf &Buf2, bool fCopy = true)
     : StdBuf(Buf2.getRef(), fCopy)
+  { }
+  StdCopyBuf(StdBuf && Buf2, bool fCopy = false)
+    : StdBuf(std::move(Buf2), fCopy)
+  { }
+  StdCopyBuf(StdCopyBuf && Buf2, bool fCopy = false)
+    : StdBuf(std::move(Buf2), fCopy)
   { }
 
   // Set by buffer. Copies data by default.
@@ -338,7 +369,7 @@ public:
   { }
 
   // Set by constant data. Copies data by default.
-  StdCopyBuf(const void *pData, size_t iSize, bool fCopy = true) 
+  StdCopyBuf(const void *pData, size_t iSize, bool fCopy = true)
     : StdBuf(pData, iSize, fCopy)
   { }
 
@@ -354,7 +385,7 @@ public:
 
   // *** Construction
 
-	StdStrBuf() 
+	StdStrBuf()
 		: StdBuf()
 	{ }
 
@@ -363,13 +394,20 @@ public:
     : StdBuf(Buf2, fCopy)
   { }
 
+  StdStrBuf(const StdStrBuf & Buf2, bool fCopy = true)
+    : StdBuf(Buf2, fCopy)
+  { }
+  StdStrBuf(StdStrBuf && Buf2, bool fCopy = false)
+    : StdBuf(std::move(Buf2), fCopy)
+  { }
+
   // Set by constant data. References data by default, copies if specified.
-  explicit StdStrBuf(const char *pData, bool fCopy = false) 
+  explicit StdStrBuf(const char *pData, bool fCopy = false)
     : StdBuf(pData, pData ? strlen(pData) + 1 : 0, fCopy)
   { }
 
   // As previous constructor, but set length manually.
-  StdStrBuf(const char *pData, size_t iLength, bool fCopy = false) 
+  StdStrBuf(const char *pData, size_t iLength, bool fCopy = false)
     : StdBuf(pData, pData ? iLength + 1 : 0, fCopy)
   { }
 
@@ -398,10 +436,11 @@ public:
   void Take(char *pnData) { StdBuf::Take(pnData, pnData ? strlen(pnData) + 1 : 0); }
   void Take(char *pnData, size_t iLength) { assert((!pnData && !iLength) || strlen(pnData) == iLength); StdBuf::Take(pnData, iLength + 1); }
 	char *GrabPointer() { return reinterpret_cast<char *>(StdBuf::GrabPointer()); }
-  
+
   void Ref(const StdStrBuf &Buf2) { StdBuf::Ref(Buf2.getData(), Buf2.getSize()); }
 	StdStrBuf getRef() const { return StdStrBuf(getData(), getLength()); }
   void Take(StdStrBuf &Buf2) { StdBuf::Take(Buf2); }
+  void Take(StdStrBuf && Buf2) { StdBuf::Take(std::move(Buf2)); }
 
   void Clear() { StdBuf::Clear(); }
   void Copy() { StdBuf::Copy(); }
@@ -412,14 +451,14 @@ public:
 
   // Byte-wise compare (will compare characters up to the length of the second string)
   int Compare(const StdStrBuf &Buf2, size_t iAt = 0) const
-  { 
+  {
     assert(iAt <= getLength());
     return StdBuf::Compare(Buf2.getData(), Buf2.getLength(), iAt);
   }
   int Compare_(const char *pCData, size_t iAt = 0) const
-  { 
+  {
     StdStrBuf str(pCData); // GCC needs this, for some obscure reason
-    return Compare(str, iAt); 
+    return Compare(str, iAt);
   }
 
   // Grows the string to contain the specified number more/less characters.
@@ -461,8 +500,8 @@ public:
   }
 
   // Copy string
-  void Copy(const char *pnData, size_t iChars) 
-  { 
+  void Copy(const char *pnData, size_t iChars)
+  {
     Clear();
     Append(pnData, iChars);
   }
@@ -472,9 +511,9 @@ public:
   bool SaveToFile(const char *szFile) const;
 
   // * Operators
-  
+
   bool operator ! () const { return isNull(); }
-  
+
   StdStrBuf &operator += (const StdStrBuf &Buf2) { Append(Buf2); return *this; }
   StdStrBuf &operator += (const char *szString) { Append(szString); return *this; }
   StdStrBuf operator + (const StdStrBuf &Buf2) const { StdStrBuf Buf = getRef(); Buf.Append(Buf2); return Buf; }
@@ -580,7 +619,7 @@ public:
 
 	// Checks wether the contents are valid UTF-8, and if not, convert them from windows-1252 to UTF-8.
 	void EnsureUnicode();
-	
+
 	// convert to lower case
 	void ToLowerCase();
 
@@ -611,23 +650,30 @@ public:
 class StdCopyStrBuf : public StdStrBuf
 {
 public:
-  
+
   StdCopyStrBuf()
   { }
 
   explicit StdCopyStrBuf(const StdStrBuf &Buf2, bool fCopy = true)
-    : StdStrBuf(static_cast<StdStrBuf &>(Buf2.getRef()), fCopy)
+    : StdStrBuf(Buf2.getRef(), fCopy)
   { }
 
   StdCopyStrBuf(const StdCopyStrBuf &Buf2, bool fCopy = true)
-    : StdStrBuf(static_cast<StdStrBuf &>(Buf2.getRef()), fCopy)
+    : StdStrBuf(Buf2.getRef(), fCopy)
+  { }
+
+  StdCopyStrBuf(StdStrBuf && Buf2, bool fCopy = false)
+    : StdStrBuf(std::move(Buf2), fCopy)
+  { }
+  StdCopyStrBuf(StdCopyStrBuf && Buf2, bool fCopy = false)
+    : StdStrBuf(std::move(Buf2), fCopy)
   { }
 
   // Set by constant data. Copies data if desired.
   explicit StdCopyStrBuf(const char *pData, bool fCopy = true)
     : StdStrBuf(pData, fCopy)
   { }
-  
+
   StdCopyStrBuf &operator = (const StdStrBuf &Buf2) { Copy(Buf2); return *this; }
   StdCopyStrBuf &operator = (const StdCopyStrBuf &Buf2) { Copy(Buf2); return *this; }
   StdCopyStrBuf &operator = (const char *szString) { Copy(szString); return *this; }
