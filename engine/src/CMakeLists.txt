@@ -27,7 +27,6 @@ set(ENGINE_SOURCES
   C4Extra.cpp
   C4Facet.cpp
   C4FacetEx.cpp
-  C4FileClasses.cpp
   C4FileMonitor.cpp
   C4FileSelDlg.cpp
   C4FindObject.cpp
@@ -166,6 +165,7 @@ set(ENGINE_SOURCES
 
 if(WIN32)
   list(APPEND ENGINE_SOURCES
+    C4FileClasses.cpp
   )
 elseif(APPLE)
 elseif(UNIX)
