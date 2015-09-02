@@ -122,10 +122,10 @@ void C4LeagueResponseHeadUpdate::CompileFunc(StdCompiler *pComp)
 	C4LeagueResponseHead::CompileFunc(pComp);
 
 	// League name
-	pComp->Value(mkNamingAdapt(League, "League", ""));	
+	pComp->Value(mkNamingAdapt(League, "League", ""));
 
   // player infos
-  pComp->Value(mkNamingAdapt(PlrInfos, "PlayerInfos"));	
+  pComp->Value(mkNamingAdapt(PlrInfos, "PlayerInfos"));
 	}
 
 // *** C4LeagueRequestHeadAuthCheck
@@ -162,7 +162,7 @@ const char *C4LeagueResponseHeadAuthCheck::getProgressData(const char *szLeague)
 	return 0;
 	}
 
-void C4LeagueResponseHeadAuthCheck::CompileFunc(StdCompiler *pComp) 
+void C4LeagueResponseHeadAuthCheck::CompileFunc(StdCompiler *pComp)
 	{
 	// Base members
 	C4LeagueResponseHead::CompileFunc(pComp);
@@ -176,7 +176,7 @@ void C4LeagueResponseHeadAuthCheck::CompileFunc(StdCompiler *pComp)
 
 	// Clan tag
 	pComp->Value(mkNamingAdapt(mkParAdapt(ClanTag, StdCompiler::RCT_All), "ClanTag", ""));
-	
+
 	}
 
 // *** C4LeagueFBIDList
@@ -292,7 +292,7 @@ bool C4LeagueClient::Start(const C4Network2Reference &Ref)
 	StdStrBuf QueryText = DecompileToBuf<StdCompilerINIWrite>(
       mkInsertAdapt(
          mkNamingAdapt(Head, "Request"),
-         mkNamingAdapt(mkDecompileAdapt(Ref), "Reference"), 
+         mkNamingAdapt(mkDecompileAdapt(Ref), "Reference"),
          false));
 	ModifyForChecksum(&QueryText, "-----");
   // Perform query
@@ -342,7 +342,7 @@ bool C4LeagueClient::Update(const C4Network2Reference &Ref)
 	StdStrBuf QueryText = DecompileToBuf<StdCompilerINIWrite>(
       mkInsertAdapt(
          mkNamingAdapt(Head, "Request"),
-         mkNamingAdapt(mkDecompileAdapt(Ref), "Reference"), 
+         mkNamingAdapt(mkDecompileAdapt(Ref), "Reference"),
          false));
 	ModifyForChecksum(&QueryText, "-----");
   // Perform query
@@ -374,7 +374,7 @@ bool C4LeagueClient::End(const C4Network2Reference &Ref, const char *szRecordNam
 	StdStrBuf QueryText = DecompileToBuf<StdCompilerINIWrite>(
       mkInsertAdapt(
          mkNamingAdapt(Head, "Request"),
-         mkNamingAdapt(mkDecompileAdapt(Ref), "Reference"), 
+         mkNamingAdapt(mkDecompileAdapt(Ref), "Reference"),
          false));
 	ModifyForChecksum(&QueryText, "-----");
   // Perform query
@@ -411,7 +411,7 @@ bool C4LeagueClient::Auth(const C4PlayerInfo &PlrInfo, const char *szAccount, co
 	StdStrBuf QueryText = DecompileToBuf<StdCompilerINIWrite>(
       mkInsertAdapt(
          mkNamingAdapt(Head, "Request"),
-         mkNamingAdapt(mkDecompileAdapt(PlrInfo), "PlrInfo"), 
+         mkNamingAdapt(mkDecompileAdapt(PlrInfo), "PlrInfo"),
          false));
 	ModifyForChecksum(&QueryText, "-----");
   // Perform query
@@ -432,7 +432,7 @@ bool C4LeagueClient::GetAuthReply(StdStrBuf *pMessage, StdStrBuf *pAUID, StdStrB
 		*pRegister = Head.isStatusRegister();
 	// No success?
 	if(!Head.isSuccess())
-		return false;	
+		return false;
   // Check AUID
 	if(!Head.getAUID() || !*Head.getAUID())
 		{
@@ -457,7 +457,7 @@ bool C4LeagueClient::AuthCheck(const C4PlayerInfo &PlrInfo)
 	StdStrBuf QueryText = DecompileToBuf<StdCompilerINIWrite>(
       mkInsertAdapt(
          mkNamingAdapt(Head, "Request"),
-         mkNamingAdapt(mkDecompileAdapt(PlrInfo), "PlrInfo"), 
+         mkNamingAdapt(mkDecompileAdapt(PlrInfo), "PlrInfo"),
          false));
 	ModifyForChecksum(&QueryText, "-----");
   // Perform query
@@ -517,7 +517,7 @@ void C4LeagueClient::ModifyForChecksum(StdStrBuf *pData, const char *szReplace)
 void C4LeagueClient::ModifyForChecksum(const void *pData, size_t iDataSize, char *pReplace, uint32_t iChecksum, uint32_t iCheckMask)
 	{
 	// Base 64 table
-	const char Base64Tbl [] = 
+	const char Base64Tbl [] =
 		{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
 			'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
 			'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
@@ -530,11 +530,15 @@ void C4LeagueClient::ModifyForChecksum(const void *pData, size_t iDataSize, char
 		for(uint32_t j = 0; j < 5; j++)
 			pReplace[j] = Base64Tbl[((i ^ iStart) >> j * 5) & 63];
 		// Calculcate SHA
-		SHA_CTX ctx; BYTE sha[SHA_DIGEST_LENGTH];
-		if(!SHA1_Init(&ctx) ||
-		   !SHA1_Update(&ctx, pData, iDataSize))
-			return;
-		SHA1_Final(sha, &ctx);
+    mbedtls_md_context_t ctx;
+    mbedtls_md_init(&ctx);
+		BYTE sha[SHA_DIGEST_LENGTH];
+		if((mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(MBEDTLS_MD_SHA1), 0) != 0) || 
+      (mbedtls_md_starts(&ctx) != 0) ||
+      (mbedtls_md_update(&ctx, reinterpret_cast<const unsigned char*>(pData), iDataSize) != 0)
+    ) return;
+    mbedtls_md_finish(&ctx, sha);
+    mbedtls_md_free(&ctx);
 		// Correct checksum?
 		if(!((*(uint32_t *)&sha ^ iChecksum) & iCheckMask))
 			return;
@@ -600,7 +604,7 @@ C4LeagueSignupDialog::C4LeagueSignupDialog(const char *szPlayerName, const char 
 		// But a password edit box
 		const char *szEdtPassCaption = LoadResStr("IDS_CTL_LEAGUE_PLRPW");
 		C4GUI::LabeledEdit::GetControlSize(NULL, &iCtrlHeight, szEdtPassCaption, NULL, fSideEdits);
-		AddElement(pEdtPass = new C4GUI::LabeledEdit(caMain.GetFromTop(iCtrlHeight), szEdtPassCaption, fSideEdits, szPassPref));		
+		AddElement(pEdtPass = new C4GUI::LabeledEdit(caMain.GetFromTop(iCtrlHeight), szEdtPassCaption, fSideEdits, szPassPref));
 		// No second password edit box
 		pEdtPass2 = NULL;
 		}
@@ -628,11 +632,11 @@ C4LeagueSignupDialog::C4LeagueSignupDialog(const char *szPlayerName, const char 
 void C4LeagueSignupDialog::UserClose(bool fOK)
 	{
 	// Abort? That's always okay
-	if(!fOK) 
-		{ 
+	if(!fOK)
+		{
 		Dialog::UserClose(fOK);
 		Game.pGUI->ShowMessageModal(FormatString(LoadResStr("IDS_MSG_LEAGUESIGNUPCANCELLED"), strPlayerName.getData()).getData(), LoadResStr("IDS_DLG_LEAGUESIGNUP"), C4GUI::MessageDialog::btnOK, C4GUI::Ico_Notify);
-		return; 
+		return;
 		}
 	// Check for empty account name
 	const char *szAccount = pEdtAccount->GetText();

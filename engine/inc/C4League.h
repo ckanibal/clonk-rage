@@ -8,7 +8,8 @@
 #ifdef NETWORK
 // This file is NETWORK-only because ModifyForChecksum is secret
 
-#include <openssl/sha.h>
+#include <mbedtls/md.h>
+#define SHA_DIGEST_LENGTH 20
 
 #include <C4Network2Reference.h>
 #include <C4Gui.h>
@@ -94,7 +95,7 @@ class C4LeagueResponseHead
   {
   public:
     C4LeagueResponseHead() { }
-     
+
   private:
     StdCopyStrBuf Status;
     StdCopyStrBuf CSID;
@@ -208,7 +209,7 @@ class C4LeagueClient : public C4Network2RefClient
     // Action "Start"
     bool Start(const C4Network2Reference &Ref);
     bool GetStartReply(StdStrBuf *pMessage, StdStrBuf *pLeague, StdStrBuf *pStreamingAddr, int32_t *pSeed, int32_t *pMaxPlayers);
-  
+
     // Action "Update"
     bool Update(const C4Network2Reference &Ref);
     bool GetUpdateReply(StdStrBuf *pMessage, C4ClientPlayerInfos *pPlayerLeagueInfos);
@@ -257,7 +258,7 @@ class C4LeagueSignupDialog : public C4GUI::Dialog
 
 		// show modal league dialog to query password for player; return
 		static bool ShowModal(const char *szPlayerName, const char *szLeagueName, const char *szLeagueServerName, StdStrBuf *psAccount, StdStrBuf *psPass, bool fWarnThirdParty, bool fRegister);
-	
+
 	private:
 		void OnChkPassword();
 	};
