@@ -72,7 +72,7 @@ C4Network2Client::C4Network2Client(C4Client *pClient)
 		iAddrCnt(0),
 		eStatus(NCS_Ready),
     iLastActivity(0),
-		pMsgConn(NULL), pDataConn(NULL), 
+		pMsgConn(NULL), pDataConn(NULL),
     iNextConnAttempt(0),
 		pNext(NULL), pParent(NULL), pstatPing(NULL)
 {
@@ -125,7 +125,7 @@ void C4Network2Client::RemoveConn(C4Network2IOConnection *pConn)
 	if(!pMsgConn && pDataConn) SetMsgConn(pDataConn);
 }
 
- 
+
 void C4Network2Client::CloseConns(const char *szMsg)
 {
   C4PacketConnRe Pkt(false, false, szMsg);
@@ -165,7 +165,7 @@ bool C4Network2Client::DoConnectAttempt(C4Network2IO *pIO)
 	int32_t iBestAddress = -1;
 	for(int32_t i = 0; i < iAddrCnt; i++)
 		// no connection for this protocol?
-		if((!pDataConn || Addr[i].getProtocol() != pDataConn->getProtocol()) && 
+		if((!pDataConn || Addr[i].getProtocol() != pDataConn->getProtocol()) &&
 			 (!pMsgConn  || Addr[i].getProtocol() != pMsgConn->getProtocol()))
 			// protocol available?
 			if(pIO->getNetIO(Addr[i].getProtocol()))
@@ -234,7 +234,7 @@ void C4Network2Client::AddLocalAddrs(int16_t iPortTCP, int16_t iPortUDP)
     hostent *ph = ::gethostbyname(szLocalHostName);
     // check type, get addr list
     if(ph)
-      if(ph->h_addrtype != AF_INET) 
+      if(ph->h_addrtype != AF_INET)
         ph = NULL;
       else
         ppAddr = reinterpret_cast<in_addr **>(ph->h_addr_list);
@@ -462,7 +462,7 @@ bool C4Network2ClientList::BroadcastMsgToConnClients(const C4NetIOPacket &rPkt)
 	// finished
 	return fSuccess;
 }
-	
+
 bool C4Network2ClientList::BroadcastMsgToClients(const C4NetIOPacket &rPkt)
 {
 	// Send a msg to all clients, including clients that are not connected to
@@ -502,7 +502,7 @@ bool C4Network2ClientList::SendMsgToHost(C4NetIOPacket rPkt)
 	return pHost->SendMsg(rPkt);
 }
 
-bool C4Network2ClientList::SendMsgToClient(int32_t iClient, C4NetIOPacket &rPkt)
+bool C4Network2ClientList::SendMsgToClient(int32_t iClient, C4NetIOPacket && rPkt)
 {
 	// find client
 	C4Network2Client *pClient = GetClientByID(iClient);
@@ -550,7 +550,7 @@ void C4Network2ClientList::HandlePacket(char cStatus, const C4PacketBase *pBaseP
 	break;
 
 	}
-	
+
 	#undef GETPKT
 }
 
@@ -601,4 +601,3 @@ void C4PacketAddr::CompileFunc(StdCompiler *pComp)
 	pComp->Value(mkNamingAdapt(mkIntPackAdapt(iClientID), "ClientID", C4ClientIDUnknown));
 	pComp->Value(mkNamingAdapt(addr, "Addr"));
 }
-

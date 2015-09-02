@@ -43,7 +43,7 @@ public:
 	// *** constants / types
 	static const int TO_INF; // = -1;
 	static const uint16_t P_NONE; // = -1
-	
+
 	typedef sockaddr_in addr_t;
 
 	// callback class
@@ -83,15 +83,15 @@ public:
 #endif
 
 	// *** interface
-	
+
 	// * not multithreading safe
 	virtual bool Init(uint16_t iPort = P_NONE) = 0;
 	virtual bool InitBroadcast(addr_t *pBroadcastAddr) = 0;
 	virtual bool Close() = 0;
 	virtual bool CloseBroadcast() = 0;
-	
+
 	virtual bool Execute(int iTimeout = -1) = 0; // (for StdSchedulerProc)
-	
+
 	// * multithreading safe
 	virtual bool Connect(const addr_t &addr) = 0; // async!
 	virtual bool Close(const addr_t &addr) = 0;
@@ -99,7 +99,7 @@ public:
 	virtual bool Send(const class C4NetIOPacket &rPacket) = 0;
 	virtual bool SetBroadcast(const addr_t &addr, bool fSet = true) = 0;
 	virtual bool Broadcast(const class C4NetIOPacket &rPacket) = 0;
-	
+
   // statistics
   virtual bool GetStatistic(int *pBroadcastRate) = 0;
   virtual bool GetConnStatistic(const addr_t &addr, int *pIRate, int *pORate, int *pLoss) = 0;
@@ -122,20 +122,20 @@ public:
 class C4NetIOPacket : public StdCopyBuf
 {
 public:
-	
+
 	C4NetIOPacket();
 
 	// construct from memory (copies / references data)
 	C4NetIOPacket(const void *pnData, size_t inSize, bool fCopy = false, const C4NetIO::addr_t &naddr = C4NetIO::addr_t());
 	// construct from buffer (takes data, if possible)
-	explicit C4NetIOPacket(StdBuf &Buf, const C4NetIO::addr_t &naddr = C4NetIO::addr_t());
+	explicit C4NetIOPacket(const StdBuf &Buf, const C4NetIO::addr_t &naddr);
 	// construct from status byte + buffer (copies data)
-	C4NetIOPacket(uint8_t cStatusByte, const char *pnData, size_t inSize, const C4NetIO::addr_t &naddr = C4NetIO::addr_t()); 
-	
+	C4NetIOPacket(uint8_t cStatusByte, const char *pnData, size_t inSize, const C4NetIO::addr_t &naddr = C4NetIO::addr_t());
+
 	~C4NetIOPacket();
 
 protected:
-	
+
   // address
 	C4NetIO::addr_t addr;
 
@@ -434,7 +434,7 @@ public:
 	virtual bool Send(const C4NetIOPacket &rPacket);
 	virtual bool Broadcast(const C4NetIOPacket &rPacket);
 	virtual bool SetBroadcast(const addr_t &addr, bool fSet = true);
-	
+
 	virtual int GetTimeout();
 
   virtual bool GetStatistic(int *pBroadcastRate);
@@ -459,7 +459,7 @@ protected:
 	};
 
 	// packet structures
-	struct PacketHdr; struct TestPacket; struct ConnPacket; struct ConnOKPacket; struct AddAddrPacket; 
+	struct PacketHdr; struct TestPacket; struct ConnPacket; struct ConnOKPacket; struct AddAddrPacket;
 	struct DataPacketHdr; struct CheckPacketHdr; struct ClosePacket;
 
 	// constants
@@ -488,9 +488,9 @@ protected:
 
 		// construction / destruction
 		Packet();
-		Packet(C4NetIOPacket &rnData, nr_t inNr);
+		Packet(C4NetIOPacket && rnData, nr_t inNr);
 		~Packet();
-	
+
 	protected:
 		// data
 		nr_t iNr;
@@ -571,8 +571,8 @@ protected:
 		addr_t PeerAddr;
 		// connection status
 		enum ConnStatus
-		{ 
-			CS_None, CS_Conn, CS_Works, CS_Closed 
+		{
+			CS_None, CS_Conn, CS_Works, CS_Closed
 		}
 			eStatus;
 		// does multicast work?
@@ -590,7 +590,7 @@ protected:
 		unsigned int iOPacketCounter;
 		unsigned int iIPacketCounter, iRIPacketCounter;
 		unsigned int iIMCPacketCounter, iRIMCPacketCounter;
-    
+
     unsigned int iMCAckPacketCounter;
 
 		// output critical section
@@ -607,7 +607,7 @@ protected:
     // statistics
     int iIRate, iORate, iLoss;
 		CStdCSec StatCSec;
-  
+
   public:
 		// data access
 		const C4NetIO::addr_t &GetAddr() const { return addr; }
@@ -623,7 +623,7 @@ protected:
 
 		// called if something from this peer was received
 		void OnRecv(const C4NetIOPacket &Packet);
-		
+
 		// close connection
 		void Close(const char *szReason);
 		// open?
@@ -662,8 +662,8 @@ protected:
 
 		// sending
 		bool SendDirect(const Packet &rPacket, unsigned int iNr = ~0);
-		bool SendDirect(C4NetIOPacket &rPacket);
-		
+		bool SendDirect(C4NetIOPacket && rPacket);
+
 		// events
 		void OnConn();
 		void OnClose(const char *szReason);
@@ -720,7 +720,7 @@ protected:
 
 	// sending
 	bool BroadcastDirect(const Packet &rPacket, unsigned int iNr = ~0u); // (mt-safe)
-	bool SendDirect(C4NetIOPacket &rPacket); // (mt-safe)
+	bool SendDirect(C4NetIOPacket && rPacket); // (mt-safe)
 
 	// multicast related
 	bool DoLoopbackTest();
@@ -773,7 +773,7 @@ public:
 	void RemoveIO(C4NetIO *pNetIO);
 
 protected:
-	
+
 	// net i/o list
 	int iNetIOCnt, iNetIOCapacity;
 	C4NetIO **ppNetIO;
@@ -799,7 +799,7 @@ inline bool operator != (const C4NetIO::addr_t addr1, const C4NetIO::addr_t addr
 
 // there seems to be no standard way to get these numbers, so let's do it the dirty way...
 inline uint8_t &in_addr_b(in_addr &addr, int i) {
-	assert(0 <= i && i < 4); 
+	assert(0 <= i && i < 4);
 	return *(reinterpret_cast<uint8_t *>(&addr.s_addr) + i);
 }
 

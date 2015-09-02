@@ -119,7 +119,7 @@ inline int32_t PixCol2Tex(BYTE pixc)
 	return iTex;
 	}
 
-inline int32_t PixCol2Mat(BYTE pixc) 
+inline int32_t PixCol2Mat(BYTE pixc)
   {
 	// Get texture
 	int32_t iTex = PixCol2Tex(pixc);
@@ -171,7 +171,7 @@ inline int32_t GBackMat(int32_t x, int32_t y)
 inline int32_t GBackDensity(int32_t x, int32_t y)
   {
 	return Game.Landscape.GetDensity(x, y);
-  } 
+  }
 
 inline bool GBackSolid(int32_t x, int32_t y)
   {
@@ -213,7 +213,7 @@ template <class CompT, class StructT>
 		}
 	}
 template <class CompT, class StructT>
-	bool CompileFromBuf_LogWarn(StructT &TargetStruct, const typename CompT::InT &SrcBuf, const char *szName)
+	bool CompileFromBuf_LogWarn(StructT && TargetStruct, const typename CompT::InT &SrcBuf, const char *szName)
 	{
 		try
 		{
@@ -234,7 +234,7 @@ template <class CompT, class StructT>
 		}
 	}
 template <class CompT, class StructT>
-	bool DecompileToBuf_Log(StructT &TargetStruct, typename CompT::OutT *pOut, const char *szName)
+	bool DecompileToBuf_Log(StructT && TargetStruct, typename CompT::OutT *pOut, const char *szName)
 	{
 		if(!pOut) return false;
 		try

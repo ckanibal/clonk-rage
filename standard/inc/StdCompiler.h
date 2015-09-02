@@ -59,7 +59,7 @@ public:
 	virtual void setRuntimeWritesAllowed(int32_t iChange) { }
 
 	// * Naming
-  // Provides extra data for the compiler so he can deal with reordered data. 
+  // Provides extra data for the compiler so he can deal with reordered data.
   // Note that sections stack and each section will get compiled only once.
   // StartSection won't fail if the naming isn't found while compiling. Name and
   // all value compiling functions will fail, though.
@@ -72,7 +72,7 @@ public:
 	// Note this will end the current naming, so no additional NameEnd() is needed.
   // Only used to maintain backwards compatibility, should not be used in new code.
   virtual bool FollowName(const char *szName)		{ NameEnd(); return Name(szName); }
-  
+
 	// Called when a named value omitted because of defaulting (compiler only)
 	// Returns whether the value has been handled
 	virtual bool Default(const char *szName)			{ return true; }
@@ -118,15 +118,15 @@ public:
   virtual void Byte(uint8_t &rByte)             = 0; // Needs seperator!
   virtual void Boolean(bool &rBool)             = 0;
   virtual void Character(char &rChar)           = 0; // Alphanumerical only!
-  
-  
+
+
   // Compile raw data (strings)
   enum RawCompileType
   {
     RCT_Escaped=0,// Any data allowed, no seperator needed (default)
     RCT_All,      // Printable characters only, must be last element in naming.
     RCT_Idtf,     // Alphanumerical characters or '_', seperator needed.
-		RCT_IdtfAllowEmpty, // Like RCT_Idtf, but empty strings are also allowed  
+		RCT_IdtfAllowEmpty, // Like RCT_Idtf, but empty strings are also allowed
     RCT_ID,       // Like RCT_Idtf (only used for special compilers that treat IDs differently)
   };
   // Note that string won't allow '\0' inside the buffer, even with escaped compiling!
@@ -158,7 +158,7 @@ public:
   void Value(bool &rBool)		 { Boolean(rBool); }
 
   // Compiling/Decompiling (may throw a data format exception!)
-  template <class T> inline void Compile(T &rStruct)
+  template <class T> inline void Compile(T && rStruct)
     {
 		assert(isCompiler());
 		DoCompilation(rStruct);
@@ -170,7 +170,7 @@ public:
     }
 
 protected:
-	
+
   // Compilation process
 	template <class T>
 		inline void DoCompilation(T &rStruct)
@@ -204,17 +204,17 @@ public:
 	class NotFoundException : public Exception
 	{
 		friend class StdCompiler;
-		NotFoundException(StdStrBuf Pos, StdStrBuf Msg) : Exception(Pos, Msg) { }		
+		NotFoundException(StdStrBuf Pos, StdStrBuf Msg) : Exception(Pos, Msg) { }
 	};
 	class EOFException : public Exception
 	{
 		friend class StdCompiler;
-		EOFException(StdStrBuf Pos, StdStrBuf Msg) : Exception(Pos, Msg)  { }		
+		EOFException(StdStrBuf Pos, StdStrBuf Msg) : Exception(Pos, Msg)  { }
 	};
 	class CorruptException : public Exception
 	{
 		friend class StdCompiler;
-		CorruptException(StdStrBuf Pos, StdStrBuf Msg) : Exception(Pos, Msg) { }		
+		CorruptException(StdStrBuf Pos, StdStrBuf Msg) : Exception(Pos, Msg) { }
 	};
 
 	// Throw helpers (might redirect)
@@ -277,16 +277,16 @@ private:
 	void *pWarnData;
 
 protected:
-	
+
 	// Standard seperator character
 	static char SeperatorToChar(Sep eSep);
 
 };
 
 // Standard compile funcs
-template <class T> 
+template <class T>
   inline void CompileFunc(T &rStruct, StdCompiler *pComp)
-  { 
+  {
 		// If the compiler doesn't like this line, you tried to compile
 		// something the compiler doesn't know how to handle.
 		// Possible reasons:
@@ -294,7 +294,7 @@ template <class T>
 		//    (you may add a specialization of this function, too)
 		// b) You are trying to compile a pointer. Use a PtrAdapt instead.
 		// c) You are trying to compile a simple value that has no
-		//    fixed representation (float, int). Use safe types instead.	
+		//    fixed representation (float, int). Use safe types instead.
 		rStruct.CompileFunc(pComp);
 	}
 
@@ -321,7 +321,7 @@ template <class T>
 
 // Helpers for buffer-based compiling (may throw a data format exception!)
 template <class CompT, class StructT>
-  void CompileFromBuf(StructT &TargetStruct, const typename CompT::InT &SrcBuf)
+  void CompileFromBuf(StructT && TargetStruct, const typename CompT::InT &SrcBuf)
   {
     CompT Compiler;
     Compiler.setInput(SrcBuf.getRef());
@@ -389,8 +389,8 @@ public:
 class StdCompilerBinWrite : public StdCompiler
 {
 public:
-	
-  // Result 
+
+  // Result
   typedef StdBuf OutT;
   inline OutT getOutput() { return Buf; }
 
@@ -430,9 +430,9 @@ class StdCompilerBinRead : public StdCompiler
 {
 public:
 
-  // Input 
+  // Input
   typedef StdBuf InT;
-  void setInput(InT &In) { Buf = In; }
+  void setInput(InT && In) { Buf = In; }
 
 	// Properties
   virtual bool isCompiler()                     { return true; }
@@ -501,7 +501,7 @@ protected:
 class StdCompilerINIWrite : public StdCompiler
 {
 public:
-  // Input 
+  // Input
   typedef StdStrBuf OutT;
   inline OutT getOutput() { return Buf; }
 
@@ -533,7 +533,7 @@ public:
   virtual void End();
 
 protected:
-  
+
   // Result
   StdStrBuf Buf;
 
@@ -562,13 +562,13 @@ protected:
 class StdCompilerINIRead : public StdCompiler
 {
 public:
-  
+
   StdCompilerINIRead();
   ~StdCompilerINIRead();
 
-  // Input 
+  // Input
   typedef StdStrBuf InT;
-  void setInput(InT &In) { Buf = In; }
+  void setInput(const InT &In) { Buf = In; }
 
   // Properties
   virtual bool isCompiler() { return true; }
@@ -607,7 +607,7 @@ public:
   virtual void End();
 
 protected:
-  
+
   // * Data
 
   // Name tree

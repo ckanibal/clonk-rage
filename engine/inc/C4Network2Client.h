@@ -110,7 +110,7 @@ public:
 	const char *getName()				const { return getCore().getName(); }
 	bool				isActivated()		const { return getCore().isActivated(); }
 	bool				isObserver()		const { return getCore().isObserver(); }
-	
+
 	int32_t			getAddrCnt()		const { return iAddrCnt; }
 	const C4Network2Address &getAddr(int32_t i) const { return Addr[i]; }
 
@@ -189,7 +189,7 @@ public:
 	bool BroadcastMsgToConnClients(const C4NetIOPacket &rPkt);
 	bool BroadcastMsgToClients(const C4NetIOPacket &rPkt);
 	bool SendMsgToHost(C4NetIOPacket rPkt);
-	bool SendMsgToClient(int32_t iClient, C4NetIOPacket &rPkt);
+	bool SendMsgToClient(int32_t iClient, C4NetIOPacket && rPkt);
 
 	// packet handling
 	void HandlePacket(char cStatus, const C4PacketBase *pBasePkt, C4Network2IOConnection *pConn);
@@ -230,4 +230,3 @@ public:
 };
 
 #endif
-

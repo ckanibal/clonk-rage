@@ -36,7 +36,7 @@ public:
     if(fCopy)
       Copy(Buf2);
     else if(!Buf2.isRef())
-      Take(Buf2);
+      Take(std::move(Buf2));
     else
       Ref(Buf2);
   }
@@ -309,9 +309,9 @@ public:
   bool operator != (const StdBuf &Buf2) const { return ! operator == (Buf2); }
 
   // Set (as constructor: take if possible)
-  StdBuf &operator = (StdBuf &Buf2)
+  StdBuf &operator = (StdBuf && Buf2)
   {
-    if(Buf2.isRef()) Ref(Buf2); else Take(Buf2);
+    if(Buf2.isRef()) Ref(Buf2); else Take(std::move(Buf2));
     return *this;
   }
 

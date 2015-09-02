@@ -6,7 +6,9 @@
 
 #include <StdSync.h>
 
-#include <openssl/sha.h>
+#include <mbedtls/sha1.h>
+#define SHA_DIGEST_LENGTH 	20
+
 
 const uint32_t C4NetResChunkSize = 10U * 1024U;
 
@@ -137,10 +139,10 @@ public:
 	int32_t getPresentChunkCnt()	const { return iPresentChunkCnt; }
 	int32_t getPresentPercent()		const { return iPresentChunkCnt * 100 / iChunkCnt; }
 	bool isComplete()					const { return iPresentChunkCnt == iChunkCnt; }
-	
+
 	void SetIncomplete(int32_t iChunkCnt);
 	void SetComplete(int32_t iChunkCnt);
-	
+
 	void AddChunk(int32_t iChunk);
 	void AddChunkRange(int32_t iStart, int32_t iLength);
 	void Merge(const C4Network2ResChunkData &Data2);
@@ -198,7 +200,7 @@ protected:
   CStdCSec FileCSec;
 	char szFile[_MAX_PATH + 1], szStandalone[_MAX_PATH + 1];
 	bool fTempFile, fStandaloneFailed;
-	
+
 	// references
 	long iRefCnt;
 	bool fRemoved;
@@ -352,7 +354,7 @@ public:
 	C4Network2Res::Ref AddByGroup(C4Group *pGrp, bool fTemp, C4Network2ResType eType, int32_t iResID = -1, const char *szResName = NULL, bool fAllowUnloadable = false); // by both
 	C4Network2Res::Ref AddByCore(const C4Network2ResCore &Core, bool fLoad = true); // by main thread
 	C4Network2Res::Ref AddLoad(const C4Network2ResCore &Core); // by main thread
-	
+
 	void RemoveAtClient(int32_t iClientID); // by main thread
 	void Clear(); // by main thread
 

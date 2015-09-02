@@ -9,7 +9,7 @@
 #include <C4Wrappers.h>
 #endif
 
-#ifndef _WIN32
+#ifdef USE_X11
 #include <X11/Xlib.h>
 #endif
 
@@ -20,7 +20,7 @@
 
 #include <SDL/SDL_keysym.h>
 
-namespace 
+namespace
 {
     std::string getKeyName(C4KeyCode k)
     {
@@ -29,11 +29,11 @@ namespace
         if (result == "unknown key")
             result = FormatString("\\x%x", (DWORD) k).getData();
 		// some special cases
-		if (result == "world 0") result = "´";
-		if (result == "world 1") result = "ß";
-		if (result == "world 2") result = "Ü";
-		if (result == "world 3") result = "Ä";
-		if (result == "world 4") result = "Ö";
+		if (result == "world 0") result = "ï¿½";
+		if (result == "world 1") result = "ï¿½";
+		if (result == "world 2") result = "ï¿½";
+		if (result == "world 3") result = "ï¿½";
+		if (result == "world 4") result = "ï¿½";
 		// capitalize first letter
 		result[0] = toupper(result[0]);
 		// return key name
@@ -246,17 +246,17 @@ const C4KeyCodeMapEntry KeyCodeMap [] = {
 	{ VK_LAUNCH_APP1         , "LAUNCH_APP1"          , NULL },
 	{ VK_LAUNCH_APP2         , "LAUNCH_APP2"          , NULL },
 
-	{ VK_OEM_1          , "OEM Ü"    , "Ü" }, // German hax
+	{ VK_OEM_1          , "OEM ï¿½"    , "ï¿½" }, // German hax
 	{ VK_OEM_PLUS       , "OEM +"		, "+" },
 	{ VK_OEM_COMMA      , "OEM ,"		, "," },
 	{ VK_OEM_MINUS      , "OEM -"		, "-" },
 	{ VK_OEM_PERIOD     , "OEM ."		, "." },
 	{ VK_OEM_2          , "OEM 2"    , "2" },
-	{ VK_OEM_3          , "OEM Ö"    , "Ö" }, // German hax
+	{ VK_OEM_3          , "OEM ï¿½"    , "ï¿½" }, // German hax
 	{ VK_OEM_4          , "OEM 4"    , "4" },
 	{ VK_OEM_5          , "OEM 5"    , "5" },
 	{ VK_OEM_6          , "OEM 6"    , "6" },
-	{ VK_OEM_7          , "OEM Ä"    , "Ä" }, // German hax
+	{ VK_OEM_7          , "OEM ï¿½"    , "ï¿½" }, // German hax
 	{ VK_OEM_8          , "OEM 8"		, "8" },
 	{ VK_OEM_AX         , "AX"			, "AX" },
 	{ VK_OEM_102        , "< > |"    , "<" }, // German hax
@@ -401,7 +401,7 @@ StdStrBuf C4KeyCodeEx::KeyCode2String(C4KeyCode wCode, bool fHumanReadable, bool
 
 StdStrBuf C4KeyCodeEx::ToString(bool fHumanReadable, bool fShort)
 	{
-	static StdStrBuf sResult; 
+	static StdStrBuf sResult;
 	sResult.Clear();
 	// Add shift
 	for (DWORD dwShiftCheck = KEYS_First; dwShiftCheck <= KEYS_Max; dwShiftCheck <<= 1)
@@ -764,7 +764,7 @@ bool C4KeyboardInput::DoInput(const C4KeyCodeEx &InKey, C4KeyEventType InEvent, 
 		// get priority to exec
 		unsigned int uiExecPrio = C4CustomKey::PRIO_None, uiCurr;
 		for (j = 0; j < iKeyRangeCnt; ++j)
-			for (i = KeyRanges[j].first; i != KeyRanges[j].second; ++i) 
+			for (i = KeyRanges[j].first; i != KeyRanges[j].second; ++i)
 				{
 				uiCurr = i->second->GetPriority();
 				if (uiCurr > uiExecPrio && uiCurr < uiLastPrio) uiExecPrio = uiCurr;
@@ -773,7 +773,7 @@ bool C4KeyboardInput::DoInput(const C4KeyCodeEx &InKey, C4KeyEventType InEvent, 
 		if (uiExecPrio == C4CustomKey::PRIO_None) break;
 		// exec all of this priority
 		for (j = 0; j < iKeyRangeCnt; ++j)
-			for (i = KeyRanges[j].first; i != KeyRanges[j].second; ++i) 
+			for (i = KeyRanges[j].first; i != KeyRanges[j].second; ++i)
 				{
 				C4CustomKey *pKey = i->second;
 				assert(pKey);
@@ -797,8 +797,8 @@ void C4KeyboardInput::CompileFunc(StdCompiler *pComp)
 	// compile all keys that are already defined
 	// no definition of new keys with current compiler...
 	pComp->Name("Keys");
-	try 
-		{ 
+	try
+		{
 		for (KeyNameMap::const_iterator i = KeysByName.begin(); i != KeysByName.end(); ++i)
 			{
 			// naming done in C4CustomKey, because default is determined by key only
@@ -812,9 +812,9 @@ void C4KeyboardInput::CompileFunc(StdCompiler *pComp)
 				}
 			}
     }
-	catch(StdCompiler::Exception *pEx) 
-		{ 
-		pComp->NameEnd(true); 
+	catch(StdCompiler::Exception *pEx)
+		{
+		pComp->NameEnd(true);
 		throw pEx;
 		}
 	pComp->NameEnd();
