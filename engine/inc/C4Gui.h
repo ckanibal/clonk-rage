@@ -46,7 +46,7 @@ class C4GroupSet;
 #define C4GUI_ErrorFontClr       0xffff1f1f
 #define C4GUI_ProgressBarFontClr 0xffffffff
 #define C4GUI_ContextFontClr     0xffffffff
-#define C4GUI_GfxTabCaptActiveClr 0xff000000 
+#define C4GUI_GfxTabCaptActiveClr 0xff000000
 #define C4GUI_GfxTabCaptInactiveClr 0xff000000
 #define C4GUI_HyperlinkFontClr   0xff8080ff
 
@@ -203,7 +203,7 @@ namespace C4GUI {
 	// inline
 	class MenuHandler; class ContextHandler;
 
-	
+
 	// expand text like "Te&xt" to "Te<c ffff00>x</c>t"
 	bool ExpandHotkeyMarkup(StdStrBuf &sText, char &rcHotkey);
 
@@ -653,7 +653,7 @@ namespace C4GUI {
 		Ico_Lobby					 = 31,
 		Ico_RuntimeJoin		 = 32,
 		Ico_Exit				   = 33,
-		Ico_Close					 = 34,	
+		Ico_Close					 = 34,
 		Ico_Rank1					 = 35,
 		Ico_Rank2					 = 36,
 		Ico_Rank3          = 37,
@@ -849,7 +849,7 @@ namespace C4GUI {
 				{
 				Window::ElementSizeChanged(pOfElement);
 				if (pParent) pParent->ElementSizeChanged(pOfElement);
-				} 
+				}
 			virtual void ElementPosChanged(Element *pOfElement)  // called when an element position is changed
 				{
 				Window::ElementPosChanged(pOfElement);
@@ -1070,7 +1070,7 @@ namespace C4GUI {
 			FLOAT_RECT rcfDrawBounds; // drawing bounds
 
 			// title drawing parameters
-			int32_t iTxtOffX, iTxtOffY; 
+			int32_t iTxtOffX, iTxtOffY;
 			uint8_t byTxtAlign;         // ALeft, ACenter or ARight
 			CStdFont *pFont; float fFontZoom;
 
@@ -1618,7 +1618,7 @@ namespace C4GUI {
 			virtual void ElementPosChanged(Element *pOfElement);  // called when an element position is changed
 			virtual void UpdateSize();
 
-			virtual Control *IsFocusElement() { return false; }; // no focus element for now, because there's nothing to do (2do: scroll?)
+			virtual Control *IsFocusElement() { return nullptr; }; // no focus element for now, because there's nothing to do (2do: scroll?)
 
 		public:
 			TextWindow(C4Rect &rtBounds, size_t iPicWdt=0, size_t iPicHgt=0, size_t iPicPadding=0, size_t iMaxLines=100, size_t iMaxTextLen=4096, const char *szIndentChars="    ", bool fAutoGrow=false, const C4Facet *pOverlayPic=NULL, int iOverlayBorder=0, bool fMarkup=false); // ctor
@@ -1684,7 +1684,7 @@ namespace C4GUI {
 					Icons icoIcon;      // icon to be drawn left of text
 					MenuHandler *pMenuHandler; // callback when item is selected
 					ContextHandler *pSubmenuHandler; // callback when submenu is opened
-					
+
 				protected:
 					virtual void DrawElement(C4FacetEx &cgo); // draw element
 
@@ -1778,7 +1778,7 @@ namespace C4GUI {
 			C4KeyBinding *pKeyContext;
 			int32_t iOpenMenu; // associated menu (used to flag button down)
 			bool fMouseOver;
-			
+
 		public:
 			ContextButton(C4Rect &rtBounds); // ctor
 			ContextButton(Element *pForEl, bool fAdd, int32_t iHIndent=4, int32_t iVIndent=4);  // ctor creating at topright pos of element
@@ -1800,7 +1800,7 @@ namespace C4GUI {
 		};
 
 
-	// combo box filler 
+	// combo box filler
 	// should be ComboBox::FillCB; but nested class will cause internal compiler faults
 	class ComboBox_FillCB
 		{
@@ -1867,7 +1867,7 @@ namespace C4GUI {
 			CStdFont *pUseFont;                       // font used to draw this control
 			uint32_t dwFontClr, dwBGClr, dwBorderClr; // colors used to draw this control
 			C4Facet *pFctSideArrow;                   // arrow gfx used to start combo-dropdown
-			
+
 		private:
 			bool DoDropdown(); // open dropdown menu (context menu)
 			bool KeyDropDown() { return DoDropdown(); }
@@ -1930,7 +1930,7 @@ namespace C4GUI {
 
 			FrameDecoration() : iRefCount(0) { Clear(); }
 			void Clear(); // zero data
-				
+
 			// create from ActMap and graphics of a definition (does some script callbacks to get parameters)
 			bool SetByDef(C4ID idSourceDef);
 			bool UpdateGfx(); // update Surface, e.g. after def reload
@@ -2080,7 +2080,7 @@ namespace C4GUI {
 			virtual void OnIdle() {}            // idle proc in DoModal
 
 			virtual ContextHandler *GetContextHandler() // always use own context handler only (no fall-through to screen)
-				{ return pContextHandler; } 
+				{ return pContextHandler; }
 #ifdef _WIN32
 			static bool RegisterWindowClass(HINSTANCE hInst); // registers WNDCLASS for console mode dialogs
 #endif
@@ -2243,7 +2243,7 @@ namespace C4GUI {
 			typedef void (T::*CBFunc)(const StdStrBuf &);
 		private:
 			T *pTarget;
-			CBFunc pCBFunc; 
+			CBFunc pCBFunc;
 		public:
 			InputCallback(T *pTarget, CBFunc pCBFunc) : pTarget(pTarget), pCBFunc(pCBFunc) {}
 
@@ -2632,7 +2632,7 @@ namespace C4GUI {
 			C4Rect &GetCentered(int32_t iWdt, int32_t iHgt) { GetCentered(iWdt, iHgt, rcTemp); return rcTemp; } // get centered subregion within area (w/o size checks)
 
 			C4Rect &GetGridCell(int32_t iSectX, int32_t iSectXMax, int32_t iSectY, int32_t iSectYMax, int32_t iSectSizeX=-1, int32_t iSectSizeY=-1, bool fCenterPos=false, int32_t iSectNumX=1, int32_t iSectNumY=1);
-			
+
 			int32_t GetWidth() const { return rcClientArea.Wdt; }
 			int32_t GetHeight() const { return rcClientArea.Hgt; }
 			int32_t GetHMargin() const { return iMarginX; }

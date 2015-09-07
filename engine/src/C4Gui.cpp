@@ -525,7 +525,7 @@ Screen::Screen(int32_t tx, int32_t ty, int32_t twdt, int32_t thgt) : Window(), M
 	// set static var
 	pScreen = this;
 	// GamePad
-	if (Application.pGamePadControl && Config.Controls.GamepadGuiControl) 
+	if (Application.pGamePadControl && Config.Controls.GamepadGuiControl)
 		pGamePadOpener = new C4GamePadOpener(0);
 	}
 
@@ -940,7 +940,7 @@ void Screen::DrawToolTip(const char *szTip, C4FacetEx &cgo, int32_t x, int32_t y
 		int32_t tX, tY;
 		if (y < cgo.Y+cgo.TargetY+tHgt+5) tY = Min<int32_t>(y+5, cgo.TargetY+cgo.Hgt-tHgt); else tY = y-tHgt-5;
 		tX = BoundBy<int32_t>(x-tWdt/2, cgo.TargetX+cgo.X, cgo.TargetX+cgo.Wdt-tWdt);
-		// draw tooltip box 
+		// draw tooltip box
 		lpDDraw->DrawBoxDw(cgo.Surface, tX,tY,tX+tWdt-1,tY+tHgt-2, C4GUI_ToolTipBGColor);
 		lpDDraw->DrawFrameDw(cgo.Surface, tX,tY,tX+tWdt-1,tY+tHgt-1, C4GUI_ToolTipFrameColor);
 		// draw tooltip
@@ -964,7 +964,7 @@ Dialog *Screen::GetFullscreenDialog(bool fIncludeFading)
 				if (pDlg->IsFullscreenDialog())
 					if (fIncludeFading || !pDlg->IsFading())
 						return pDlg;
-	return false;
+	return nullptr;
 	}
 
 void Screen::UpdateGamepadGUIControlEnabled()

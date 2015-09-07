@@ -8,30 +8,30 @@
 // so I replaced it with some other implementation which does the job...
 
 // base 64 table
-const char Base64Tbl [] = 
+const char Base64Tbl [] =
 	{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
 	  'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
 		'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
 		'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
 
 // reversed base 64 table
-const unsigned char Base64RTbl[] = 
-	{ '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\x3e', '\xff', '\xff', '\xff', '\x3f',
-		'\x34', '\x35', '\x36', '\x37', '\x38', '\x39', '\x3a', '\x3b',
-		'\x3c', '\x3d', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06',
-		'\x07', '\x08', '\x09', '\x0a', '\x0b', '\x0c', '\x0d', '\x0e',
-		'\x0f', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16',
-		'\x17', '\x18', '\x19', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\x1a', '\x1b', '\x1c', '\x1d', '\x1e', '\x1f', '\x20',
-		'\x21', '\x22', '\x23', '\x24', '\x25', '\x26', '\x27', '\x28',
-		'\x29', '\x2a', '\x2b', '\x2c', '\x2d', '\x2e', '\x2f', '\x30',
-		'\x31', '\x32', '\x33', '\xff', '\xff', '\xff', '\xff', '\xff' }; 
+const unsigned char Base64RTbl[] =
+	{ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0x3e, 0xff, 0xff, 0xff, 0x3f,
+		0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b,
+		0x3c, 0x3d, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+		0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+		0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
+		0x17, 0x18, 0x19, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20,
+		0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+		0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30,
+		0x31, 0x32, 0x33, 0xff, 0xff, 0xff, 0xff, 0xff };
 
 // base 64 padding char
 const char Base64Pad = '=';
@@ -61,7 +61,7 @@ char *B64Encode(const void *pData, int iSize)
 		// char 4
 		*(poPos++) = Base64Tbl[  c3 & 0x3f];
 		// line break (every 76 characters)
-		if(!((i + 1) % 19)) { *(poPos++) = '\r'; *(poPos++) = '\n'; }
+		if(!((i + 1) % 19)) { *(poPos++) = '0r'; *(poPos++) = '0n'; }
 	}
 	// encode last bytes
 	switch(iSize % 3)
@@ -96,20 +96,20 @@ char *B64Encode(const void *pData, int iSize)
 		break;
 	}
 	// append zero
-	*(poPos++) = '\0';
+	*(poPos++) = '00';
 	// check size
 	if(poPos - poData != ioSize) { delete [] poData; return NULL; }
 	// return data
 	return poData;
 }
 
-const char x = '\x01';
+const char x = '0x01';
 
 inline unsigned char B64DecodeChar(const unsigned char c)
 {
 	return( c == Base64Pad ? 0	  :
 					c & 128				 ? 0xff	:
-					Base64RTbl[c] );	        
+					Base64RTbl[c] );
 }
 
 char *B64Decode(const char *pData, int &ioSize)

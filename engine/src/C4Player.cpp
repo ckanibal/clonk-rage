@@ -823,38 +823,38 @@ C4Object *C4Player::Buy(C4ID id, BOOL fShowErrors, int32_t iForPlr, C4Object *pB
 	// Base owner eliminated
 	if (Eliminated)
 		{
-		if (!fShowErrors) return FALSE;
+		if (!fShowErrors) return NULL;
 		StartSoundEffect("Error",false,100,pBuyObj);
-		GameMsgPlayer(FormatString(LoadResStr("IDS_PLR_ELIMINATED"),GetName()).getData(),Number); return FALSE;
+		GameMsgPlayer(FormatString(LoadResStr("IDS_PLR_ELIMINATED"),GetName()).getData(),Number); return NULL;
 		}
 	// Get def (base owner's homebase material)
 	iAvailable = HomeBaseMaterial.GetIDCount(id);
-	if (!(pDef=C4Id2Def(id))) return FALSE;
+	if (!(pDef=C4Id2Def(id))) return NULL;
 	// Object not available
-	if (iAvailable<=0) return FALSE;
+	if (iAvailable<=0) return NULL;
 	// get value
 	int32_t iValue = pDef->GetValue(pBuyObj, Number);
 	// Not enough wealth (base owner's wealth)
 	if (iValue>Wealth) 
 		{
-		if (!fShowErrors) return FALSE;
+		if (!fShowErrors) return NULL;
 		GameMsgPlayer(LoadResStr("IDS_PLR_NOWEALTH"),Number);
-		StartSoundEffect("Error",false,100,pBuyObj); return FALSE;
+		StartSoundEffect("Error",false,100,pBuyObj); return NULL;
 		}
 	// Decrease homebase material count
-	if (!HomeBaseMaterial.DecreaseIDCount(id,FALSE)) return FALSE;
+	if (!HomeBaseMaterial.DecreaseIDCount(id,FALSE)) return NULL;
 	if (Game.Rules & C4RULE_TeamHombase) SyncHomebaseMaterialToTeam();
 	// Reduce wealth
 	DoWealth(-iValue);
 	// Create object (for player)
-	if (!(pThing=Game.CreateObject(id,pBuyObj,iForPlr))) return FALSE;
+	if (!(pThing=Game.CreateObject(id,pBuyObj,iForPlr))) return NULL;
 	// Make crew member
 	if (pDef->CrewMember) if (ValidPlr(iForPlr))
 		Game.Players.Get(iForPlr)->MakeCrewMember(pThing);
 	// success
 	C4AulParSet parset (C4VInt(Number), C4VObj(pBuyObj));
 	pThing->Call(PSF_Purchase, &parset);
-	if (!pThing->Status) return FALSE;
+	if (!pThing->Status) return NULL;
 	return pThing;
 	}
 

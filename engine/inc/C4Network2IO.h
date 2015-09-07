@@ -36,7 +36,7 @@ protected:
 
 	// main traffic net i/o classes
 	C4NetIO *pNetIO_TCP, *pNetIO_UDP;
-	
+
 	// discovery net i/o
 	class C4Network2IODiscover *pNetIODiscover;
 
@@ -71,7 +71,7 @@ protected:
 
 	// timer & ping
 	unsigned long iLastExecute, iLastPing;
-    
+
   // statistics
   unsigned long iLastStatistic;
   int iTCPIRate, iTCPORate, iTCPBCRate,
@@ -81,7 +81,7 @@ protected:
 	C4NetIO::addr_t PuncherAddr;
 
 public:
-  
+
   bool hasTCP() const { return !! pNetIO_TCP; }
   bool hasUDP() const { return !! pNetIO_UDP; }
 
@@ -99,7 +99,7 @@ public:
 	void SetAcceptMode(bool fAcceptAll); // by main thread
 	void SetExclusiveConnMode(bool fExclusiveConn); // by main thread
 	int getConnectionCount(); // by main thread
-	
+
 	void ClearAutoAccept(); // by main thread
 	void AddAutoAccept(const C4ClientCore &CCore); // by main thread
 	void RemoveAutoAccept(const C4ClientCore &CCore); // by main thread
@@ -111,7 +111,7 @@ public:
 	void BeginBroadcast(bool fSelectAll = false); // by both
 	void EndBroadcast(); // by both
 	bool Broadcast(const C4NetIOPacket &rPkt); // by both
-	
+
 	// sending helpers
 	bool SendMsgToClient(C4NetIOPacket &rPkt, int iClient); // by both
 	bool BroadcastMsg(const C4NetIOPacket &rPkt); // by both
@@ -123,7 +123,7 @@ public:
 	C4NetIO *getNetIO(C4Network2IOProtocol eProt); // by both
 	const char *getNetIOName(C4NetIO *pNetIO);
 	C4Network2IOProtocol getNetIOProt(C4NetIO *pNetIO);
-	
+
   // statistics
   int getProtIRate(C4Network2IOProtocol eProt) const { return eProt == P_TCP ? iTCPIRate : iUDPIRate; }
   int getProtORate(C4Network2IOProtocol eProt) const { return eProt == P_TCP ? iTCPORate : iUDPORate; }
@@ -197,12 +197,12 @@ public:
 	~C4Network2IOConnection();
 
 protected:
-	
+
 	// connection data
 	class C4NetIO *pNetClass;
 	C4Network2IOProtocol eProt;
 	C4NetIO::addr_t PeerAddr, ConnectAddr;
-	
+
 	// status data
 	C4Network2IOConnStatus Status;
 	uint32_t iID, iRemoteID;								// connection ID for this and the remote client
@@ -268,7 +268,7 @@ public:
 	bool			isAutoAccepted()const { return fAutoAccept; }
 	bool			isBroadcastTarget() const { return fBroadcastTarget; }
 	bool			isFailed()			const { return Status == CS_ConnectFail; }
-	
+
 protected:
 	// called by C4Network2IO only
 	void Set(C4NetIO *pnNetClass, C4Network2IOProtocol eProt, const C4NetIO::addr_t &nPeerAddr, const C4NetIO::addr_t &nConnectAddr, C4Network2IOConnStatus nStatus, const char *szPassword, uint32_t iID);
@@ -341,7 +341,7 @@ public:
 	uint32_t getConnID() const { return iConnID; }
 	const C4ClientCore &getCCore() const { return CCore; }
 	const char *getPassword() const { return Password.getData(); }
-	
+
 	virtual void CompileFunc(StdCompiler *pComp);
 };
 
@@ -367,26 +367,26 @@ class C4PacketFwd : public C4PacketBase
 {
 public:
 	C4PacketFwd();
-	C4PacketFwd(const C4NetIOPacket &Pkt);
+	C4PacketFwd(const StdBuf &Pkt);
 
 protected:
 	bool fNegativeList;
 	int32_t iClients[C4NetMaxClients];
 	int32_t iClientCnt;
-	C4NetIOPacket Data;
+	StdCopyBuf Data;
 
 public:
-	const C4NetIOPacket &getData() const { return Data; }
+	const StdCopyBuf &getData() const { return Data; }
 	bool isNegativeList() const { return fNegativeList; }
 	int32_t	getClient(int32_t i)	const { return iClients[i]; }
 	int32_t	getClientCnt()		const { return iClientCnt; }
-	
+
 	bool DoFwdTo(int32_t iClient) const;
 
-	void SetData(const C4NetIOPacket &Pkt);
+	void SetData(const StdBuf &Pkt);
 	void SetListType(bool fnNegativeList);
 	void AddClient(int32_t iClient);
-	
+
 	virtual void CompileFunc(StdCompiler *pComp);
 };
 

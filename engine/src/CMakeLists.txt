@@ -172,4 +172,4 @@ elseif(UNIX)
 endif()
 
 add_executable(engine ${ENGINE_SOURCES})
-target_link_libraries(engine standard)
+target_link_libraries(engine ${LIBS} standard)

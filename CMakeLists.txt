@@ -6,6 +6,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${CMAKE_SOURCE_DIR}/lib")
 set(LIBRARY_DIR "${CMAKE_SOURCE_DIR}/lib")
 
+# set target properties
+set_property(GLOBAL PROPERTY CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 11)
+
 if(WIN32)
 elseif(UNIX OR APPLE)
   add_definitions(-DHAVE_STDINT_H)
@@ -23,8 +27,10 @@ elseif(APPLE)
   add_definitions(-DUSE_SDL_MAINLOOP)
   add_definitions(-DHAVE_SDL)
 
+  set(SDL2_ROOT "${LIBRARY_DIR}/SDL/")
   find_package(SDL REQUIRED)
   include_directories(${SDL_INCLUDE_DIR})
+  list(APPEND LIBS ${SDL_LIBRARIES})
 elseif(UNIX)
   MESSAGE( STATUS "Building for UNIX ..." )
 endif()
@@ -38,6 +44,3 @@ find_package(MBED_TLS REQUIRED)
 
 # include projects
 subdirs(engine standard)
-
-# set target properties
-set_property(GLOBAL PROPERTY CXX_STANDARD 11)

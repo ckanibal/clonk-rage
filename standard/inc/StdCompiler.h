@@ -432,7 +432,7 @@ public:
 
   // Input
   typedef StdBuf InT;
-  void setInput(InT && In) { Buf = In; }
+  void setInput(InT && In) { Buf = std::move(In); }
 
 	// Properties
   virtual bool isCompiler()                     { return true; }

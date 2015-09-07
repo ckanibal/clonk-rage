@@ -1,5 +1,5 @@
 /* Copyright (C) 1998-2000  Matthes Bender  RedWolf Design */
-/* Linux conversion by Günther Brammer, 2005 */
+/* Linux conversion by Gï¿½nther Brammer, 2005 */
 
 /* Lots of file helpers */
 
@@ -29,14 +29,14 @@
 
 // Return pointer to position after last backslash.
 
-char *GetFilename(char *szPath) 
+char *GetFilename(char *szPath)
   {
 	if (!szPath) return NULL;
 	char *pPos,*pFilename=szPath;
 	for (pPos=szPath; *pPos; pPos++) if (*pPos==DirectorySeparator || *pPos=='/') pFilename = pPos+1;
 	return pFilename;
   }
-const char *GetFilename(const char *szPath) 
+const char *GetFilename(const char *szPath)
   {
 	if (!szPath) return NULL;
 	const char *pPos,*pFilename=szPath;
@@ -180,7 +180,7 @@ bool GetParentPath(const char *szFilename, char *szBuffer)
 	#endif
 	// Truncate path
 	return TruncatePath(szBuffer);
-	}	
+	}
 
 bool GetParentPath(const char *szFilename, StdStrBuf *outBuf)
 	{
@@ -309,12 +309,12 @@ void RemoveExtension(StdStrBuf *psFileName)
 		}
 	}
 
-// Enforce indexed extension until item does not exist. 
+// Enforce indexed extension until item does not exist.
 
 void MakeTempFilename(char *szFilename)
   {
   DefaultExtension(szFilename,"tmp");
-  char *fn_ext=GetExtension(szFilename); 
+  char *fn_ext=GetExtension(szFilename);
   int cnum=-1;
   do
     {
@@ -329,7 +329,7 @@ void MakeTempFilename(StdStrBuf *sFilename)
 	assert(sFilename);
 	if (!sFilename->getLength()) sFilename->Copy("temp.tmp");
 	EnforceExtension(sFilename, "tmp");
-  char *fn_ext=GetExtension(sFilename->getMData()); 
+  char *fn_ext=GetExtension(sFilename->getMData());
   int cnum=-1;
   do
     {
@@ -381,7 +381,7 @@ bool WildcardMatch(const char *szWildcard, const char *szString)
   return !*pWild && !*pPos;
   }
 
-#define SStripChars "!\"§%&/=?+*#:;<>\\."
+#define SStripChars "!\"Â§%&/=?+*#:;<>\\."
 // create a valid file name from some title
 void MakeFilenameFromTitle(char *szTitle)
 	{
@@ -465,7 +465,7 @@ bool CopyFile(const char *szSource, const char *szTarget, bool FailIfExists)
 	{
 	int fds = open (szSource, O_RDONLY);
 	if (!fds) return false;
-	struct stat info; fstat(fds, &info); 
+	struct stat info; fstat(fds, &info);
 	int fdt = open (szTarget, O_WRONLY | O_CREAT | (FailIfExists? O_EXCL : O_TRUNC), info.st_mode);
 	if (!fdt)
 		{
@@ -564,7 +564,7 @@ bool DirectoryExists(const char *szFilename)
 	if (fdt.attrib & _A_SUBDIR) return true;
 #else
 	struct stat stStats;
-	if (stat(szFilename,&stStats)!=0) return 0;	
+	if (stat(szFilename,&stStats)!=0) return 0;
 	return (S_ISDIR(stStats.st_mode));
 #endif
 	return false;
@@ -575,7 +575,7 @@ bool CopyDirectory(const char *szSource, const char *szTarget, bool fResetAttrib
 	if (!szSource || !szTarget) return false;
 	if (!DirectoryExists(szSource)) return false;
 	// Do not process system navigation directories
-	if (SEqual(GetFilename(szSource),".") 
+	if (SEqual(GetFilename(szSource),".")
 		|| SEqual(GetFilename(szSource),".."))
 		return true;
 	// Overwrite target
@@ -587,7 +587,7 @@ bool CopyDirectory(const char *szSource, const char *szTarget, bool fResetAttrib
 	if (_mkdir(szTarget)!=0) return false;
 	// Copy contents to target directory
 	char contents[_MAX_PATH+1];
-	SCopy(szSource,contents); AppendBackslash(contents); 
+	SCopy(szSource,contents); AppendBackslash(contents);
 	SAppend("*",contents);
 	_finddata_t fdt; int hfdt;
 	if ( (hfdt=_findfirst(contents,&fdt)) > -1 ) {
@@ -608,7 +608,7 @@ bool CopyDirectory(const char *szSource, const char *szTarget, bool fResetAttrib
 	while ((ent = readdir(d))) {
 		SCopy(szSource,itemsource); AppendBackslash(itemsource); SAppend(ent->d_name,itemsource);
 		SCopy(szTarget,itemtarget); AppendBackslash(itemtarget); SAppend(ent->d_name,itemtarget);
-		if (!CopyItem(itemsource,itemtarget, fResetAttributes)) status=false;		
+		if (!CopyItem(itemsource,itemtarget, fResetAttributes)) status=false;
 	}
 	closedir(d);
 	#endif
@@ -617,7 +617,7 @@ bool CopyDirectory(const char *szSource, const char *szTarget, bool fResetAttrib
 
 bool EraseDirectory(const char *szDirName) {
 	// Do not process system navigation directories
-	if (SEqual(GetFilename(szDirName),".") 
+	if (SEqual(GetFilename(szDirName),".")
 		|| SEqual(GetFilename(szDirName),".."))
 		return true;
 	char path[_MAX_PATH+1];
@@ -694,7 +694,7 @@ bool CopyItem(const char *szSource, const char *szTarget, bool fResetAttributes)
 	// Check for identical source and target
 	if (ItemIdentical(szSource,szTarget)) return true;
 	// Copy directory
-	if (DirectoryExists(szSource)) 
+	if (DirectoryExists(szSource))
 		return CopyDirectory(szSource,szTarget,fResetAttributes);
 	// Copy file
 	if (!CopyFile(szSource,szTarget,false)) return false;
@@ -822,7 +822,7 @@ DirectoryIterator& DirectoryIterator::operator++() {
 			return operator++();
 		SCopy(ent->d_name,GetFilename(filename));
 	} else {
-		filename[0] = 0;		
+		filename[0] = 0;
 	}
 	return *this;
 }
@@ -831,7 +831,7 @@ DirectoryIterator::~DirectoryIterator () {
 	if (d) closedir(d);
 }
 #endif
-const char * DirectoryIterator::operator*() const { return filename[0] ? filename : false; }
+const char * DirectoryIterator::operator*() const { return filename[0] ? filename : nullptr; }
 void DirectoryIterator::operator++(int) { operator++(); }
 
 int ForEachFile(const char *szDirName, bool (*fnCallback)(const char *)) {
@@ -875,8 +875,8 @@ int ForEachFile(const char *szDirName, bool (*fnCallback)(const char *)) {
 /*
 bool LocateInFile(FILE *file, char *index, BYTE wrap, BYTE lbeg)
   {
-  int fchr,needok,idxcnt=0,loops=0;        
-  BYTE exok=0,islbeg=1;                   
+  int fchr,needok,idxcnt=0,loops=0;
+  BYTE exok=0,islbeg=1;
   if (!file || !index) return 0;
   needok=SLen(index);
   if (!file) return 0;
@@ -903,8 +903,8 @@ bool LocateInFile(FILE *file, char *index, BYTE wrap, BYTE lbeg)
 
 // Reads the next line from the file. Returns zero if EOF has been encountered.
 */
-bool ReadFileLine(FILE *fhnd, char *tobuf, int maxlen) 
-  {			  			       
+bool ReadFileLine(FILE *fhnd, char *tobuf, int maxlen)
+  {
   int cread;
   char inc;
   if (!fhnd || !tobuf) return 0;

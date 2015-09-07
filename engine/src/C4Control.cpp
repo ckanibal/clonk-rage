@@ -20,7 +20,7 @@
 C4ControlPacket::C4ControlPacket()
 	: iByClient(Game.Control.ClientID())
 {
-	
+
 }
 
 C4ControlPacket::~C4ControlPacket()
@@ -55,7 +55,7 @@ C4Control::~C4Control()
 {
 	Clear();
 }
-  
+
 void C4Control::Clear()
 {
 	Pkts.Clear();
@@ -120,7 +120,7 @@ void C4ControlSet::Execute() const
 {
 	switch(eValType)
 	{
-	
+
 	case C4CVT_ControlRate: // adjust control rate
 		// host only
 		if(!HostControl()) break;
@@ -135,7 +135,7 @@ void C4ControlSet::Execute() const
 		sprintf(OSTR,LoadResStr("IDS_NET_CONTROLRATE"),Game.Control.ControlRate,Game.FrameCounter);
 		Game.GraphicsSystem.FlashMessage(OSTR);
 		break;
-	
+
 	case C4CVT_AllowDebug: // allow debug mode?
 	{
 		// host only
@@ -153,7 +153,7 @@ void C4ControlSet::Execute() const
 		break;
 	}
 		break;
-	
+
 	case C4CVT_MaxPlayer:
 		// host only
 		if(!HostControl()) break;
@@ -272,7 +272,7 @@ void C4ControlScript::Execute() const
 		{
 			C4Network2Client *pClient = NULL;
 			if(Game.Network.isEnabled())
-				pClient = Game.Network.Clients.GetClientByID(iByClient);			
+				pClient = Game.Network.Clients.GetClientByID(iByClient);
 			if(pClient)
 				LogF(" = %s (by %s)", rVal.GetDataString().getData(), pClient->getName());
 			else
@@ -321,7 +321,7 @@ void C4ControlPlayerSelect::Execute() const
 			if (pObj->Category & C4D_MouseSelect)
 				pObj->Call(PSF_MouseSelection, &C4AulParSet(C4VInt(iPlr)));
 			// player crew selection (recheck status of pObj)
-			if (pObj->Status && pPlr->ObjectInCrew(pObj)) 
+			if (pObj->Status && pPlr->ObjectInCrew(pObj))
 				SelectObjs.Add(pObj, C4ObjectList::stNone);
 		}
 	// count
@@ -369,10 +369,10 @@ void C4ControlPlayerControl::CompileFunc(StdCompiler *pComp)
 
 C4ControlPlayerCommand::C4ControlPlayerCommand(int32_t iPlr, int32_t iCmd, int32_t iX, int32_t iY,
 																							 C4Object *pTarget, C4Object *pTarget2, int32_t iData, int32_t iAddMode)
-	: iPlr(iPlr), iCmd(iCmd), iX(iX), iY(iY), 
+	: iPlr(iPlr), iCmd(iCmd), iX(iX), iY(iY),
 		iTarget(Game.Objects.ObjectNumber(pTarget)), iTarget2(Game.Objects.ObjectNumber(pTarget2)),
 		iData(iData), iAddMode(iAddMode)
-{ 
+{
 
 }
 
@@ -425,7 +425,7 @@ void C4ControlSyncCheck::Set()
 	SectShapeSum = Game.Objects.Sectors.getShapeSum();
 }
 
-int32_t C4ControlSyncCheck::GetAllCrewPosX() 
+int32_t C4ControlSyncCheck::GetAllCrewPosX()
 	{
 	int32_t cpx=0;
 	for (C4Player *pPlr=Game.Players.First; pPlr; pPlr=pPlr->Next)
@@ -540,7 +540,7 @@ void C4ControlClientJoin::CompileFunc(StdCompiler *pComp)
 	C4ControlPacket::CompileFunc(pComp);
 }
 
-// *** C4Control	
+// *** C4Control
 
 void C4ControlClientUpdate::Execute() const
 {
@@ -667,7 +667,7 @@ C4ControlJoinPlayer::C4ControlJoinPlayer(const char *szFilename, int32_t iAtClie
 void C4ControlJoinPlayer::Execute() const
 {
 	const char *szFilename = Filename.getData();
-	
+
 	// get client
 	C4Client *pClient = Game.Clients.getClientByID(iAtClient);
 	if(!pClient) return;
@@ -757,7 +757,7 @@ void C4ControlJoinPlayer::Strip()
 		StdBuf NewPlrData;
 		if(!NewPlrData.LoadFromFile(PlayerFilename.getData()))
 			{ EraseFile(PlayerFilename.getData()); return; }
-		PlrData = NewPlrData;
+		PlrData = std::move(NewPlrData);
 		// Done
 		EraseFile(PlayerFilename.getData());
   }
@@ -838,7 +838,7 @@ void C4ControlEMMoveObject::Execute() const
 	// Ignore in league mode
 	if(Game.Parameters.isLeague())
 		return;
-		
+
 	bool fLocalCall = LocalControl();
 	switch (eAction)
 		{
@@ -944,7 +944,7 @@ void C4ControlEMMoveObject::CompileFunc(StdCompiler *pComp)
 
 // *** C4ControlEMDrawTool
 
-C4ControlEMDrawTool::C4ControlEMDrawTool(C4ControlEMDrawAction eAction, int32_t iMode, 
+C4ControlEMDrawTool::C4ControlEMDrawTool(C4ControlEMDrawAction eAction, int32_t iMode,
 																	 			 int32_t iX, int32_t iY, int32_t iX2, int32_t iY2, int32_t iGrade,
 																				 bool fIFT, const char *szMaterial, const char *szTexture)
 	: eAction(eAction), iMode(iMode), iX(iX), iY(iY), iX2(iX2), iY2(iY2), iGrade(iGrade),
@@ -957,7 +957,7 @@ void C4ControlEMDrawTool::Execute() const
 	{
 	// Ignore in league mode
 	if(Game.Parameters.isLeague())
-		return;		
+		return;
 	// set new mode
 	if (eAction == EMDT_SetMode)
 		{
@@ -1160,7 +1160,7 @@ void C4ControlPlayerInfo::Execute() const
 			Game.PlayerInfos.LocalJoinUnjoinedPlayersInQueue();
 		}
 	else
-		// network: 
+		// network:
 		Game.Network.Players.HandlePlayerInfo(PlrInfo);
 }
 
@@ -1314,12 +1314,12 @@ void C4ControlVote::Execute() const
 			}
 		// Approval? More then 50% needed
 		if(iPositive * 2 > iVotes)
-			Game.Control.DoInput(CID_VoteEnd, 
+			Game.Control.DoInput(CID_VoteEnd,
 			  new C4ControlVoteEnd(eType, true, iData),
 				CDT_Sync);
 		// Disapproval?
 		else if(iNegative * 2 >= iVotes)
-			Game.Control.DoInput(CID_VoteEnd, 
+			Game.Control.DoInput(CID_VoteEnd,
 			  new C4ControlVoteEnd(eType, false, iData),
 				CDT_Sync);
 		}
