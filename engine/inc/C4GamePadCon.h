@@ -37,7 +37,7 @@ class C4GamePadControl {
 		void OpenGamepad(int id);  // add gamepad ref
 		void CloseGamepad(int id); // del gamepad ref
 		static C4GamePadControl *pInstance; // singleton
-#elif defined HAVE_SDL
+#elif defined(HAVE_SDL)
 	public:
 		void FeedEvent(SDL_Event& e);
 	private:

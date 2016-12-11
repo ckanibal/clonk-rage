@@ -461,6 +461,8 @@ int C4UpdatePackage::Check(C4Group *pGroup)
 	return C4UPD_CHK_OK;
 }
 
+extern char C4Group_TempPath[_MAX_PATH+1];
+
 BOOL C4UpdatePackage::DoUpdate(C4Group *pGrpFrom, C4GroupEx *pGrpTo, const char *strFileName)
 {
 	// group file?
@@ -473,7 +475,7 @@ BOOL C4UpdatePackage::DoUpdate(C4Group *pGrpFrom, C4GroupEx *pGrpTo, const char 
 		if(!ItemGroupTo.OpenAsChild(pGrpTo, strFileName))
 		{
 			// create (emtpy) temp dir
-			SCopy(GetCfg()->AtExePath("~tmp"), strTempGroup, _MAX_PATH);
+			SCopy(&C4Group_TempPath[0], strTempGroup, _MAX_PATH);
 			MakeTempFilename(strTempGroup);			
 			// open/create it
 			if(!ItemGroupTo.Open(strTempGroup, TRUE))
@@ -702,6 +704,9 @@ BOOL C4UpdatePackage::MakeUpdate(const char *strFile1, const char *strFile2, con
 	return TRUE;
 }
 
+extern char C4Group_TempPath[_MAX_PATH+1];
+
+
 BOOL C4UpdatePackage::MkUp(C4Group *pGrp1, C4Group *pGrp2, C4GroupEx *pUpGrp, BOOL *fModified)
 {
 	// (CAUTION: pGrp1 may be NULL - that means that there is no counterpart for Grp2
@@ -749,13 +754,14 @@ BOOL C4UpdatePackage::MkUp(C4Group *pGrp1, C4Group *pGrp2, C4GroupEx *pUpGrp, BO
 			// open group for update data
 			C4GroupEx UpdGroup; char strTempGroupName[_MAX_FNAME + 1];
 			strTempGroupName[0] = 0;
-			if(!UpdGroup.OpenAsChild(pUpGrp, strItemName))
-			{
-				// create new group (may be temporary)
-				SCopy(GetCfg()->AtTempPath("~upd"), strTempGroupName, _MAX_FNAME);
-				MakeTempFilename(strTempGroupName);
-				if(!UpdGroup.Open(strTempGroupName, TRUE)) { delete pChildGrp1; WriteLog("Error: could not create temp group\n"); return FALSE; }
-			}
+            if (!UpdGroup.OpenAsChild(pUpGrp, strItemName))
+            {
+                // create new group (may be temporary)
+                if (C4Group_TempPath[0]) { SCopy(C4Group_TempPath,strTempGroupName,_MAX_FNAME); SAppend("~upd",strTempGroupName,_MAX_FNAME); }
+                else SCopy("~upd",strTempGroupName,_MAX_FNAME);
+                MakeTempFilename(strTempGroupName);
+                if (!UpdGroup.Open(strTempGroupName, true)) { delete pChildGrp1; WriteLog("Error: could not create temp group\n"); return false; }
+            }
 			// do nested MkUp-search
 			BOOL Modified = FALSE;
 			BOOL fSuccess = MkUp(pChildGrp1, &ChildGrp2, &UpdGroup, &Modified);

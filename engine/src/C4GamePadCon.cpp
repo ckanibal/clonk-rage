@@ -70,7 +70,7 @@ void C4GamePadControl::CloseGamepad(int id)
 
 int C4GamePadControl::GetGamePadCount()
 	{
-	JOYINFOEX joy; 
+	JOYINFOEX joy;
 	ZeroMem(&joy, sizeof(JOYINFOEX));	joy.dwSize = sizeof(JOYINFOEX); joy.dwFlags = JOY_RETURNALL;
 	int iCnt=0;
 	while (iCnt<CStdGamepad_MaxGamePad && ::joyGetPosEx(iCnt, &joy) == JOYERR_NOERROR) ++iCnt;
@@ -93,7 +93,7 @@ void C4GamePadControl::Execute()
 		for (int iAxis = 0; iAxis < CStdGamepad_MaxAxis; ++iAxis)
 			{
 			CStdGamePad::AxisPos eAxisPos = rPad.pGamepad->GetAxisPos(iAxis), ePrevAxisPos = rPad.AxisPosis[iAxis];
-			// Evaluate changes and pass single controls   
+			// Evaluate changes and pass single controls
 			// this is a generic Gamepad-control: Create events
 			if (eAxisPos != ePrevAxisPos)
 				{
@@ -161,7 +161,7 @@ C4GamePadControl::C4GamePadControl() {
 	if (!SDL_NumJoysticks()) Log("No Gamepad found");
 }
 
-C4GamePadControl::~C4GamePadControl() {	
+C4GamePadControl::~C4GamePadControl() {
 }
 
 void C4GamePadControl::Execute() {
@@ -235,7 +235,7 @@ void C4GamePadControl::FeedEvent(SDL_Event& event) {
 		{
 			C4KeyCode minCode = KEY_Gamepad(event.jaxis.which, KEY_JOY_Axis(event.jaxis.axis, false));
 			C4KeyCode maxCode = KEY_Gamepad(event.jaxis.which, KEY_JOY_Axis(event.jaxis.axis, true));
-		
+
 			// FIXME: This assumes that the axis really rests around (0, 0) if it is not used, which is not always true.
 			if (event.jaxis.value < -deadZone) {
 				if (PressedAxis.count(minCode) == 0) {

@@ -1,4 +1,4 @@
-/* by Günther, 2005 */
+/* by Gï¿½nther, 2005 */
 
 /* A wrapper class to OS dependent event and window interfaces */
 
@@ -199,7 +199,7 @@ const int SEC1_TIMER=1,SEC1_MSEC=1000;
 #define MK_CONTROL 0
 #else
 #error need window system
-#endif       
+#endif
 
 enum C4AppHandleResult
 	{
@@ -229,7 +229,7 @@ public:
 	// Keypress(es) translated to a char
 	virtual void CharIn(const char * c) { }
 	virtual CStdWindow * Init(CStdApp * pApp);
-#ifndef _WIN32 
+#ifndef _WIN32
 	virtual CStdWindow * Init(CStdApp * pApp, const char * Title, CStdWindow * pParent = 0, bool HideCursor = true);
 #endif
 	bool StorePosition(const char *szWindowName, const char *szSubKey, bool fStoreSize = true);
@@ -296,7 +296,7 @@ public:
 	CStdWindow * pWindow;
 	bool fQuitMsgReceived; // if true, a quit message has been received and the application should terminate
 	const char *GetCommandLine() { return szCmdLine; }
-	
+
 	// Copy the text to the clipboard or the primary selection
 	void Copy(const StdStrBuf & text, bool fClipboard = true);
 	// Paste the text from the clipboard or the primary selection
@@ -308,7 +308,7 @@ public:
 	// a command from stdin
 	virtual void OnCommand(const char *szCmd) = 0; // callback
 	// notify user to get back to the program
-	void NotifyUserIfInactive() 
+	void NotifyUserIfInactive()
 	{
 	  #ifdef _WIN32
 	   if (!Active && pWindow) pWindow->FlashWindow();
@@ -407,7 +407,7 @@ protected:
 	// commands from stdin (console only)
 	StdCopyStrBuf CmdBuf;
 	bool ReadStdInCommand();
-	
+
 	friend class CStdGL;
 	friend class CStdWindow;
 	friend class CStdGtkWindow;

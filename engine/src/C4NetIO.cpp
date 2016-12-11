@@ -229,7 +229,7 @@ C4NetIOPacket::C4NetIOPacket(const void *pnData, size_t inSize, bool fCopy, cons
 {
 }
 
-C4NetIOPacket::C4NetIOPacket(StdBuf &Buf, const C4NetIO::addr_t &naddr)
+C4NetIOPacket::C4NetIOPacket(const StdBuf &Buf, const C4NetIO::addr_t &naddr)
 	: StdCopyBuf(Buf), addr(naddr)
 {
 }
@@ -2216,7 +2216,7 @@ C4NetIOUDP::Packet::Packet()
 
 }
 
-C4NetIOUDP::Packet::Packet(C4NetIOPacket &rnData, nr_t inNr)
+C4NetIOUDP::Packet::Packet(C4NetIOPacket &&rnData, nr_t inNr)
 	:	iNr(inNr),
 		Data(rnData),
 		pFragmentGot(NULL)
@@ -2819,14 +2819,14 @@ bool C4NetIOUDP::Peer::SendDirect(const Packet &rPacket, unsigned int iNr)
 	return fSuccess;
 }
 
-bool C4NetIOUDP::Peer::SendDirect(C4NetIOPacket &rPacket) // (mt-safe)
+bool C4NetIOUDP::Peer::SendDirect(C4NetIOPacket &&rPacket) // (mt-safe)
 {
 	// insert correct addr
 	if(!(rPacket.getStatus() & 0x80)) rPacket.SetAddr(addr);
   // count outgoing
   { CStdLock StatLock(&StatCSec); iORate += rPacket.getSize() + iUDPHeaderSize; }
 	// forward call
-	return pParent->SendDirect(rPacket);
+    return pParent->SendDirect(rPacket);
 }
 
 void C4NetIOUDP::Peer::OnConn()
@@ -2946,7 +2946,7 @@ bool C4NetIOUDP::BroadcastDirect(const Packet &rPacket, unsigned int iNr) // (mt
 	return fSuccess;
 }
 
-bool C4NetIOUDP::SendDirect(C4NetIOPacket &rPacket) // (mt-safe)
+bool C4NetIOUDP::SendDirect(C4NetIOPacket rPacket) // (mt-safe)
 {
 	addr_t toaddr = rPacket.getAddr();
 	// packet meant to be broadcasted?

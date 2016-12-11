@@ -17,7 +17,7 @@
 #include <mmsystem.h>
 
 static int pipe(int *phandles)
-{ 
+{
 	// This doesn't work with select(), rendering the non-event-solution
 	// unusable for Win32. Oh well, it isn't desirable performance-wise, anyway.
 	return _pipe(phandles, 10, O_BINARY);
@@ -143,7 +143,7 @@ void StdScheduler::Add(StdSchedulerProc *pProc)
 {
 	// Alrady in list?
 	if(hasProc(pProc)) return;
-	// Enlarge 
+	// Enlarge
 	if(iProcCnt >= iProcCapacity) Enlarge(1);
 	// Add
 	ppProcs[iProcCnt] = pProc;
@@ -314,7 +314,7 @@ StdSchedulerThread::StdSchedulerThread()
 }
 
 StdSchedulerThread::~StdSchedulerThread()
-{	
+{
 	Clear();
 }
 
@@ -368,7 +368,7 @@ bool StdSchedulerThread::Start()
 #ifdef HAVE_WINTHREAD
 	iThread = _beginthread(_ThreadFunc, 0, this);
 	fThread = (iThread != -1);
-#elif HAVE_PTHREAD
+#elif defined(HAVE_PTHREAD)
 	fThread = !pthread_create(&Thread, NULL, _ThreadFunc, this);
 #endif
 	// success?
@@ -389,7 +389,7 @@ void StdSchedulerThread::Stop()
 	if(WaitForSingleObject(hThread, 10000) == WAIT_TIMEOUT)
 		// ... or kill it in case it refuses to do so
 		TerminateThread(hThread, -1);
-#elif HAVE_PTHREAD
+#elif defined(HAVE_PTHREAD)
 	// wait for thread to terminate itself
 	// (without security - let's trust these unwashed hackers for once)
 	pthread_join(Thread, NULL);
@@ -405,7 +405,7 @@ void __cdecl StdSchedulerThread::_ThreadFunc(void *pPar)
 	StdSchedulerThread *pThread = reinterpret_cast<StdSchedulerThread *>(pPar);
 	_endthreadex(pThread->ThreadFunc());
 }
-#elif HAVE_PTHREAD
+#elif defined(HAVE_PTHREAD)
 void *StdSchedulerThread::_ThreadFunc(void *pPar)
 {
 	StdSchedulerThread *pThread = reinterpret_cast<StdSchedulerThread *>(pPar);
@@ -437,7 +437,7 @@ bool StdThread::Start()
 #ifdef HAVE_WINTHREAD
 	iThread = _beginthread(_ThreadFunc, 0, this);
 	fStarted = (iThread != -1);
-#elif HAVE_PTHREAD
+#elif defined(HAVE_PTHREAD)
 	fStarted = !pthread_create(&Thread, NULL, _ThreadFunc, this);
 #endif
 	// success?
@@ -464,7 +464,7 @@ void StdThread::Stop()
 	if(WaitForSingleObject(hThread, 10000) == WAIT_TIMEOUT)
 		// ... or kill him in case he refuses to do so
 		TerminateThread(hThread, -1);
-#elif HAVE_PTHREAD
+#elif defined(HAVE_PTHREAD)
 	// wait for thread to terminate itself
 	// (whithout security - let's trust these unwashed hackers for once)
 	pthread_join(Thread, NULL);
@@ -480,7 +480,7 @@ void __cdecl StdThread::_ThreadFunc(void *pPar)
 	StdThread *pThread = reinterpret_cast<StdThread *>(pPar);
 	_endthreadex(pThread->ThreadFunc());
 }
-#elif HAVE_PTHREAD
+#elif defined(HAVE_PTHREAD)
 void *StdThread::_ThreadFunc(void *pPar)
 {
 	StdThread *pThread = reinterpret_cast<StdThread *>(pPar);

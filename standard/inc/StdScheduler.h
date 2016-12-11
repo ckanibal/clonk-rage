@@ -114,11 +114,11 @@ private:
 
 	// thread control
 	bool fRunThreadRun, fWait;
-	
+
 	bool fThread;
 #ifdef HAVE_WINTHREAD
 	unsigned long iThread;
-#elif HAVE_PTHREAD
+#elif defined(HAVE_PTHREAD)
 	pthread_t Thread;
 #endif
 
@@ -151,7 +151,7 @@ private:
 
 #ifdef HAVE_WINTHREAD
 	unsigned long iThread;
-#elif HAVE_PTHREAD
+#elif defined(HAVE_PTHREAD)
 	pthread_t Thread;
 #endif
 

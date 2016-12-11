@@ -72,7 +72,7 @@ class C4StartupPlrSelDlg : public C4StartupDlg
 				class LoadError : public StdStrBuf
 					{
 					public:
-						LoadError(StdStrBuf &rTakeFrom) { Take(rTakeFrom); }
+						LoadError(StdStrBuf &&rTakeFrom) { Take(rTakeFrom); }
 					}; // class thrown off load function if load failed
 			};
 

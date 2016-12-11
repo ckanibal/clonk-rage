@@ -36,7 +36,7 @@ class C4FullScreen: public CStdWindow
 		virtual void CharIn(const char * c);
 #ifdef USE_X11
 		virtual void HandleMessage (XEvent &e);
-#elif USE_SDL_MAINLOOP
+#elif defined(USE_SDL_MAINLOOP)
 		virtual void HandleMessage (SDL_Event &e);
 #endif
 	};

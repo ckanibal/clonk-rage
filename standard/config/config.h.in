@@ -1,0 +1,120 @@
+/* Activate DebugRecs */
+#cmakedefine DEBUGREC
+
+/* Define to 1 if you have the <execinfo.h> header file. */
+#cmakedefine HAVE_EXECINFO_H 1
+
+/* Define to 1 if you have FreeType2. */
+#cmakedefine HAVE_FREETYPE
+
+/* Define if you have the iconv() function. */
+#cmakedefine HAVE_ICONV 1
+
+/* Define if you have fontconfig. */
+#cmakedefine HAVE_FONTCONFIG
+
+/* Define this to const if iconv's second parameter needs to be const */
+#define ICONV_CONST @ICONV_CONST@
+
+/* Define to 1 if you have the <langinfo.h> header file. */
+#cmakedefine HAVE_LANGINFO_H 1
+
+/* Define to 1 if you have SDL_mixer. */
+#cmakedefine USE_SDL_MIXER
+
+/* Define to 1 if you have the <locale.h> header file. */
+#cmakedefine HAVE_LOCALE_H 1
+
+/* Define to 1 if you have the <multimon.h> header file. */
+#cmakedefine HAVE_MULTIMON_H 1
+
+/* Define if you have POSIX threads libraries and header files. */
+#cmakedefine HAVE_PTHREAD
+
+/* Define if you have a readline compatible library */
+#cmakedefine USE_READLINE
+
+/* Define to 1 if you have SDL. */
+#cmakedefine USE_SDL
+
+/* Define to 1 if you have the <signal.h> header file. */
+#cmakedefine HAVE_SIGNAL_H 1
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#cmakedefine HAVE_STDINT_H 1
+
+/* Define to 1 if you have the <sys/inotify.h> header file. */
+#cmakedefine HAVE_SYS_INOTIFY_H 1
+
+/* Define to 1 if you have the <sys/socket.h> header file. */
+#cmakedefine HAVE_SYS_SOCKET_H 1
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#cmakedefine HAVE_SYS_STAT_H 1
+
+/* Define to 1 if you have the <sys/syscall.h> header file. */
+#cmakedefine HAVE_SYS_SYSCALL_H 1
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#cmakedefine HAVE_SYS_TYPES_H 1
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#cmakedefine HAVE_UNISTD_H 1
+
+/* Define to 1 if you have the `vasprintf' function. */
+#cmakedefine HAVE_VASPRINTF 1
+
+/* Define to 1 if you have the `vscprintf' function. */
+#cmakedefine HAVE_VSCPRINTF 1
+
+#cmakedefine HAVE_IO_H
+
+#cmakedefine HAVE_DIRECT_H
+
+/* Network play support */
+#cmakedefine NETWORK
+
+/* Network play support disabled */
+#cmakedefine NONETWORK
+
+/* dedicated server mode */
+#cmakedefine USE_CONSOLE
+
+/* DirectX graphics */
+#cmakedefine USE_DIRECTX
+
+/* Wether FMOD shall be used */
+#cmakedefine USE_FMOD
+
+/* OpenGL graphics */
+#cmakedefine USE_GL
+
+/* MP3 music */
+#cmakedefine USE_MP3
+
+/* Define to 1 if SDL is used for the main loop */
+#cmakedefine USE_SDL_MAINLOOP
+
+/* Define to 1 if the X Window System is used */
+#cmakedefine USE_X11
+
+/* Developer mode */
+#cmakedefine WITH_DEVELOPER_MODE
+
+/* Glib */
+#cmakedefine WITH_GLIB
+
+/* compile with debug options */
+#cmakedefine _DEBUG
+
+/* Define if timidity++ should be used for MIDI-playback */
+#cmakedefine USE_TIMIDITY
+
+#cmakedefine NDEBUG
+
+#cmakedefine HAVE_RVALUE_REF
+#ifdef HAVE_RVALUE_REF
+# define RREF &&
+#else
+# define RREF &
+#endif

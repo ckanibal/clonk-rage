@@ -115,7 +115,7 @@ C4StartupNetDlg::C4StartupNetDlg(): C4StartupDlg("") {}
 bool C4UpdateDlg::ApplyUpdate(char const*, bool, C4GUI::Screen*) { return 0; }
 bool C4UpdateDlg::CheckForUpdates(C4GUI::Screen*, bool) { return 0; }
 C4NetIOPacket::C4NetIOPacket() {}
-C4NetIOPacket::C4NetIOPacket(StdBuf &Buf, const C4NetIO::addr_t &naddr)	: StdCopyBuf(Buf), addr(naddr) {}
+C4NetIOPacket::C4NetIOPacket(const StdBuf &Buf, const C4NetIO::addr_t &naddr)	: StdCopyBuf(Buf), addr(naddr) {}
 void C4Network2ResCore::CompileFunc(StdCompiler *pComp) {}
 void C4Network2Status::CompileFunc(StdCompiler *pComp) {}
 C4StartupNetDlg::~C4StartupNetDlg() {}

@@ -40,14 +40,14 @@ LRESULT APIENTRY FullScreenWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 			// redraw background
 			Game.GraphicsSystem.InvalidateBg();
 			// Redraw after task switch
-			if (Application.Active) 
+			if (Application.Active)
 				Game.GraphicsSystem.Execute();
 			// update cursor clip
 			Game.MouseControl.UpdateClip();
 			return FALSE;
 		case WM_PAINT:
 			// Redraw after task switch
-			if (Application.Active) 
+			if (Application.Active)
 				Game.GraphicsSystem.Execute();
 			break;
 		case WM_TIMER:
@@ -82,7 +82,7 @@ LRESULT APIENTRY FullScreenWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 			c[0] = (char)wParam;
 			c[1] = 0;
 			// GUI: forward
-			if (Game.pGUI) 
+			if (Game.pGUI)
 				if (Game.pGUI->CharIn(c))
 					return 0;
 			return FALSE;
@@ -90,11 +90,11 @@ LRESULT APIENTRY FullScreenWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 		case WM_USER_LOG:
 			if (SEqual2((const char *)lParam, "IDS_"))
 				Log(LoadResStr((const char *)lParam));
-			else 
+			else
 				Log((const char *)lParam);
 			return FALSE;
-		case WM_LBUTTONDOWN: 
-			Game.GraphicsSystem.MouseMove(C4MC_Button_LeftDown,LOWORD(lParam),HIWORD(lParam),wParam, NULL); 
+		case WM_LBUTTONDOWN:
+			Game.GraphicsSystem.MouseMove(C4MC_Button_LeftDown,LOWORD(lParam),HIWORD(lParam),wParam, NULL);
 			break;
 		case WM_LBUTTONUP: Game.GraphicsSystem.MouseMove(C4MC_Button_LeftUp,LOWORD(lParam),HIWORD(lParam),wParam, NULL); break;
 		case WM_RBUTTONDOWN: Game.GraphicsSystem.MouseMove(C4MC_Button_RightDown,LOWORD(lParam),HIWORD(lParam),wParam, NULL); break;
@@ -206,7 +206,7 @@ void C4FullScreen::HandleMessage (XEvent &e)
 		break;
 		}
 	}
-	
+
 #elif defined(USE_SDL_MAINLOOP)
 // SDL version
 
@@ -216,10 +216,10 @@ namespace
                       int32_t& button, DWORD& flags)
     {
         static int lastLeftClick = 0, lastRightClick = 0;
-        
+
         button = C4MC_Button_None;
         flags = 0;
-        
+
         switch (e.button)
         {
         case SDL_BUTTON_LEFT:
@@ -268,7 +268,7 @@ namespace
             break;
         }
     }
-    
+
     bool isSpecialKey(unsigned unicode)
     {
         if (unicode >= 0xe00)
@@ -295,16 +295,16 @@ void C4FullScreen::HandleMessage (SDL_Event &e)
                 Application.SetFullScreen(!DDrawCfg.Windowed, false);
                 lpDDraw->InvalidateDeviceObjects();
                 lpDDraw->RestoreDeviceObjects();
-                
+
                 if (DDrawCfg.Windowed)
                 	Config.Graphics.NewGfxCfgGL |= C4GFXCFG_WINDOWED;
                 else
                 	Config.Graphics.NewGfxCfgGL &= ~C4GFXCFG_WINDOWED;
-                
+
                 break;
             }
             #endif
-            
+
 			// Only forward real characters to UI. (Nothing outside of "private use" range.)
 			// This works without iconv for some reason. Yay!
 			// FIXME: convert to UTF-8
@@ -341,7 +341,7 @@ void C4FullScreen::HandleMessage (SDL_Event &e)
 		case SDL_JOYBALLMOTION:
 		case SDL_JOYBUTTONDOWN:
 		case SDL_JOYBUTTONUP:
-			Application.pGamePadControl->FeedEvent(e);
+//			Application.pGamePadControl->FeedEvent(e);
 			break;
 		}
 	}
@@ -400,7 +400,7 @@ BOOL C4FullScreen::ViewportCheck()
 			iPlrNum = NO_OWNER;
 			// Film mode: create viewport for first player (instead of no-owner)
 			if (fFilm)
-				if (pPlr = Game.Players.First) 
+				if (pPlr = Game.Players.First)
 					iPlrNum = pPlr->Number;
 			// Create viewport
 			Game.CreateViewport(iPlrNum, iPlrNum==NO_OWNER);
@@ -416,11 +416,11 @@ BOOL C4FullScreen::ViewportCheck()
 			}
 			break;
 		// One viewport: do nothing
-		case 1: 
+		case 1:
 			break;
 		// More than one viewport: remove all no-owner viewports
-		default: 
-			Game.GraphicsSystem.CloseViewport(NO_OWNER, true); 
+		default:
+			Game.GraphicsSystem.CloseViewport(NO_OWNER, true);
 			break;
 		}
 	// Look for no-owner viewport
@@ -455,7 +455,7 @@ bool C4FullScreen::ShowAbortDlg()
 	return Game.pGUI->ShowRemoveDlg(new C4AbortGameDialog());
 	}
 
-bool C4FullScreen::ActivateMenuMain() 
+bool C4FullScreen::ActivateMenuMain()
 	{
 	// Not during game over dialog
 	if (C4GameOverDlg::IsShown()) return false;

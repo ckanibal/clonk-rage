@@ -309,7 +309,7 @@ public:
   bool operator != (const StdBuf &Buf2) const { return ! operator == (Buf2); }
 
   // Set (as constructor: take if possible)
-  StdBuf &operator = (StdBuf &Buf2)
+  StdBuf &operator = (StdBuf &&Buf2)
   {
     if(Buf2.isRef()) Ref(Buf2); else Take(Buf2);
     return *this;

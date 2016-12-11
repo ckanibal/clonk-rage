@@ -1,10 +1,8 @@
-include_directories(${clonk-rage_SOURCE_DIR}/engine/inc)
-include_directories(${clonk-rage_SOURCE_DIR}/standard/inc)
-link_directories(${clonk-rage_SOURCE_DIR}/standard/src)
+include_directories(sec/)
 
-set(SEC_SOURCES
-  C4ConfigShareware.cpp
-  C4SecurityCertificates.cpp
+set(SEC_SRC
+  ${CMAKE_CURRENT_SOURCE_DIR}/C4ConfigShareware.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/C4SecurityCertificates.cpp
 )
 
-list(APPEND ENGINE_SOURCES ${SEC_SOURCES})
+set(SEC_SRC ${SEC_SRC} PARENT_SCOPE)

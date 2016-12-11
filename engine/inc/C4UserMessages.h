@@ -2,7 +2,7 @@
 
 /* Custom windows messages */
 
-#ifndef INC_C4UserMessaged
+#ifndef INC_C4UserMessages
 #define INC_C4UserMessages
 
 

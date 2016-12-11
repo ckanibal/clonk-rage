@@ -425,12 +425,14 @@ bool CStdGLCtx::PageFlip()
 
 bool CStdGL::ApplyGammaRamp(CGammaControl& ramp, bool fForce) {
 	assert(ramp.size == 256);
-	return SDL_SetGammaRamp(ramp.red, ramp.green, ramp.blue) != -1;
+    return 0;
+//	return SDL_SetGammaRamp(ramp.red, ramp.green, ramp.blue) != -1;
 }
 
 bool CStdGL::SaveDefaultGammaRamp(CStdWindow * pWindow) {
 	assert(DefRamp.size == 256);
-	return SDL_GetGammaRamp(DefRamp.red, DefRamp.green, DefRamp.blue) != -1;
+    return 0;
+//	return SDL_GetGammaRamp(DefRamp.red, DefRamp.green, DefRamp.blue) != -1;
 }
 
 #endif //USE_X11/USE_SDL_MAINLOOP
