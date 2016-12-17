@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project ("standard library" CXX)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+include(${CMAKE_SOURCE_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 option(INTERNAL_FREETYPE "Build using internal freetype library" OFF)
