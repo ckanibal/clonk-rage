@@ -47,14 +47,16 @@ if(WITH_GLIB)
 endif()
 
 if(USE_X11)
+	find_package(X11 REQUIRED)
+	set(ADDITIONAL_LIBS "-lXrandr -lXi -lX11 -lXxf86vm -lXpm")
 	set(STANDARD_SRC ${STANDARD_SRC} src/StdXApp.cpp src/StdXWindow.cpp)
 endif()
 
-if(USE_GL)
+if(WITH_GL)
 	set(STANDARD_SRC ${STANDARD_SRC} src/StdGL.cpp src/StdGLCtx.cpp)
 endif()
 
-if(USE_SDL_MAINLOOP)
+if(WITH_SDL_MAINLOOP)
 	set(STANDARD_SRC ${STANDARD_SRC} src/StdSDLApp.cpp src/StdSDLWindow.cpp)
 	find_package(SDL)
 	include_directories(${SDL_INCLUDE_DIR})
@@ -90,7 +92,9 @@ if(WITH_GLIB)
 	include_directories(${GTK2_INCLUDE_DIRS})
 endif()
 
-include_directories(${ZLIB_INCLUDE_DIRS} ${PNG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
+find_package(OpenSSL REQUIRED)
+
+include_directories(${ZLIB_INCLUDE_DIRS} ${PNG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
 
 add_definitions(-DC4ENGINE)
 set(CMAKE_CXX_FLAGS "-fwrapv")
@@ -100,4 +104,6 @@ add_library(standard STATIC ${STANDARD_SRC})
 set_property(TARGET standard PROPERTY COMPILE_DEFINITIONS HAVE_CONFIG_H)
 set_property(TARGET standard PROPERTY COMPILE_DEFINITIONS HAVE_ICONV)
 set_property(TARGET standard PROPERTY COMPILE_DEFINITIONS HAVE_FREETYPE)
-target_link_libraries(standard ${CONAN_LIBS} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} ${SDL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${BZIP2_LIBRARIES})
+set_property(TARGET standard PROPERTY CXX_STANDARD 14)
+
+target_link_libraries(standard ${CONAN_LIBS} ${ADDITIONAL_LIBS} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} ${X11_LIBRARIES} ${SDL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${BZIP2_LIBRARIES} ${OPENSSL_LIBRARIES})

@@ -164,9 +164,9 @@ void C4PlayerInfo::CompileFunc(StdCompiler *pComp)
   pComp->Value(mkNamingAdapt(sName, "Name", ""));
 	pComp->Value(mkNamingAdapt(sForcedName, "ForcedName", ""));
   pComp->Value(mkNamingAdapt(szFilename, "Filename", ""));
-	
+
   // Flags
-	const StdBitfieldEntry<uint16_t> Entries[] = 
+	const StdBitfieldEntry<uint16_t> Entries[] =
 		{
 			{ "Joined", PIF_Joined },
 			{ "Removed", PIF_Removed },
@@ -616,7 +616,7 @@ void C4ClientPlayerInfos::CompileFunc(StdCompiler *pComp)
   bool fCompiler = pComp->isCompiler();
   if(fCompiler) Clear();
   pComp->Value(mkNamingAdapt(iClientID, "ID", C4ClientIDUnknown));
-	
+
 	// Flags
 	StdBitfieldEntry<uint32_t> Entries[] =
 		{
@@ -932,7 +932,7 @@ int32_t C4PlayerInfoList::GetJoinIssuedPlayerCount() const
 		C4ClientPlayerInfos *pClient = ppClients[i];
 		for (int32_t j=0; j<pClient->GetPlayerCount(); ++j)
 			if (pClient->GetPlayerInfo(j)->HasJoinIssued())
-				++iCount; 
+				++iCount;
 		}
 	// return it
 	return iCount;
@@ -950,7 +950,7 @@ int32_t C4PlayerInfoList::GetActivePlayerCount(bool fCountInvisible) const
 			C4PlayerInfo *pInfo = pClient->GetPlayerInfo(j);
 			if (!pInfo->IsRemoved())
 				if (fCountInvisible || !pInfo->IsInvisible())
-					++iCount; 
+					++iCount;
 			}
 		}
 	// return it
@@ -971,7 +971,7 @@ int32_t C4PlayerInfoList::GetActiveScriptPlayerCount(bool fCountSavegameResumes,
 				if (pNfo->GetType() == C4PT_Script)
 					if (fCountSavegameResumes || !pNfo->GetAssociatedSavegamePlayerID())
 						if (fCountInvisible || !pNfo->IsInvisible())
-							++iCount; 
+							++iCount;
 			}
 		}
 	// return it
@@ -1012,7 +1012,7 @@ C4PlayerInfo *C4PlayerInfoList::GetPlayerInfoByIndex(int32_t index) const
 		{
 		int32_t j=0; C4PlayerInfo *pInfo;
 		while (pInfo = ppClients[i]->GetPlayerInfo(j++))
-			if (index-- <= 0) 
+			if (index-- <= 0)
 				return pInfo;
 		}
 	// nothing found
@@ -1216,7 +1216,7 @@ bool C4PlayerInfoList::Save(C4Group &hGroup, const char *szToFile)
 	// save it
   try
     {
-    // decompile  
+    // decompile
     StdStrBuf Buf = DecompileToBuf<StdCompilerINIWrite>(
       mkNamingAdapt(*this, "PlayerInfoList"));
 	  // save buffer to group
@@ -1277,7 +1277,7 @@ bool C4PlayerInfoList::LoadFromGameText(const char *pSource)
 					pkPlrInfo->AddInfo(pNewInfo);
 					}
 				}
-			else 
+			else
 				break;
 			}
 	// anything loaded?
@@ -1336,10 +1336,10 @@ bool C4PlayerInfoList::LocalJoinUnjoinedPlayersInQueue()
 				{
 				// failure for user players
 				const char *szPlrName = pInfo->GetName(); if (!szPlrName) szPlrName="???";
-				LogF(LoadResStr("IDS_ERR_JOINQUEUEPLRS"), szPlrName);	
+				LogF(LoadResStr("IDS_ERR_JOINQUEUEPLRS"), szPlrName);
 				continue;
 				}
-      Game.Input.Add(CID_JoinPlr, 
+      Game.Input.Add(CID_JoinPlr,
         new C4ControlJoinPlayer(szFilename, Game.Control.ClientID(), pInfo->GetID()));
 			}
 	// done, success
@@ -1691,20 +1691,20 @@ bool C4PlayerInfoList::SetAsRestoreInfos(C4PlayerInfoList &rFromPlayers, bool fS
 							}
 						else
 							sNewName.Copy(GetFilename(pInfo->GetFilename()));
-                
+
 										// O(n) is fast.
 										// If not, blame whoever wrote Replace! ;)
 										sNewName.Replace("%", "%25", 0);
 										for (int ch = 128; ch < 256; ++ch)
 										{
 												const char* hexChars = "0123456789abcdef";
-												char old[] = { ch, 0 };
+												char old[] = { char(ch), 0 };
 												char safe[] = { '%', 'x', 'x', 0 };
 												safe[1] = hexChars[ch / 16];
 												safe[2] = hexChars[ch % 16];
 												sNewName.Replace(old, safe, 0);
 										}
-                
+
 						pInfo->SetFilename(sNewName.getData());
 						}
 					}
@@ -1714,7 +1714,7 @@ bool C4PlayerInfoList::SetAsRestoreInfos(C4PlayerInfoList &rFromPlayers, bool fS
 					if (fSetScriptPlrRefToLocalGroup)
 						{
 						// just compose a unique filename for script player
-						pInfo->SetFilename(FormatString("ScriptPlr-%d.c4p", (int)pInfo->GetID()).getData());					
+						pInfo->SetFilename(FormatString("ScriptPlr-%d.c4p", (int)pInfo->GetID()).getData());
 						}
 					}
 				}
@@ -1773,13 +1773,13 @@ void C4PlayerInfoList::CompileFunc(StdCompiler *pComp)
   if(fCompiler)
   {
     if(iTemp > iClientCapacity) GrowList(iTemp - iClientCapacity);
-    iClientCount = iTemp;    
+    iClientCount = iTemp;
     ZeroMem(ppClients, sizeof(*ppClients) * iClientCount);
   }
 	// client packets
   pComp->Value(
     mkNamingAdapt(
-      mkArrayAdaptMap(ppClients, iClientCount, mkPtrAdaptNoNull<C4ClientPlayerInfos>), 
+      mkArrayAdaptMap(ppClients, iClientCount, mkPtrAdaptNoNull<C4ClientPlayerInfos>),
       "Client"));
   // force compiler to specialize
   mkPtrAdaptNoNull<C4ClientPlayerInfos>(*ppClients);

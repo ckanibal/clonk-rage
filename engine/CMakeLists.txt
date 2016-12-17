@@ -12,8 +12,6 @@ add_subdirectory(inc/)
 add_definitions(-DC4ENGINE)
 
 # add targets
-# MESSAGE( STATUS "ENGINE_SRC:         " ${ENGINE_SRC})
-# MESSAGE( STATUS "SEC_SRC:         " ${SEC_SRC})
 add_executable(engine ${ENGINE_SRC} ${ENGINE_H} ${SEC_SRC})
 
 if(WITH_SDL_MAINLOOP)
@@ -24,8 +22,15 @@ if(WITH_SDL_MAINLOOP)
   )
 endif()
 
+# libraries
+find_package(OpenSSL REQUIRED)
+include_directories(${OPENSSL_INCLUDE_DIR})
+
 # include directories
 include_directories(inc/ sec/ ../standard/inc/)
 
+# properties
+set_property(TARGET engine PROPERTY CXX_STANDARD 14)
+
 # link libraries
-target_link_libraries(engine ${LIBS} ${CONAN_LIBS} standard)
+target_link_libraries(engine ${LIBS} ${CONAN_LIBS} ${OPENSSL_LIBRARIES} Threads::Threads standard)

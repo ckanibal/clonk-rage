@@ -125,7 +125,7 @@ BOOL C4Record::Start(bool fInitial)
 		if (pScenNameEnd == sScenName)
 			break;
 	pScenNameEnd[1] = 0;
-	
+
 	// determine index (by total number of records)
 	Index = 1;
 	for (DirectoryIterator i(Config.General.SaveDemoFolder.getData()); *i; ++i)
@@ -188,7 +188,7 @@ BOOL C4Record::Stop(StdStrBuf *pRecordName, BYTE *pRecordSHA1)
 	Head.iFrm = Game.FrameCounter+37;
 	Head.Type = RCT_End;
 	CtrlRec.Write(&Head, sizeof(Head));
-	CtrlRec.Close();	
+	CtrlRec.Close();
 
 	// pack group
 #ifndef DEBUGREC
@@ -241,7 +241,7 @@ bool C4Record::Rec(int iFrame, const StdBuf &sBuf, C4RecordChunkType eType)
 	uint32_t iFrameDiff = Max<uint32_t>(0, iFrame - iLastFrame);
 	iLastFrame += iFrameDiff;
   // create head
-  C4RecordChunkHead Head = { iFrameDiff, eType };
+  C4RecordChunkHead Head = { static_cast<uint8_t>(iFrameDiff), static_cast<uint8_t>(eType) };
 	// pack
 	CtrlRec.Write(&Head, sizeof(Head));
 	CtrlRec.Write(sBuf.getData(), sBuf.getSize());
@@ -707,7 +707,7 @@ StdBuf C4Playback::ReWriteBinary()
 
 void C4Playback::Strip()
 	{
-	// Strip what?	
+	// Strip what?
 	const bool fStripPlayers = false;
 	const bool fStripSyncChecks = false;
 	const bool fStripDebugRec = true;
@@ -816,7 +816,7 @@ void C4Playback::Strip()
 					i->Delete();
 					i = chunks.erase(i);
 				}
-				else 
+				else
 					i++;
 			}
 		}
@@ -1090,7 +1090,7 @@ void C4Playback::DebugRecError(const char *szError)
 
 bool C4Playback::StreamToRecord(const char *szStream, StdStrBuf *pRecordFile)
 	{
-	
+
 	// Load data
 	StdBuf CompressedData;
 	Log("Reading stream...");
@@ -1110,7 +1110,7 @@ bool C4Playback::StreamToRecord(const char *szStream, StdStrBuf *pRecordFile)
 		strm.avail_in = CompressedData.getSize();
 		strm.next_out = getMBufPtr<BYTE>(StreamData);
 		strm.avail_out = StreamData.getSize();
-		
+
 		// Decompress
 		if(inflateInit(&strm) != Z_OK)
 			return false;

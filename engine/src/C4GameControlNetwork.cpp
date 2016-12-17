@@ -248,7 +248,7 @@ void C4GameControlNetwork::ExecSyncControl() // by main thread
 {
 	assert(fHost);
 
-	// This is a callback from C4Network informing that a point where accumulated sync control 
+	// This is a callback from C4Network informing that a point where accumulated sync control
 	// can be executed has been reached (it's "momentarily" safe to execute)
 
 	// Nothing to do? Save some sweat.
@@ -327,7 +327,7 @@ void C4GameControlNetwork::SetRunning(bool fnRunning, int32_t inTargetTick) // b
 	iTargetTick = inTargetTick;
 	fRunning = fnRunning;
 	// run?
-	if(fRunning) 
+	if(fRunning)
 	{
 		// refresh client list
 		CopyClientList(Game.Clients);
@@ -648,7 +648,7 @@ void C4GameControlNetwork::AddCtrl(C4GameControlPacket *pCtrl) // by both
 
 void C4GameControlNetwork::ClearCtrl(int32_t iBeforeTick) // by main thread
 {
-	// lock 
+	// lock
 	CStdLock CtrlLock(&CtrlCSec);
 	// clear all old control
 	C4GameControlPacket *pCtrl = pCtrlStack, *pLast = NULL;
@@ -749,13 +749,13 @@ C4GameControlPacket *C4GameControlNetwork::PackCompleteCtrl(int32_t iTick)
 		// async mode: wait n extra frames for slow clients
 		const int iMaxWait = Game.Control.ControlRate * (Config.Network.AsyncMaxWait * 1000) / iTargetFPS;
 		if(eMode != CNM_Async || iWaitStart == -1 || timeGetTime() <= iWaitStart + iMaxWait)
-			return false;
+			return nullptr;
 		}
-	
+
 	// create packet
 	C4GameControlPacket *pComplete = new C4GameControlPacket();
 	pComplete->Set(C4ClientIDAll, iTick);
-	
+
 	// pack everything in ID order (client list is ordered this way)
 	C4GameControlPacket *pCtrl;
 	for(pClient = pClients; pClient; pClient = pClient->pNext)
@@ -768,12 +768,12 @@ C4GameControlPacket *C4GameControlNetwork::PackCompleteCtrl(int32_t iTick)
 			pClient->SetNextControl(iNextControl + 1);
 			assert(pCtrl);
 			// add
-			pComplete->Add(*pCtrl);			
+			pComplete->Add(*pCtrl);
 		}
 
 	// add to list
 	AddCtrl(pComplete);
-	
+
 	// host: send to clients (central and async mode)
 	if(eMode != CNM_Decentral)
 		Game.Network.Clients.BroadcastMsgToConnClients(MkC4NetIOPacket(PID_Control, *pComplete));

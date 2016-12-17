@@ -12,15 +12,15 @@
 
 //==================================== Materials =========================================
 
-int32_t PixCol2MatOld(BYTE pixc) 
+int32_t PixCol2MatOld(BYTE pixc)
   {
-  if (pixc < GBM) return MNone;  
+  if (pixc < GBM) return MNone;
   pixc &= 63; // Substract GBM, ignore IFT
   if (pixc > Game.Material.Num*C4M_ColsPerMat-1) return MNone;
   return pixc / C4M_ColsPerMat;
   }
 
-int32_t PixCol2MatOld2(BYTE pixc) 
+int32_t PixCol2MatOld2(BYTE pixc)
   {
 	int32_t iMat = ((int32_t) (pixc&0x7f)) -1;
 	// if above MVehic, don't forget additional vehicle-colors
@@ -37,15 +37,15 @@ int32_t PixCol2MatOld2(BYTE pixc)
 C4SoundInstance *StartSoundEffect(const char *szSndName, bool fLoop, int32_t iVolume, C4Object *pObj, int32_t iCustomFalloffDistance)
   {
   // Sound check
-  if (!Config.Sound.RXSound) return FALSE;
+  if (!Config.Sound.RXSound) return nullptr;
   // Start new
-  return Application.SoundSystem.NewEffect(szSndName, fLoop, iVolume, pObj, iCustomFalloffDistance);    
+  return Application.SoundSystem.NewEffect(szSndName, fLoop, iVolume, pObj, iCustomFalloffDistance);
   }
 
 C4SoundInstance *StartSoundEffectAt(const char *szSndName, int32_t iX, int32_t iY, bool fLoop, int32_t iVolume)
   {
   // Sound check
-  if (!Config.Sound.RXSound) return FALSE;
+  if (!Config.Sound.RXSound) return nullptr;
   // Create
   C4SoundInstance *pInst = StartSoundEffect(szSndName, fLoop, iVolume);
   // Set volume by position

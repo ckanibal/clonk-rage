@@ -24,55 +24,54 @@ class StdBuf
 public:
 
   // *** Construction
-  // Standard constructor
-  StdBuf() : fRef(true), pData(NULL), iSize(0) { }
 
-  // Constructor from other buffer (copy construction):
-  // Will take over buffer ownership. Copies data if specified.
-  // Note: Construct with Buf2.getRef() to construct a reference (This will work for a constant Buf2, too)
-  StdBuf(StdBuf &Buf2, bool fCopy = false)
-    : fRef(true), pData(NULL), iSize(0)
-  {
-    if(fCopy)
-      Copy(Buf2);
-    else if(!Buf2.isRef())
-      Take(Buf2);
-    else
-      Ref(Buf2);
-  }
+	// *** Construction
+	// Standard constructor
+	StdBuf() = default;
 
-  StdBuf(const StdBuf & Buf2, bool fCopy = true)
-    : fRef(true), pData(NULL), iSize(0)
-  {
-    if (fCopy)
-      Copy(Buf2);
-    else
-      Ref(Buf2);
-  }
-  StdBuf(StdBuf && Buf2, bool fCopy = false)
-      : fRef(true), pData(NULL), iSize(0)
-  {
-    if (fCopy)
-      Copy(Buf2);
-    else if (!Buf2.isRef())
-      Take(std::move(Buf2));
-    else
-      Ref(Buf2);
-  }
+	// Constructor from other buffer (copy construction):
+	// Will take over buffer ownership. Copies data if specified.
+	// Note: Construct with Buf2.getRef() to construct a reference (This will work for a constant Buf2, too)
+	StdBuf(StdBuf & Buf2, bool fCopy = false)
+			: fRef(true), pData(nullptr), iSize(0)
+	{
+		if (fCopy)
+			Copy(Buf2);
+		else if (!Buf2.isRef())
+			Take(std::move(Buf2));
+		else
+			Ref(Buf2);
+	}
+  
+	StdBuf(const StdBuf & Buf2, bool fCopy = true)
+			: fRef(true), pData(nullptr), iSize(0)
+	{
+		if (fCopy)
+			Copy(Buf2);
+		else
+			Ref(Buf2);
+	}
+
+	StdBuf(StdBuf && Buf2) noexcept
+			: fRef(true), pData(nullptr), iSize(0)
+	{
+		if (!Buf2.isRef())
+			Take(std::move(Buf2));
+		else
+			Ref(Buf2);
+	}
 
   // Set by constant data. Copies data if desired.
-  StdBuf(const void *pData, size_t iSize, bool fCopy = false)
-    : fRef(true), pData(pData), iSize(iSize)
-  {
-    if(fCopy) Copy();
-  }
+	StdBuf(const void *pData, size_t iSize, bool fCopy = false)
+			: fRef(true), pData(pData), iSize(iSize)
+	{
+		if (fCopy) Copy();
+	}
 
-  ~StdBuf()
-  {
-    Clear();
-  }
-
-	ALLOW_TEMP_TO_REF(StdBuf)
+	~StdBuf()
+	{
+		Clear();
+	}
 
 protected:
 

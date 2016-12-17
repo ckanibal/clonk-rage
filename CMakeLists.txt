@@ -13,6 +13,9 @@ elseif(UNIX OR APPLE)
   add_definitions(-DHAVE_STDINT_H)
   add_definitions(-DHAVE_UNISTD_H)
   add_definitions(-DHAVE_PTHREAD)
+
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  find_package(Threads REQUIRED)
 endif()
 
 if(WIN32)
@@ -25,6 +28,8 @@ elseif(APPLE)
   add_definitions(-DUSE_SDL_MAINLOOP)
 elseif(UNIX)
   MESSAGE( STATUS "Building for UNIX ..." )
+  set(USE_X11 ON)
+  add_definitions(-DUSE_X11)
 endif()
 
 if(WITH_GL)
@@ -49,4 +54,4 @@ endif()
 subdirs(engine standard)
 
 # set target properties
-set_property(GLOBAL PROPERTY CXX_STANDARD 11)
+set_property(GLOBAL PROPERTY CXX_STANDARD 14)

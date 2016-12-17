@@ -4,8 +4,8 @@
 
 // *** C4Network2IODiscover
 
-struct C4Network2IODiscoverReply 
-{ 
+struct C4Network2IODiscoverReply
+{
 	char c;
 	int16_t Port;
 };
@@ -41,7 +41,7 @@ bool C4Network2IODiscover::Init(uint16_t iPort)
 bool C4Network2IODiscover::Announce()
 {
    // Announce our presence
-   C4Network2IODiscoverReply Reply = { 4, htons(iRefServerPort) };
+   C4Network2IODiscoverReply Reply = { 4, static_cast<int16_t>(htons(iRefServerPort)) };
    return Send(C4NetIOPacket(&Reply, sizeof(Reply), false, DiscoveryAddr));
 }
 

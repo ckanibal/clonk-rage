@@ -118,7 +118,7 @@ const char *GetSocketErrorMsg()
 {
 	return GetSocketErrorMsg(WSAGetLastError());
 }
-bool HaveSocketError() 
+bool HaveSocketError()
 {
   return !! WSAGetLastError();
 }
@@ -338,7 +338,7 @@ bool C4NetIOTCP::Close()
 			if(pCB) pCB->OnDisconn(pPeer->GetAddr(), this, "owner class closed");
 		}
 
-	ClearConnectWaits();		
+	ClearConnectWaits();
 
 	// close listen socket
 	if(lsock != INVALID_SOCKET)
@@ -396,20 +396,20 @@ bool C4NetIOTCP::Execute(int iMaxTime) // (mt-safe)
 	int iMax = 0;
 	FD_ZERO(&fds[0]); FD_ZERO(&fds[1]);
 	GetFDs(fds, &iMax);
-	
+
 	// build timeout value
 	timeval to = { iMaxTime / 1000, (iMaxTime % 1000) * 1000 };
-	
+
 	// wait for something to happen
 	int ret = select(iMax + 1, &fds[0], &fds[1], NULL, (iMaxTime == C4NetIO::TO_INF ? NULL : &to));
-	
+
 	// error
 	if(ret < 0)
 	{
 	  SetError("select failed");
 	  return false;
 	}
-	
+
 	// nothing happened
 	if(ret == 0)
 	  return true;
@@ -473,7 +473,7 @@ bool C4NetIOTCP::Execute(int iMaxTime) // (mt-safe)
 			{
 				// remove from list
 				SOCKET sock = pWait->sock; pWait->sock = 0;
-				
+
 #ifdef STDSCHEDULER_USE_EVENTS
 				// error?
 				if(wsaEvents.iErrorCode[FD_CONNECT_BIT])
@@ -489,11 +489,11 @@ bool C4NetIOTCP::Execute(int iMaxTime) // (mt-safe)
 				{
 				  close(sock);
 				  if(pCB) pCB->OnDisconn(pWait->addr, this, GetSocketErrorMsg());
-				}				   
+				}
 				// error?
 				else if(iErrCode)
 				{
-				  close(sock);				  
+				  close(sock);
 				  if(pCB) pCB->OnDisconn(pWait->addr, this, GetSocketErrorMsg(iErrCode));
 				}
 				else
@@ -516,7 +516,7 @@ bool C4NetIOTCP::Execute(int iMaxTime) // (mt-safe)
 			// get event list
 			if(::WSAEnumNetworkEvents(sock, NULL, &wsaEvents) == SOCKET_ERROR)
 				return false;
-			
+
 			// something to read from socket?
 			if(wsaEvents.lNetworkEvents & FD_READ)
 #else
@@ -614,10 +614,10 @@ bool C4NetIOTCP::Connect(const C4NetIO::addr_t &addr) // (mt-safe)
 		closesocket(nsock);
 		return false;
 	}
-	
+
 	// add to list
 	AddConnectWait(nsock, addr);
-	
+
 #elif defined(HAVE_WINSOCK)
 	// disable blocking
 	unsigned long iBlock = 1;
@@ -649,7 +649,7 @@ bool C4NetIOTCP::Connect(const C4NetIO::addr_t &addr) // (mt-safe)
 	    return false;
 	  }
 	}
-	
+
 #ifndef STDSCHEDULER_USE_EVENTS
 	// add to list
 	AddConnectWait(nsock, addr);
@@ -908,12 +908,12 @@ C4NetIOTCP::Peer *C4NetIOTCP::Accept(SOCKET nsock, const addr_t &ConnectAddr) //
 
 	// clear add-lock
 	PeerListAddLock.Clear();
-	
+
 	// ask callback if connection should be permitted
 	if(pCB && !pCB->OnConn(addr, caddr, NULL, this))
 		// close socket immediately (will be deleted later)
 		pnPeer->Close();
-	
+
 	// ok
 	return pnPeer;
 }
@@ -1116,7 +1116,7 @@ const unsigned int C4NetIOTCP::Peer::iMinIBufSize = 8192; // (bytes)
 
 C4NetIOTCP::Peer::Peer(const C4NetIO::addr_t &naddr, SOCKET nsock, C4NetIOTCP *pnParent)
 	: pParent(pnParent),
-		addr(naddr), sock(nsock), 
+		addr(naddr), sock(nsock),
 		Next(NULL), iIBufUsage(0), iIRate(0), iORate(0),
 		fOpen(true), fDoBroadcast(false)
 {
@@ -1349,7 +1349,7 @@ bool C4NetIOSimpleUDP::Init(uint16_t inPort)
 		SetError("could not disable blocking", true);
 		return false;
 	}
-	
+
 	// create pipe
 	if(pipe(Pipe) != 0)
 	{
@@ -1397,18 +1397,18 @@ bool C4NetIOSimpleUDP::InitBroadcast(addr_t *pBroadcastAddr)
 	// set mc ttl to somewhat about "same net"
 	int iTTL = 16;
 	if(setsockopt(sock, IPPROTO_IP, IP_MULTICAST_TTL, reinterpret_cast<char*>(&iTTL), sizeof(iTTL)) == SOCKET_ERROR)
-	{ 
+	{
 		SetError("could not set mc ttl", true);
-		return false; 
+		return false;
 	}
 
 	// set up multicast group information
 	this->MCAddr = *pBroadcastAddr;
 	MCGrpInfo.imr_multiaddr = MCAddr.sin_addr;
 	MCGrpInfo.imr_interface.s_addr = INADDR_ANY;
-	
+
 	// join multicast group
-	if(setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, 
+	if(setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP,
 								reinterpret_cast<const char *>(&MCGrpInfo), sizeof(MCGrpInfo)) == SOCKET_ERROR)
 	{
 		SetError("could not join multicast group"); // to do: more error information
@@ -1470,7 +1470,7 @@ bool C4NetIOSimpleUDP::CloseBroadcast()
 	if(!fMultiCast) return true;
 
 	// leave multicast group
-	if(setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, 
+	if(setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP,
 								reinterpret_cast<const char *>(&MCGrpInfo), sizeof(MCGrpInfo)) == SOCKET_ERROR)
 	{
 		SetError("could not join multicast group"); // to do: more error information
@@ -1512,7 +1512,7 @@ bool C4NetIOSimpleUDP::Execute(int iMaxTime)
 		}
 
 		// nothing?
-		if(!iMaxMsgSize) 
+		if(!iMaxMsgSize)
 			break;
 		// alloc buffer
 		C4NetIOPacket Pkt; Pkt.New(iMaxMsgSize);
@@ -1562,7 +1562,7 @@ bool C4NetIOSimpleUDP::Send(const C4NetIOPacket &rPacket)
 
 	// send it
 	C4NetIO::addr_t addr = rPacket.getAddr();
-	if(::sendto(sock, getBufPtr<char>(rPacket), rPacket.getSize(), 0, 
+	if(::sendto(sock, getBufPtr<char>(rPacket), rPacket.getSize(), 0,
 			        reinterpret_cast<sockaddr *>(&addr), sizeof(addr))
 			!= int(rPacket.getSize()) &&
 			!HaveWouldBlockError())
@@ -1755,7 +1755,7 @@ struct C4NetIOUDP::ClosePacket : public PacketHdr
 
 struct C4NetIOUDP::TestPacket : public PacketHdr
 {
-	unsigned int TestNr;	
+	unsigned int TestNr;
 };
 
 #pragma pack (pop)
@@ -1843,7 +1843,7 @@ bool C4NetIOUDP::InitBroadcast(addr_t *pBroadcastAddr)
 		for(int iRetries = 1000; iRetries; iRetries--)
 		{
 			// create new - random - address
-			MCAddr.sin_addr.s_addr = MCAddr.sin_addr.s_addr = 
+			MCAddr.sin_addr.s_addr = MCAddr.sin_addr.s_addr =
 				0x000000ef | ((rand() & 0xff) << 24) | ((rand() & 0xff) << 16) | ((rand() & 0xff) << 8);
 			// init broadcast
 			if(!C4NetIOSimpleUDP::InitBroadcast(&MCAddr))
@@ -2135,7 +2135,7 @@ void C4NetIOUDP::OnPacket(const C4NetIOPacket &Packet, C4NetIO *pNetIO)
 	// loopback test packet? ignore
 	if((Packet.getStatus() & 0x7F) == IPID_Test) return;
 	// address add? process directly
-	
+
 	// find out who's responsible
 	Peer *pPeer = GetPeer(Packet.getAddr());
 	// new connection?
@@ -2144,7 +2144,7 @@ void C4NetIOUDP::OnPacket(const C4NetIOPacket &Packet, C4NetIO *pNetIO)
 		// ping? answer without creating a connection
 		if((Packet.getStatus() & 0x7F) == IPID_Ping)
 		{
-			PacketHdr PingPacket = { IPID_Ping | (Packet.getStatus() & 0x80), 0 };
+			PacketHdr PingPacket = { static_cast<int8_t>(IPID_Ping | (Packet.getStatus() & 0x80)), 0 };
 			SendDirect(C4NetIOPacket(&PingPacket, sizeof(PingPacket), false, Packet.getAddr()));
 			return;
 		}
@@ -2337,8 +2337,8 @@ size_t C4NetIOUDP::Packet::FragmentSize(nr_t iFNr) const
 
 C4NetIOUDP::PacketList::PacketList(unsigned int inMaxPacketCnt)
 	:	pFront(NULL),
-		iMaxPacketCnt(inMaxPacketCnt), 
-		iPacketCnt(0), 
+		iMaxPacketCnt(inMaxPacketCnt),
+		iPacketCnt(0),
 		pBack(NULL)
 {
 
@@ -2351,7 +2351,7 @@ C4NetIOUDP::PacketList::~PacketList()
 
 C4NetIOUDP::Packet *C4NetIOUDP::PacketList::GetPacket(unsigned int iNr)
 {
-	CStdShareLock ListLock(&ListCSec); 
+	CStdShareLock ListLock(&ListCSec);
 	for(Packet *pPkt = pBack; pPkt; pPkt = pPkt->Prev)
 		if(pPkt->GetNr() == iNr)
 			return pPkt;
@@ -2362,7 +2362,7 @@ C4NetIOUDP::Packet *C4NetIOUDP::PacketList::GetPacket(unsigned int iNr)
 
 C4NetIOUDP::Packet *C4NetIOUDP::PacketList::GetPacketFrgm(unsigned int iNr)
 {
-	CStdShareLock ListLock(&ListCSec); 
+	CStdShareLock ListLock(&ListCSec);
 	for(Packet *pPkt = pBack; pPkt; pPkt = pPkt->Prev)
 		if(pPkt->GetNr() <= iNr && pPkt->GetNr() + pPkt->FragmentCnt() > iNr)
 			return pPkt;
@@ -2379,14 +2379,14 @@ C4NetIOUDP::Packet *C4NetIOUDP::PacketList::GetFirstPacketComplete()
 
 bool C4NetIOUDP::PacketList::FragmentPresent(unsigned int iNr)
 {
-	CStdShareLock ListLock(&ListCSec); 
+	CStdShareLock ListLock(&ListCSec);
 	Packet *pPkt = GetPacketFrgm(iNr);
 	return pPkt ? pPkt->FragmentPresent(iNr - pPkt->GetNr()) : false;
 }
 
 bool C4NetIOUDP::PacketList::AddPacket(Packet *pPacket)
 {
-	CStdLock ListLock(&ListCSec); 
+	CStdLock ListLock(&ListCSec);
 	// find insert location
 	Packet *pInsertAfter = pBack, *pInsertBefore = NULL;
 	for(; pInsertAfter; pInsertBefore = pInsertAfter, pInsertAfter = pInsertAfter->Prev)
@@ -2410,7 +2410,7 @@ bool C4NetIOUDP::PacketList::AddPacket(Packet *pPacket)
 
 bool C4NetIOUDP::PacketList::DeletePacket(Packet *pPacket)
 {
-	CStdLock ListLock(&ListCSec); 
+	CStdLock ListLock(&ListCSec);
 #ifdef _DEBUG
 	// check: this list?
 	Packet *pPos = pPacket;
@@ -2437,7 +2437,7 @@ void C4NetIOUDP::PacketList::ClearPackets(unsigned int iUntil)
 
 void C4NetIOUDP::PacketList::Clear()
 {
-	CStdLock ListLock(&ListCSec); 
+	CStdLock ListLock(&ListCSec);
 	while(iPacketCnt)
 		DeletePacket(pFront);
 }
@@ -2459,7 +2459,7 @@ C4NetIOUDP::Peer::Peer(const sockaddr_in &naddr, C4NetIOUDP *pnParent)
 		iIPacketCounter(0), iRIPacketCounter(0),
 		iIMCPacketCounter(0), iRIMCPacketCounter(0),
 		OPackets(iMaxOPacketBacklog),
-		iMCAckPacketCounter(0), 
+		iMCAckPacketCounter(0),
 		iNextReCheck(0),
     iIRate(0), iORate(0), iLoss(0)
 {
@@ -2543,7 +2543,7 @@ void C4NetIOUDP::Peer::OnRecv(const C4NetIOPacket &rPacket) // (mt-safe)
 	const PacketHdr *pHdr = getBufPtr<PacketHdr>(rPacket);
 	bool fBroadcasted = !!(pHdr->StatusByte & 0x80);
 	// save packet nr
-	(fBroadcasted ? iRIMCPacketCounter : iRIPacketCounter) = Max<unsigned int>((fBroadcasted ? iRIMCPacketCounter : iRIPacketCounter), pHdr->Nr); 
+	(fBroadcasted ? iRIMCPacketCounter : iRIPacketCounter) = Max<unsigned int>((fBroadcasted ? iRIMCPacketCounter : iRIPacketCounter), pHdr->Nr);
 #ifdef C4NETIOUDP_OPT_RECV_CHECK_IMMEDIATE
 	// do check
 	if(eStatus == CS_Works)
@@ -2724,7 +2724,7 @@ void C4NetIOUDP::Peer::OnRecv(const C4NetIOPacket &rPacket) // (mt-safe)
 			const ClosePacket *pPkt = getBufPtr<ClosePacket>(rPacket);
 			// ignore if it's for another address
 			if(PeerAddr.sin_addr.s_addr && !AddrEqual(PeerAddr, pPkt->Addr))
-				break;	
+				break;
 			// close
 			OnClose("connection closed by peer");
 		}
@@ -2937,7 +2937,7 @@ void C4NetIOUDP::Peer::OnTimeout()
 bool C4NetIOUDP::BroadcastDirect(const Packet &rPacket, unsigned int iNr) // (mt-safe)
 {
 	// only one fragment?
-	if(iNr + 1) 
+	if(iNr + 1)
 		return SendDirect(rPacket.GetFragment(iNr - rPacket.GetNr(), true));
 	// send all fragments
 	bool fSuccess = true;
@@ -2958,7 +2958,7 @@ bool C4NetIOUDP::SendDirect(C4NetIOPacket rPacket) // (mt-safe)
     CStdLock StatLock(&StatCSec);
     iBroadcastRate += rPacket.getSize() + iUDPHeaderSize;
   }
-	
+
 	// debug
 #ifdef C4NETIO_DEBUG
 	{ C4NetIOPacket Pkt2 = rPacket; Pkt2.SetAddr(toaddr); DebugLogPkt(true, Pkt2); }
@@ -2981,7 +2981,7 @@ bool C4NetIOUDP::DoLoopbackTest()
 	if(!C4NetIOSimpleUDP::getMCLoopback()) return false;
 
 	// send test packet
-	const PacketHdr TestPacket = { IPID_Test | char(0x80), rand() };
+	const PacketHdr TestPacket = { IPID_Test | char(0x80), static_cast<uint32_t>(rand()) };
 	if(!C4NetIOSimpleUDP::Broadcast(C4NetIOPacket(&TestPacket, sizeof(TestPacket))))
 		return false;
 
@@ -3176,7 +3176,7 @@ void C4NetIOUDP::DebugLogPkt(bool fOut, const C4NetIOPacket &Pkt)
 {
 	StdStrBuf O;
 	unsigned int iTime = timeGetTime();
-	O.Format("%s %d:%02d:%02d:%03d %s:%d:", fOut ? "out" : "in ", 
+	O.Format("%s %d:%02d:%02d:%03d %s:%d:", fOut ? "out" : "in ",
 		(iTime / 1000 / 60 / 60), (iTime / 1000 / 60) % 60, (iTime / 1000) % 60, iTime % 1000,
 		inet_ntoa(Pkt.getAddr().sin_addr), htons(Pkt.getAddr().sin_port));
 
@@ -3205,8 +3205,8 @@ void C4NetIOUDP::DebugLogPkt(bool fOut, const C4NetIOPacket &Pkt)
 		{
 		case IPID_Test:		{ UPACK(TestPacket); O.AppendFormat(" (%d)", P.TestNr); break; }
 		case IPID_Conn:		{ UPACK(ConnPacket); O.AppendFormat(" (Ver %d, MC: %s:%d)", P.ProtocolVer, inet_ntoa(P.MCAddr.sin_addr), htons(P.MCAddr.sin_port)); break; }
-		case IPID_ConnOK: 
-			{ UPACK(ConnOKPacket); 
+		case IPID_ConnOK:
+			{ UPACK(ConnOKPacket);
 				switch(P.MCMode)
 				{
 				case ConnOKPacket::MCM_NoMC:	O.Append(" (NoMC)"); break;
@@ -3216,14 +3216,14 @@ void C4NetIOUDP::DebugLogPkt(bool fOut, const C4NetIOPacket &Pkt)
 				}
 				break;
 			}
-		case IPID_Data:		
+		case IPID_Data:
 			{ UPACK(DataPacketHdr); O.AppendFormat(" (f: %d s: %d)", P.FNr, P.Size);
 				for(int iPos = sizeof(DataPacketHdr); iPos < Min<int>(Pkt.getSize(), sizeof(DataPacketHdr) + 16); iPos++)
 					O.AppendFormat(" %02x", *getBufPtr<unsigned char>(Pkt, iPos));
 				break; }
-		case IPID_Check:	
-			{ UPACK(CheckPacketHdr); 
-				O.AppendFormat(" (ack: %d, mcack: %d, ask: %d mcask: %d, ", P.AckNr, P.MCAckNr, P.AskCount, P.MCAskCount); 
+		case IPID_Check:
+			{ UPACK(CheckPacketHdr);
+				O.AppendFormat(" (ack: %d, mcack: %d, ask: %d mcask: %d, ", P.AckNr, P.MCAckNr, P.AskCount, P.MCAskCount);
 				if(Pkt.getSize() < sizeof(CheckPacketHdr) + sizeof(unsigned int) * (P.AskCount + P.MCAskCount))
 					O.AppendFormat("too small)");
 				else
@@ -3234,7 +3234,7 @@ void C4NetIOUDP::DebugLogPkt(bool fOut, const C4NetIOPacket &Pkt)
 					O.Append("])");
 				}
 				break;
-			}				
+			}
 		}
 	}
 	O.AppendFormat(" (%d bytes)\n", Pkt.getSize());

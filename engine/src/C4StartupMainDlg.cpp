@@ -81,7 +81,7 @@ C4StartupMainDlg::C4StartupMainDlg() : C4StartupDlg(NULL) // create w/o title; i
 		new C4GUI::DlgKeyCB<C4StartupMainDlg>(*this, &C4StartupMainDlg::KeyEnterDown, &C4StartupMainDlg::KeyEnterUp), C4CustomKey::PRIO_CtrlOverride);
 	keys.clear(); keys.push_back(C4KeyCodeEx(K_F6));
 	pKeyEditor = new C4KeyBinding(keys, "StartupMainEditor", KEYSCOPE_Gui,
-		new C4GUI::DlgKeyCB<C4StartupMainDlg>(*this, &C4StartupMainDlg::SwitchToEditor, false), C4CustomKey::PRIO_CtrlOverride);
+		new C4GUI::DlgKeyCB<C4StartupMainDlg>(*this, &C4StartupMainDlg::SwitchToEditor, nullptr), C4CustomKey::PRIO_CtrlOverride);
 	}
 
 C4StartupMainDlg::~C4StartupMainDlg()
@@ -374,7 +374,7 @@ void C4StartupMainDlg::HandleIncomingKeyfile(const char *strIncomingKey)
 
 	// Key file doesn't even exist? Do nothing.
 	if (!FileExists(strKeyFilename.getData())) return;
-	
+
 	// Try loading registration from the incoming keyfile to verify it
 	Config.ClearRegistrationError();
 	if (!Config.LoadRegistration(strKeyFilename.getData()))
@@ -396,7 +396,7 @@ void C4StartupMainDlg::HandleIncomingKeyfile(const char *strIncomingKey)
 	char strIncomingPath[_MAX_PATH + 1];
 	GetParentPath(strKeyFilename.getData(), strIncomingPath);
 	AppendBackslash(strIncomingPath);
-	
+
 	// The key is already in the key path: that's how we like it
 	if (SEqualNoCase(strIncomingPath, Config.GetKeyPath()))
 		{

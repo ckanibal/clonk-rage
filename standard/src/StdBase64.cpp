@@ -8,30 +8,24 @@
 // so I replaced it with some other implementation which does the job...
 
 // base 64 table
-const char Base64Tbl [] = 
+const char Base64Tbl [] =
 	{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
 	  'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
 		'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
 		'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
 
 // reversed base 64 table
-const unsigned char Base64RTbl[] = 
-	{ '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\xff', '\xff', '\x3e', '\xff', '\xff', '\xff', '\x3f',
-		'\x34', '\x35', '\x36', '\x37', '\x38', '\x39', '\x3a', '\x3b',
-		'\x3c', '\x3d', '\xff', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06',
-		'\x07', '\x08', '\x09', '\x0a', '\x0b', '\x0c', '\x0d', '\x0e',
-		'\x0f', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16',
-		'\x17', '\x18', '\x19', '\xff', '\xff', '\xff', '\xff', '\xff',
-		'\xff', '\x1a', '\x1b', '\x1c', '\x1d', '\x1e', '\x1f', '\x20',
-		'\x21', '\x22', '\x23', '\x24', '\x25', '\x26', '\x27', '\x28',
-		'\x29', '\x2a', '\x2b', '\x2c', '\x2d', '\x2e', '\x2f', '\x30',
-		'\x31', '\x32', '\x33', '\xff', '\xff', '\xff', '\xff', '\xff' }; 
+static const char Base64RTbl[] =
+{
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,		// '+/'
+	52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -2, -1, -1,		// '0-9' & '='
+	-1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,	10, 11, 12, 13, 14,		// 'A-Z'
+	15, 16, 17, 18, 19,	20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1,
+	-1,	26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,		// 'a-z'
+	41, 42, 43, 44, 45,	46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1
+};
 
 // base 64 padding char
 const char Base64Pad = '=';
@@ -109,7 +103,7 @@ inline unsigned char B64DecodeChar(const unsigned char c)
 {
 	return( c == Base64Pad ? 0	  :
 					c & 128				 ? 0xff	:
-					Base64RTbl[c] );	        
+					Base64RTbl[c] );
 }
 
 char *B64Decode(const char *pData, int &ioSize)

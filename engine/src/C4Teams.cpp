@@ -16,7 +16,7 @@
 // C4Team
 
 C4Team::C4Team(const C4Team &rCopy)
-	: piPlayers(new int32_t[rCopy.GetPlayerCount()]), 
+	: piPlayers(new int32_t[rCopy.GetPlayerCount()]),
 		iPlayerCount(rCopy.GetPlayerCount()),
 		iPlayerCapacity(rCopy.GetPlayerCount()),
 		iID(rCopy.GetID()), iPlrStartIndex(rCopy.iPlrStartIndex), dwClr(rCopy.dwClr),
@@ -92,7 +92,7 @@ void C4Team::RemovePlayerByID(int32_t iID)
 
 bool C4Team::IsPlayerIDInTeam(int32_t iID)
 	{
-	int32_t i=iPlayerCount, *piPlr = piPlayers; 
+	int32_t i=iPlayerCount, *piPlr = piPlayers;
 	while (i--) if (*piPlr++ == iID) return true;
 	return false;
 	}
@@ -386,7 +386,7 @@ C4Team *C4TeamList::GetTeamByID(int32_t iID) const
 C4Team *C4TeamList::GetGenerateTeamByID(int32_t iID)
 	{
 	// only if enabled
-	if (!IsMultiTeams()) return false;
+	if (!IsMultiTeams()) return nullptr;
 	// new team?
 	if (iID == TEAMID_New) iID = GetLargestTeamID()+1;
 	// find in list
@@ -651,7 +651,7 @@ bool C4TeamList::Save(C4Group &hGroup)
 	{
 	// remove previous entry from group
 	hGroup.DeleteEntry(C4CFN_Teams);
-	// decompile 
+	// decompile
   try
     {
     StdStrBuf Buf = DecompileToBuf<StdCompilerINIWrite>(mkNamingAdapt(*this, "Teams"));
