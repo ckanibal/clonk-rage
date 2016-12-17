@@ -1,6 +1,9 @@
 cmake_minimum_required (VERSION 2.6)
 project ("standard library" CXX)
 
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
 option(INTERNAL_FREETYPE "Build using internal freetype library" OFF)
 
 set(STANDARD_SRC
@@ -86,18 +89,6 @@ if(WITH_GLIB)
 	find_package(GTK2)
 	include_directories(${GTK2_INCLUDE_DIRS})
 endif()
-find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
-if(INTERNAL_FREETYPE)
-	find_package(BZIP2 REQUIRED)
-
-	set(FREETYPE_INCLUDE_DIRS freetype2/include)
-	set(FREETYPE_LIBRARIES ${PROJECT_SOURCE_DIR}/freetype2/objs/libfreetype.a)
-
-
-else()
-	find_package(Freetype REQUIRED)
-endif()
 
 include_directories(${ZLIB_INCLUDE_DIRS} ${PNG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 
@@ -109,4 +100,4 @@ add_library(standard STATIC ${STANDARD_SRC})
 set_property(TARGET standard PROPERTY COMPILE_DEFINITIONS HAVE_CONFIG_H)
 set_property(TARGET standard PROPERTY COMPILE_DEFINITIONS HAVE_ICONV)
 set_property(TARGET standard PROPERTY COMPILE_DEFINITIONS HAVE_FREETYPE)
-target_link_libraries(standard ${JPEG_LIBRARIES} ${PNG_LIBRARIES} ${SDL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${BZIP2_LIBRARIES})
+target_link_libraries(standard ${CONAN_LIBS} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} ${SDL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${BZIP2_LIBRARIES})

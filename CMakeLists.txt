@@ -4,8 +4,9 @@ project (clonk-rage)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-OPTION(USE_GL "Use OpenGL for rendering" ON)
+OPTION(WITH_GL "Use OpenGL for rendering" ON)
 OPTION(WITH_NETWORK "Enable network" ON)
+OPTION(WITH_SDL_MAINLOOP "Enable SDL mainloop" OFF)
 
 if(WIN32)
 elseif(UNIX OR APPLE)
@@ -26,7 +27,7 @@ elseif(UNIX)
   MESSAGE( STATUS "Building for UNIX ..." )
 endif()
 
-if(USE_GL)
+if(WITH_GL)
   add_definitions(-DUSE_GL)
   find_package(OpenGL REQUIRED)
   link_libraries(${OPENGL_LIBRARIES})
@@ -41,19 +42,8 @@ endif()
 if(WITH_NETWORK)
   add_definitions(-DNETWORK)
 else()
-  # TODO: active NONETWORK
+  add_definitions(-DNONETWORK)
 endif()
-
-## include common libraries ##
-# openssl
-# set(OPENSSL_LOCAL_DIR 3rdparty/openssl/)
-find_package(OpenSSL REQUIRED)
-list(APPEND LIBS
-	${OPENSSL_LIBRARIES}
-)
-
-include_directories(${PNG_INCLUDE_DIR} ${JPEG_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
-
 
 # include projects
 subdirs(engine standard)
