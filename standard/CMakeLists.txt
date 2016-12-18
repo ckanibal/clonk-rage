@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 project ("standard library" CXX)
 
-include(${CMAKE_SOURCE_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+# include(${CMAKE_SOURCE_DIR}/conanbuildinfo.cmake)
+# conan_basic_setup()
 
 option(INTERNAL_FREETYPE "Build using internal freetype library" OFF)
 
@@ -68,16 +68,16 @@ endif()
 
 if(USE_CONSOLE)
 	set(STANDARD_SRC ${STANDARD_SRC} src/StdTApp.cpp)
-	if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	if(UNIX)
 	 set(STANDARD_SRC ${STANDARD_SRC} src/StdXWindow.cpp)
- elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+ elseif(WIN32)
 	 set(STANDARD_SRC ${STANDARD_SRC} src/StdWindow.cpp)
  endif()
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+elseif(WIN32)
 	set(STANDARD_SRC ${STANDARD_SRC} src/StdWindow.cpp)
 endif()
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if(WIN32)
 	set(STANDARD_SRC ${STANDARD_SRC} src/StdRegistry.cpp)
 elseif(APPLE)
 	set(STANDARD_SRC ${STANDARD_SRC} src/MacUtility.mm ../xcode/SDLMain.h)
@@ -93,6 +93,10 @@ if(WITH_GLIB)
 endif()
 
 find_package(OpenSSL REQUIRED)
+find_package(png REQUIRED)
+find_package(zlib REQUIRED)
+find_package(jpeg REQUIRED)
+find_package(freetype REQUIRED)
 
 include_directories(${ZLIB_INCLUDE_DIRS} ${PNG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
 

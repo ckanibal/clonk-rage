@@ -1,16 +1,23 @@
 language: generic
-os: osx
 sudo: false
 
 matrix:
   include:
+    - os: osx
+      env: OPENSSL_ROOT_DIR=$(brew --prefix openssl)
     - os: linux
       dist: trusty
       env: COMPILER_NAME=gcc CXX=g++-5 CC=gcc-5
       addons:
         apt:
           packages:
+            - cmake
             - g++-5
+            - libpng-dev
+            - libssl-dev
+            - libfreetype6-dev
+            - zlib1g-dev
+            - libjpeg-dev
             - libglew-dev
             - libssl-dev
             - libxrandr-dev
@@ -19,6 +26,7 @@ matrix:
           sources: &sources
             - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
+            - kalakris-cmake
     - os: linux
       dist: trusty
       compiler: clang
@@ -27,6 +35,12 @@ matrix:
         apt:
           packages:
 #            - clang-3.8
+            - cmake
+            - libpng-dev
+            - libssl-dev
+            - libfreetype6-dev
+            - zlib1g-dev
+            - libjpeg-dev
             - libglew-dev
             - libssl-dev
             - libxrandr-dev
@@ -36,12 +50,12 @@ matrix:
 
 before_install:
   - "if [ ${TRAVIS_OS_NAME} = 'osx' ]; then brew update; fi"
-  - "if [ ${TRAVIS_OS_NAME} = 'osx' ]; then brew install glew; fi"
+  - "if [ ${TRAVIS_OS_NAME} = 'osx' ]; then brew install glew openssl sdl; fi"
 
 install:
-  - pip install --upgrade pip
-  - pip install conan
-  - conan install --build electric-fence --build libjpeg --build bzip2 --build libpng --build zlib --build freetype
+#  - pip install --upgrade pip
+#  - pip install conan
+#  - conan install --build electric-fence --build libjpeg --build bzip2 --build libpng --build zlib --build freetype
 
 script:
   - mkdir build
