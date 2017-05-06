@@ -1,8 +1,9 @@
 [requires]
-zlib/1.2.8@lasote/stable
+zlib/1.2.11@lasote/stable
 libpng/1.6.23@lasote/stable
-libjpeg/9a@Kaosumaru/stable
+# libjpeg/9a@Kaosumaru/stable
 freetype/2.6.3@lasote/stable
+OpenSSL/1.0.2k@lasote/stable
 
 [generators]
 cmake

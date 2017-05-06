@@ -33,4 +33,7 @@ include_directories(inc/ sec/ ../standard/inc/)
 set_property(TARGET engine PROPERTY CXX_STANDARD 14)
 
 # link libraries
-target_link_libraries(engine ${LIBS} ${CONAN_LIBS} ${OPENSSL_LIBRARIES} Threads::Threads standard)
+MESSAGE( STATUS "PNG_LIBRARIES: " ${PNG_LIBRARIES} )
+MESSAGE( STATUS "CONAN_LIBS: " ${CONAN_LIBS} )
+MESSAGE( STATUS "LIBS: " ${LIBS} )
+target_link_libraries(engine ${LIBS} ${OPENSSL_LIBRARIES} ${PNG_LIBRARIES} ${CONAN_LIBS} Threads::Threads standard)

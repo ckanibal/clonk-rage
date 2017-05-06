@@ -58,7 +58,7 @@ endif()
 
 if(WITH_SDL_MAINLOOP)
 	set(STANDARD_SRC ${STANDARD_SRC} src/StdSDLApp.cpp src/StdSDLWindow.cpp)
-	find_package(SDL)
+	find_package(SDL REQUIRED)
 	include_directories(${SDL_INCLUDE_DIR})
 endif()
 
@@ -91,12 +91,6 @@ if(WITH_GLIB)
 	find_package(GTK2)
 	include_directories(${GTK2_INCLUDE_DIRS})
 endif()
-
-find_package(OpenSSL REQUIRED)
-find_package(png REQUIRED)
-find_package(zlib REQUIRED)
-find_package(jpeg REQUIRED)
-find_package(freetype REQUIRED)
 
 include_directories(${ZLIB_INCLUDE_DIRS} ${PNG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
 

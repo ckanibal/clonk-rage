@@ -53,10 +53,9 @@ before_install:
   - "if [ ${TRAVIS_OS_NAME} = 'osx' ]; then brew install glew openssl sdl; fi"
 
 install:
-#  - pip install --upgrade pip
-#  - pip install conan
-#  - conan install --build electric-fence --build libjpeg --build bzip2 --build libpng --build zlib --build freetype
+  - pip install --upgrade pip
+  - pip install conan
 
 script:
   - mkdir build
-  - cd build && cmake ../ && cmake --build .
+  - cd build && conan install .. --build && cmake .. && cmake --build .
